@@ -6,7 +6,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   NavigationBloc() : super(HomeState()) {
     on<NavigateToHome>((event, emit) => emit(HomeState()));
     on<NavigateToSearch>((event, emit) => emit(SearchState()));
-    on<NavigateToEvents>((event, emit) => emit(EventsState()));
+    on<NavigateTooffers>((event, emit) => emit(OffersState()));
     on<NavigateToProfile>((event, emit) => emit(ProfileState()));
   }
 }

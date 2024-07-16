@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketmart/movie_screen_grid.dart';
+import 'package:ticketmart/notification.dart';
+import 'package:ticketmart/offers.dart';
 import 'package:ticketmart/profile_page.dart';
 import 'package:ticketmart/search_screen.dart';
 import 'api_connection.dart';
-import 'bloc/navigation_bloc.dart';
-import 'bloc/navigation_event.dart';
+// import 'bloc/navigation_bloc.dart';
+// import 'bloc/navigation_event.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,6 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> _upcoming = []; // List to hold upcoming movies
   bool _isLoading = true; // Flag to track loading state
 
+  final PageController _pageController = PageController();
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +38,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _fetchMovieLists() async {
     try {
       final images = await ApiConnection.fetchCarouselImages();
-      final newReleases = await ApiConnection.fetchCarouselImages(); // Assuming separate methods for different lists
+      final newReleases = await ApiConnection
+          .fetchCarouselImages(); // Assuming separate methods for different lists
       final trendingInTheatre = await ApiConnection.fetchCarouselImages();
       final upcoming = await ApiConnection.fetchCarouselImages();
       setState(() {
@@ -63,81 +68,101 @@ class _HomeScreenState extends State<HomeScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 40.0), // Add top padding here
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.location_on),
-                      onPressed: () {
-                        // Handle location button press
-                      },
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        children: <Widget>[
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 40.0), // Add top padding here
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.location_on),
+                          onPressed: () {
+                            // Handle location button press
+                          },
+                        ),
+                        const SizedBox(width: 8),
+                        DropdownButton<String>(
+                          value: _selectedCity,
+                          items: _buildDropdownItems(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedCity = value; // Update selected city
+                            });
+                            // Handle dropdown item selection if needed
+                          },
+                          hint: const Text('Select City'),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          icon: const Icon(Icons.notifications),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const NotificationScreen()));
+                          },
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 8),
-                    DropdownButton<String>(
-                      value: _selectedCity,
-                      items: _buildDropdownItems(),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedCity = value; // Update selected city
-                        });
-                        // Handle dropdown item selection if needed
-                      },
-                      hint: const Text('Select City'),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.notifications),
-                      onPressed: () {
-                        // Handle notification button press
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : Column(
-                    children: [
-                      _carouselImages.isNotEmpty
-                          ? SizedBox(
-                              height: screenHeight * 0.3, // 30% of the screen height
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: _carouselImages.length,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width * 0.9,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(_carouselImages[index]),
-                                          fit: BoxFit.cover,
-                                        ),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            )
-                          : Container(),
-
-                      _buildMovieSection('New Releases', _newReleases),
-                      _buildMovieSection('Trending in Theatre', _trendingInTheatre),
-                      _buildMovieSection('Upcoming', _upcoming),
-                    ],
                   ),
-          ],
-        ),
+                ),
+                _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : Column(
+                        children: [
+                          _carouselImages.isNotEmpty
+                              ? SizedBox(
+                                  height: screenHeight *
+                                      0.3, // 30% of the screen height
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: _carouselImages.length,
+                                    itemBuilder: (context, index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width *
+                                              0.9,
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: NetworkImage(
+                                                  _carouselImages[index]),
+                                              fit: BoxFit.cover,
+                                            ),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : Container(),
+                          _buildMovieSection('New Releases', _newReleases),
+                          _buildMovieSection(
+                              'Trending in Theatre', _trendingInTheatre),
+                          _buildMovieSection('Upcoming', _upcoming),
+                        ],
+                      ),
+              ],
+            ),
+          ),
+          const SearchScreen(),
+          const OffersScreen(),
+          const ProfilePage(),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -151,8 +176,8 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.event),
-            label: 'Events',
+            icon: Icon(Icons.local_offer),
+            label: 'Offers',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -170,33 +195,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onItemTapped(int index) {
-  setState(() {
-    _selectedIndex = index;
-  });
-
-  switch (index) {
-    case 0:
-      context.read<NavigationBloc>().add(NavigateToHome());
-      break;
-    case 1:
-      // Navigate to SearchScreen when the Search icon is tapped
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const SearchScreen()),
-      );
-      break;
-    case 2:
-      context.read<NavigationBloc>().add(NavigateToEvents());
-      break;
-    case 3:
-// Example of navigating to ProfilePage
-Navigator.push(
-  context,
-  MaterialPageRoute(builder: (context) => const ProfilePage()),
-);
-      break;
+    setState(() {
+      _selectedIndex = index;
+    });
+    _pageController.jumpToPage(index);
   }
-}
 
   List<DropdownMenuItem<String>> _buildDropdownItems() {
     return [
@@ -244,67 +247,107 @@ Navigator.push(
   }
 
   Widget _buildMovieSection(String title, List<String> movieImages) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 2.0), // Adjusted padding values
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MovieGridScreen(title: title, images: movieImages),
-                  ),
-                );
-              },
-              child: const Text(
-                'See All',
-                style: TextStyle(
-                  color: Colors.black,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+              16.0, 16.0, 16.0, 2.0), // Adjusted padding values
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-      SizedBox(
-        height: 250, // Adjust the height as needed
-        child: ListView.builder(
-          padding: const EdgeInsets.only(left: 8.0), // Adjusted left padding for images
-          scrollDirection: Axis.horizontal,
-          itemCount: movieImages.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.only(right: 8.0), // Adjusted right padding for images
-              child: Container(
-                width: 175, // Adjust the width as needed
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(movieImages[index]),
-                    fit: BoxFit.cover,
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          MovieGridScreen(title: title, images: movieImages),
+                    ),
+                  );
+                },
+                child: const Text(
+                  'See All',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
                   ),
-                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-            );
-          },
+            ],
+          ),
         ),
-      ),
-    ],
-  );
+        SizedBox(
+          height: 250, // Adjust the height as needed
+          child: ListView.builder(
+            padding: const EdgeInsets.only(
+                left: 8.0), // Adjusted left padding for images
+            scrollDirection: Axis.horizontal,
+            itemCount: movieImages.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.only(
+                    right: 8.0), // Adjusted right padding for images
+                child: Stack(
+                  children: [
+                    Container(
+                      width: 175, // Adjust the width as needed
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(movieImages[index]),
+                          fit: BoxFit.cover,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.7),
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          ),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '4.4',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
 }
-
-}
-
