@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:ticketmart/movie_detail_screen.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketmart/movie_screen_grid.dart';
 import 'package:ticketmart/notification.dart';
@@ -246,55 +247,67 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
   }
 
-  Widget _buildMovieSection(String title, List<String> movieImages) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-              16.0, 16.0, 16.0, 2.0), // Adjusted padding values
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 18,
+Widget _buildMovieSection(String title, List<String> movieImages) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(
+            16.0, 16.0, 16.0, 2.0), // Adjusted padding values
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        MovieGridScreen(title: title, images: movieImages),
+                  ),
+                );
+              },
+              child: const Text(
+                'See All',
+                style: TextStyle(
+                  color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              TextButton(
-                onPressed: () {
+            ),
+          ],
+        ),
+      ),
+      SizedBox(
+        height: 250, // Adjust the height as needed
+        child: ListView.builder(
+          padding: const EdgeInsets.only(
+              left: 8.0), // Adjusted left padding for images
+          scrollDirection: Axis.horizontal,
+          itemCount: movieImages.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.only(
+                  right: 8.0), // Adjusted right padding for images
+              child: GestureDetector(
+                onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          MovieGridScreen(title: title, images: movieImages),
+                      builder: (context) => MovieDetailsScreen(
+                        movieTitle: 'Movie Title', // Provide actual title if available
+                        imageUrl: movieImages[index], // Pass the URL of the movie image
+                      ),
                     ),
                   );
                 },
-                child: const Text(
-                  'See All',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 250, // Adjust the height as needed
-          child: ListView.builder(
-            padding: const EdgeInsets.only(
-                left: 8.0), // Adjusted left padding for images
-            scrollDirection: Axis.horizontal,
-            itemCount: movieImages.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.only(
-                    right: 8.0), // Adjusted right padding for images
                 child: Stack(
                   children: [
                     Container(
@@ -343,11 +356,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
+
+
+
 }
