@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -47,29 +46,5 @@ class ApiConnection {
       throw Exception('Failed to load upcoming movies');
     }
   }
-
-    static Future<List<Map<String, dynamic>>> fetchData(String dataType) async {
-    try {
-      final response = await http.post(
-        Uri.parse(dataUrl),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'dataType': dataType}),
-      );
-
-      if (response.statusCode == 200) {
-        var responseData = jsonDecode(response.body);
-        // Assuming responseData is a list of maps containing name and URL
-        return List<Map<String, dynamic>>.from(responseData);
-      } else {
-        throw Exception('Failed to fetch data: ${response.statusCode}');
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error fetching data: $e');
-      }
-      throw Exception('Failed to fetch data: $e');
-    }
-  }
-
   // Add other API functions here as needed
 }

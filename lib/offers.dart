@@ -10,7 +10,7 @@ class OffersScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Movie Offers & Coupons'),
       ),
-      body:  OffersList(),
+      body: OffersList(),
     );
   }
 }
@@ -30,7 +30,7 @@ class OffersList extends StatelessWidget {
     // Add more offers here
   ];
 
-   OffersList({super.key});
+  OffersList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,10 @@ class OffersList extends StatelessWidget {
                     SnackBar(content: Text('Coupon code copied: ${offer.code}')),
                   );
                 },
-                child: const Text('Copy Code'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                ),
+                child: const Text('Copy Code', style: TextStyle(color: Colors.white)),
               ),
             ),
           ),

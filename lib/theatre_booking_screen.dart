@@ -4,23 +4,33 @@ import 'package:ticketmart/ticket_screen.dart';
 class TheaterBookingScreen extends StatefulWidget {
   final String theaterName;
   final String movieTitle;
-  // final String imageUrl;
 
   const TheaterBookingScreen({
     super.key,
     required this.theaterName,
-    required this.movieTitle,
-    // required this.imageUrl,
+    required this.movieTitle, required int ticketCount,
   });
 
   @override
-  // ignore: library_private_types_in_public_api
-  _TheaterBookingScreenState createState() => _TheaterBookingScreenState();
+  TheaterBookingScreenState createState() => TheaterBookingScreenState();
 }
 
-class _TheaterBookingScreenState extends State<TheaterBookingScreen> {
+class TheaterBookingScreenState extends State<TheaterBookingScreen> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
+  List<int> selectedSeats = [];
+  int totalSeatPrice = 0;
+
+
+  // Define seat prices for different rows
+  final Map<int, int> rowPrices = {
+    0: 50, // Rows A to B
+    1: 50, // Rows A to B
+    2: 150, // Rows C to F
+    3: 150, // Rows C to F
+    4: 150, // Rows C to F
+    5: 150, // Rows C to F
+  };
 
   List<List<SeatStatus>> seats = List.generate(
     6,
@@ -33,260 +43,291 @@ class _TheaterBookingScreenState extends State<TheaterBookingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Book Tickets - ${widget.theaterName}'),
-        backgroundColor: Colors.redAccent,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            // Container(
-            //   height: 250.0,
-            //   decoration: BoxDecoration(
-            //     borderRadius: const BorderRadius.only(
-            //       bottomLeft: Radius.circular(20.0),
-            //       bottomRight: Radius.circular(20.0),
-            //     ),
-            //     boxShadow: [
-            //       BoxShadow(
-            //         color: Colors.grey.withOpacity(0.5),
-            //         spreadRadius: 3,
-            //         blurRadius: 7,
-            //         offset: const Offset(0, 3),
-            //       ),
-            //     ],
-            //   ),
-            //   child: ClipRRect(
-            //     borderRadius: const BorderRadius.only(
-            //       bottomLeft: Radius.circular(20.0),
-            //       bottomRight: Radius.circular(20.0),
-            //     ),
-            //     child: Image.network(
-            //       widget.imageUrl,
-            //       fit: BoxFit.cover,
-            //     ),
-            //   ),
-            // ),
-            
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const Text(
-                    'Selected Movie',
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    widget.movieTitle,
-                    style: const TextStyle(
-                      fontSize: 20.0,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  const Text(
-                    'Theater',
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    widget.theaterName,
-                    style: const TextStyle(
-                      fontSize: 20.0,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 32.0),
-                  const Text(
-                    'Select Date and Time',
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      ElevatedButton(
-                        onPressed: () => _selectDate(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent,
-                          padding: const EdgeInsets.all(12.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        child: const Text(
-                          'Select Date',
-                          style: TextStyle(fontSize: 16.0),
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => _selectTime(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent,
-                          padding: const EdgeInsets.all(12.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        child: const Text(
-                          'Select Time',
-                          style: TextStyle(fontSize: 16.0),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 32.0),
-                  const Text(
-                    'Select Seats',
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  _buildSeatMap(),
-                  const SizedBox(height: 32.0),
-                  ElevatedButton(
-                    onPressed: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => TicketScreen(
-        theaterName: widget.theaterName,
-        movieTitle: widget.movieTitle,
-        selectedDate: _selectedDate,
-        selectedTime: _selectedTime, seats: const [], 
-      ),
-    ),
-  );
-},
-
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.redAccent,
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                    child: const Text(
-                      'Confirm Booking',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              _buildDateSelector(),
+              const SizedBox(height: 20.0),
+              _buildTimeSelector(),
+              const SizedBox(height: 20.0),
+              _buildSeatMap(),
+              const SizedBox(height: 20.0),
+              _buildPriceInfo(),
+              const SizedBox(height: 20.0),
+              _buildConfirmButton(),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildSeatMap() {
+  Widget _buildDateSelector() {
     return Column(
-      children: seats.asMap().entries.map((entry) {
-        int rowIndex = entry.key;
-        List<SeatStatus> rowSeats = entry.value;
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Select Date',
+          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List.generate(7, (index) {
+            final date = DateTime.now().add(Duration(days: index));
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedDate = date;
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: _selectedDate.day == date.day ? Colors.redAccent : Colors.grey,
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.weekday - 1],
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    const SizedBox(height: 4.0),
+                    Text(
+                      date.day.toString(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
+        ),
+      ],
+    );
+  }
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
+  Widget _buildTimeSelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Select Time',
+          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: rowSeats.asMap().entries.map((seatEntry) {
-              int seatIndex = seatEntry.key;
-              SeatStatus seatStatus = seatEntry.value;
+            children: [
+              _buildTimeButton('10:30 am'),
+              _buildTimeButton('12:00 pm'),
+              _buildTimeButton('01:20 pm'),
+              _buildTimeButton('02:45 pm'),
+              _buildTimeButton('03:15 pm'),
+              _buildTimeButton('05:10 pm'),
+              // Add more time buttons if needed
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 
-              Color seatColor = _getSeatColor(seatStatus);
+  Widget _buildTimeButton(String time) {
+  return GestureDetector(
+    onTap: () {
+      setState(() {
+        _selectedTime = TimeOfDay.fromDateTime(DateTime(
+          _selectedDate.year,
+          _selectedDate.month,
+          _selectedDate.day,
+          int.parse(time.split(':')[0]),
+          int.parse(time.split(':')[1].split(' ')[0]),
+        ));
+      });
+    },
+    child: Container(
+      padding: const EdgeInsets.all(8.0),
+      margin: const EdgeInsets.symmetric(horizontal: 4.0),
+      decoration: BoxDecoration(
+        color: _selectedTime.hour == int.parse(time.split(':')[0]) &&
+                _selectedTime.minute == int.parse(time.split(':')[1].split(' ')[0])
+            ? Colors.redAccent
+            : Colors.grey,
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Text(
+        time,
+        style: const TextStyle(color: Colors.white),
+      ),
+    ),
+  );
+}
 
-              return GestureDetector(
-                onTap: () {
-                  _toggleSeatSelection(rowIndex, seatIndex);
-                },
-                child: Container(
-                  width: 24.0,
-                  height: 24.0,
-                  margin: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    color: seatColor,
-                    border: Border.all(color: Colors.grey.shade400),
-                    borderRadius: BorderRadius.circular(4.0),
+ Widget _buildSeatMap() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'Select Seats',
+        style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+      const SizedBox(height: 10),
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 20.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          border: Border.all(color: Colors.redAccent),
+        ),
+        child: Column(
+          children: List.generate(6, (rowIndex) {
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(10, (columnIndex) {
+                      final seatIndex = rowIndex * 10 + columnIndex;
+                      final seatStatus = seats[rowIndex][columnIndex];
+                      final seatPrice = rowPrices[rowIndex] ?? 0;
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (seatStatus == SeatStatus.available) {
+                              seats[rowIndex][columnIndex] = SeatStatus.selected;
+                              selectedSeats.add(seatIndex);
+                              totalSeatPrice += seatPrice;
+                            } else if (seatStatus == SeatStatus.selected) {
+                              seats[rowIndex][columnIndex] = SeatStatus.available;
+                              selectedSeats.remove(seatIndex);
+                              totalSeatPrice -= seatPrice;
+                            }
+                          });
+                        },
+                        child: Container(
+                          width: 24.0,
+                          height: 24.0,
+                          margin: const EdgeInsets.all(4.0),
+                          decoration: BoxDecoration(
+                            color: seatStatus == SeatStatus.available
+                                ? Colors.grey
+                                : seatStatus == SeatStatus.selected
+                                    ? Colors.redAccent
+                                    : Colors.black,
+                            borderRadius: BorderRadius.circular(4.0),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '${String.fromCharCode(65 + rowIndex)}${columnIndex + 1}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
                   ),
                 ),
-              );
-            }).toList(),
+                // Display price info in the same row
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Text(
+                    'Row ${String.fromCharCode(65 + rowIndex)}: \$seatPrice',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }),
+        ),
+      ),
+    ],
+  );
+}
+
+  Widget _buildPriceInfo() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Price Info',
+          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        ...rowPrices.entries.map((entry) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: Text(
+              '\$${entry.value} (${String.fromCharCode(65 + entry.key)}-${String.fromCharCode(65 + entry.key + 1)})',
+              style: const TextStyle(color: Colors.black, fontSize: 16),
+            ),
+          );
+        }),
+        const SizedBox(height: 10),
+        Text(
+          'Total: \$${totalSeatPrice.toString()}',
+          style: const TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildConfirmButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TicketScreen(
+              theaterName: widget.theaterName,
+              movieTitle: widget.movieTitle,
+              selectedDate: _selectedDate,
+              selectedTime: _selectedTime,
+              seats: selectedSeats,
+              totalSeatPrice: totalSeatPrice,
+            ),
           ),
         );
-      }).toList(),
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.redAccent,
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+      ),
+      child: Text(
+        'Confirm (${selectedSeats.length} seat${selectedSeats.length == 1 ? '' : 's'})',
+        style: const TextStyle(
+          fontSize: 18.0,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
     );
-  }
-
-  Color _getSeatColor(SeatStatus seatStatus) {
-    switch (seatStatus) {
-      case SeatStatus.available:
-        return Colors.green;
-      case SeatStatus.selected:
-        return Colors.yellow;
-      case SeatStatus.booked:
-        return Colors.grey;
-      default:
-        return Colors.transparent;
-    }
-  }
-
-  void _toggleSeatSelection(int rowIndex, int seatIndex) {
-    setState(() {
-      if (seats[rowIndex][seatIndex] == SeatStatus.available) {
-        seats[rowIndex][seatIndex] = SeatStatus.selected;
-      } else if (seats[rowIndex][seatIndex] == SeatStatus.selected) {
-        seats[rowIndex][seatIndex] = SeatStatus.available;
-      }
-      // Add logic for handling already booked seats if needed
-    });
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: 30)), // Example: Allow booking for 30 days from now
-    );
-    if (pickedDate != null && pickedDate != _selectedDate) {
-      setState(() {
-        _selectedDate = pickedDate;
-      });
-    }
-  }
-
-  Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: _selectedTime,
-    );
-    if (pickedTime != null && pickedTime != _selectedTime) {
-      setState(() {
-        _selectedTime = pickedTime;
-      });
-    }
   }
 }
 

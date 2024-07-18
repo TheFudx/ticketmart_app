@@ -1,11 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:share/share.dart'; // Import the share package
 import 'package:ticketmart/theatres_list_screen.dart';
 
 class MovieDetailsScreen extends StatelessWidget {
   final String movieTitle;
   final String imageUrl; // Assuming you pass the image URL for the movie
+  final String duration;
+  final String genre;
+  final String description;
+  final String topOffers;
+  final List<String> cast;
 
-  const MovieDetailsScreen({super.key, required this.movieTitle, required this.imageUrl});
+  const MovieDetailsScreen({
+    super.key,
+    required this.movieTitle,
+    required this.imageUrl,
+    required this.duration,
+    required this.genre,
+    required this.description,
+    required this.topOffers,
+    required this.cast,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +28,15 @@ class MovieDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(movieTitle),
         backgroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share),
+            onPressed: () {
+              // Implement share functionality here
+              _shareMovie(context);
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -71,45 +95,30 @@ class MovieDetailsScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20.0),
-              const Text(
-                'Date: July 17, 2024', // Replace with actual date
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-              ),
-              const SizedBox(height: 10.0),
-              const Text(
-                'Time: 19:30', // Replace with actual time
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-              ),
-              const SizedBox(height: 10.0),
-              const Text(
-                'Cinema: ABC Cinema Hall', // Replace with actual cinema name
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-              ),
-              const SizedBox(height: 10.0),
-              const Text(
-                'Seat: A12', // Replace with actual seat number
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-              ),
+              _buildDetailRow('Duration', duration),
+              _buildDetailRow('Genre', genre),
+              _buildDetailRow('Description', description),
+              _buildDetailRow('Top Offers', topOffers),
+              _buildDetailRow('Cast', cast.join(', ')),
               const SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                         TheatersListScreen(imageUrl: imageUrl, movieTitle: movieTitle ),
-                  ),
-                );
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TheatersListScreen(imageUrl: imageUrl, movieTitle: movieTitle),
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
+                  foregroundColor: Colors.white, backgroundColor: Colors.redAccent,
                   padding: const EdgeInsets.symmetric(vertical: 15.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
                 child: const Text(
-                  'Book Tickets',
+                  'Check Theatres',
                   style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
@@ -121,5 +130,34 @@ class MovieDetailsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildDetailRow(String title, String detail) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+          ),
+          Expanded(
+            child: Text(
+              detail,
+              style: const TextStyle(fontSize: 16.0),
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _shareMovie(BuildContext context) {
+    final RenderBox box = context.findRenderObject() as RenderBox;
+    Share.share('Check out $movieTitle! $imageUrl',
+        subject: movieTitle,
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 }

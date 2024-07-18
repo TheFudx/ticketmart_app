@@ -1,15 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:ticketmart/api_connection.dart';
 import 'package:ticketmart/movie_detail_screen.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketmart/movie_screen_grid.dart';
 import 'package:ticketmart/notification.dart';
 import 'package:ticketmart/offers.dart';
 import 'package:ticketmart/profile_page.dart';
 import 'package:ticketmart/search_screen.dart';
-import 'api_connection.dart';
-// import 'bloc/navigation_bloc.dart';
-// import 'bloc/navigation_event.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,27 +17,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String? _selectedCity; // Variable to hold selected city
-  int _selectedIndex = 0; // Track selected index for bottom nav bar
-  List<String> _carouselImages = []; // List to hold image URLs
-  List<String> _newReleases = []; // List to hold new releases
-  List<String> _trendingInTheatre = []; // List to hold trending in theatre
-  List<String> _upcoming = []; // List to hold upcoming movies
-  bool _isLoading = true; // Flag to track loading state
+  String? _selectedCity;
+  int _selectedIndex = 0;
+  List<String> _carouselImages = [];
+  List<String> _newReleases = [];
+  List<String> _trendingInTheatre = [];
+  List<String> _upcoming = [];
+  bool _isLoading = true;
 
   final PageController _pageController = PageController();
 
   @override
   void initState() {
     super.initState();
-    _fetchMovieLists(); // Fetch movie lists when the screen initializes
+    _fetchMovieLists();
   }
 
   Future<void> _fetchMovieLists() async {
     try {
       final images = await ApiConnection.fetchCarouselImages();
-      final newReleases = await ApiConnection
-          .fetchCarouselImages(); // Assuming separate methods for different lists
+      final newReleases = await ApiConnection.fetchCarouselImages();
       final trendingInTheatre = await ApiConnection.fetchCarouselImages();
       final upcoming = await ApiConnection.fetchCarouselImages();
       setState(() {
@@ -56,8 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
       });
       if (kDebugMode) {
         print('Error fetching movie lists: $e');
-      }
-      if (kDebugMode) {
         print(stackTrace);
       }
       // Handle error or display a message to the user
@@ -82,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 40.0), // Add top padding here
+                  padding: const EdgeInsets.only(top: 40.0),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -99,9 +93,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           items: _buildDropdownItems(),
                           onChanged: (value) {
                             setState(() {
-                              _selectedCity = value; // Update selected city
+                              _selectedCity = value;
                             });
-                            // Handle dropdown item selection if needed
                           },
                           hint: const Text('Select City'),
                         ),
@@ -110,10 +103,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           icon: const Icon(Icons.notifications),
                           onPressed: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const NotificationScreen()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const NotificationScreen(),
+                              ),
+                            );
                           },
                         ),
                       ],
@@ -126,8 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           _carouselImages.isNotEmpty
                               ? SizedBox(
-                                  height: screenHeight *
-                                      0.3, // 30% of the screen height
+                                  height: screenHeight * 0.3,
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
                                     itemCount: _carouselImages.length,
@@ -135,12 +128,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                       return Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Container(
-                                          width: MediaQuery.of(context).size.width *
-                                              0.9,
+                                          width: MediaQuery.of(context).size.width * 0.9,
                                           decoration: BoxDecoration(
                                             image: DecorationImage(
-                                              image: NetworkImage(
-                                                  _carouselImages[index]),
+                                              image: NetworkImage(_carouselImages[index]),
                                               fit: BoxFit.cover,
                                             ),
                                             borderRadius: BorderRadius.circular(10),
@@ -152,8 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 )
                               : Container(),
                           _buildMovieSection('New Releases', _newReleases),
-                          _buildMovieSection(
-                              'Trending in Theatre', _trendingInTheatre),
+                          _buildMovieSection('Trending in Theatre', _trendingInTheatre),
                           _buildMovieSection('Upcoming', _upcoming),
                         ],
                       ),
@@ -203,168 +193,101 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<DropdownMenuItem<String>> _buildDropdownItems() {
-    return [
-      const DropdownMenuItem(
-        value: 'Mumbai',
-        child: Text('Mumbai'),
-      ),
-      const DropdownMenuItem(
-        value: 'Delhi - NCR',
-        child: Text('Delhi - NCR'),
-      ),
-      const DropdownMenuItem(
-        value: 'Bengaluru',
-        child: Text('Bengaluru'),
-      ),
-      const DropdownMenuItem(
-        value: 'Hyderabad',
-        child: Text('Hyderabad'),
-      ),
-      const DropdownMenuItem(
-        value: 'Ahmedabad',
-        child: Text('Ahmedabad'),
-      ),
-      const DropdownMenuItem(
-        value: 'Chandigarh',
-        child: Text('Chandigarh'),
-      ),
-      const DropdownMenuItem(
-        value: 'Pune',
-        child: Text('Pune'),
-      ),
-      const DropdownMenuItem(
-        value: 'Chennai',
-        child: Text('Chennai'),
-      ),
-      const DropdownMenuItem(
-        value: 'Kolkata',
-        child: Text('Kolkata'),
-      ),
-      const DropdownMenuItem(
-        value: 'Kochi',
-        child: Text('Kochi'),
-      ),
+    List<String> cities = [
+      'Mumbai', 'Delhi - NCR', 'Bengaluru', 'Hyderabad', 'Ahmedabad',
+      'Chandigarh', 'Pune', 'Chennai', 'Kolkata', 'Kochi'
     ];
+    return cities.map((String city) {
+      return DropdownMenuItem<String>(
+        value: city,
+        child: Text(city),
+      );
+    }).toList();
   }
 
-Widget _buildMovieSection(String title, List<String> movieImages) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(
-            16.0, 16.0, 16.0, 2.0), // Adjusted padding values
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        MovieGridScreen(title: title, images: movieImages),
-                  ),
-                );
-              },
-              child: const Text(
-                'See All',
-                style: TextStyle(
-                  color: Colors.black,
+  Widget _buildMovieSection(String title, List<String> movieImages) {
+    if (movieImages.isEmpty) {
+      return Container();
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 2.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-          ],
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MovieGridScreen(
+                        title: title,
+                        images: movieImages,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text(
+                  'See All >',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      SizedBox(
-        height: 250, // Adjust the height as needed
-        child: ListView.builder(
-          padding: const EdgeInsets.only(
-              left: 8.0), // Adjusted left padding for images
-          scrollDirection: Axis.horizontal,
-          itemCount: movieImages.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.only(
-                  right: 8.0), // Adjusted right padding for images
-              child: GestureDetector(
+        SizedBox(
+          height: 270,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: movieImages.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => MovieDetailsScreen(
-                        movieTitle: 'Movie Title', // Provide actual title if available
-                        imageUrl: movieImages[index], // Pass the URL of the movie image
+                        movieTitle: title,
+                        imageUrl: movieImages[index],
+                        duration: '2h', // Add relevant details here
+                        genre: 'Comedy', // Add relevant details here
+                        description: 'Short film', // Add relevant details here
+                        topOffers: 'Buy 1 get 1 FREE', // Add relevant details here
+                        cast: const [], // Add relevant details here
                       ),
                     ),
                   );
                 },
-                child: Stack(
-                  children: [
-                    Container(
-                      width: 175, // Adjust the width as needed
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(movieImages[index]),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: 180,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(movieImages[index]),
+                        fit: BoxFit.cover,
                       ),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.7),
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(10),
-                            bottomRight: Radius.circular(10),
-                          ),
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                '4.4',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
-      ),
-    ],
-  );
-}
-
-
-
+      ],
+    );
+  }
 }

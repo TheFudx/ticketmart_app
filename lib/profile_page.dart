@@ -52,7 +52,6 @@ class ProfilePage extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  // Country code and flag icon can be added here
                   Expanded(
                     child: TextFormField(
                       decoration: const InputDecoration(
@@ -83,10 +82,117 @@ class ProfilePage extends StatelessWidget {
                 decoration: TextDecoration.none,
               ),
             ),
-            // Add your terms and conditions widget here
+            const SizedBox(height: 24.0),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: ElevatedButton(
+                onPressed: () {
+                  _showOtpDialog(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                child: const Text('Submit', style: TextStyle(color: Colors.white)),
+              ),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  void _showOtpDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Enter OTP'),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('A 6-digit OTP has been sent to your mobile number.'),
+              SizedBox(height: 16.0),
+              OtpInputFields(),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Add your OTP submission logic here
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              child: const Text('Submit', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class OtpInputFields extends StatefulWidget {
+  const OtpInputFields({super.key});
+
+  @override
+  OtpInputFieldsState createState() => OtpInputFieldsState();
+}
+
+class OtpInputFieldsState extends State<OtpInputFields> {
+  late List<TextEditingController> _controllers;
+
+  @override
+  void initState() {
+    super.initState();
+    _controllers = List.generate(6, (_) => TextEditingController());
+  }
+
+  @override
+  void dispose() {
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: List.generate(6, (index) {
+        return SizedBox(
+          width: 40.0,
+          height: 40.0,
+          child: TextField(
+            controller: _controllers[index],
+            keyboardType: TextInputType.number,
+            maxLength: 1,
+            textAlign: TextAlign.center,
+            decoration: InputDecoration(
+              counterText: '',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            onChanged: (value) {
+              if (value.length == 1 && index != 5) {
+                FocusScope.of(context).nextFocus();
+              } else if (value.isEmpty && index != 0) {
+                FocusScope.of(context).previousFocus();
+              }
+            },
+          ),
+        );
+      }),
     );
   }
 }
