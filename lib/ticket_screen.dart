@@ -98,6 +98,7 @@ class _TicketScreenState extends State<TicketScreen> {
                 Image.asset(
                   'assets/images/splash_image.png', // Replace with your movie poster asset
                   height: 80.0,
+                  width: 100,
                 ),
                 const SizedBox(width: 10.0),
                 Expanded(
@@ -107,6 +108,7 @@ class _TicketScreenState extends State<TicketScreen> {
                       color: Colors.black, // Change text color to black
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic
                     ),
                   ),
                 ),
@@ -140,8 +142,9 @@ class _TicketScreenState extends State<TicketScreen> {
             const Divider(color: Colors.grey),
             const SizedBox(height: 10.0),
             Image.asset(
-              'assets/images/splash_image.png', // Replace with your barcode asset
-              height: 50.0,
+              'assets/images/barcode.png', // Replace with your barcode asset
+              height: 200.0,
+              width: 300.0,
             ),
           ],
         ),

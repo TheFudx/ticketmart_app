@@ -6,10 +6,10 @@ class TheatersListScreen extends StatefulWidget {
   final String imageUrl;
 
   const TheatersListScreen({
-    Key? key,
+    super.key,
     required this.movieTitle,
     required this.imageUrl,
-  }) : super(key: key);
+  });
 
   @override
   State<TheatersListScreen> createState() => _TheatersListScreenState();
