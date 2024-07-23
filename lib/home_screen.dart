@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ticketmart/api_connection.dart';
 import 'package:ticketmart/movie_detail_screen.dart';
-import 'package:ticketmart/movie_screen_grid.dart';
 import 'package:ticketmart/notification.dart';
 import 'package:ticketmart/offers.dart';
 import 'package:ticketmart/profile_page.dart';
@@ -19,10 +18,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String? _selectedCity;
   int _selectedIndex = 0;
-  List<String> _carouselImages = [];
-  List<String> _newReleases = [];
-  List<String> _trendingInTheatre = [];
-  List<String> _upcoming = [];
+  List<Map<String, dynamic>> _carouselImages = [];
+  List<Map<String, dynamic>> _newReleases = [];
+  List<Map<String, dynamic>> _trendingInTheatre = [];
+  List<Map<String, dynamic>> _upcoming = [];
   bool _isLoading = true;
 
   final PageController _pageController = PageController();
@@ -35,15 +34,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _fetchMovieLists() async {
     try {
-      final images = await ApiConnection.fetchCarouselImages();
+      final movies = await ApiConnection.fetchCarouselImages();
       final newReleases = await ApiConnection.fetchCarouselImages();
       final trendingInTheatre = await ApiConnection.fetchCarouselImages();
       final upcoming = await ApiConnection.fetchCarouselImages();
+
+      if (kDebugMode) {
+        print('Carousel Images: $movies');
+        print('New Releases: $newReleases');
+        print('Trending in Theatre: $trendingInTheatre');
+        print('Upcoming: $upcoming');
+      }
+
       setState(() {
-        _carouselImages = images;
-        _newReleases = newReleases;
-        _trendingInTheatre = trendingInTheatre;
-        _upcoming = upcoming;
+        _carouselImages = List<Map<String, dynamic>>.from(movies);
+        _newReleases = List<Map<String, dynamic>>.from(movies);
+        _trendingInTheatre = List<Map<String, dynamic>>.from(movies);
+        _upcoming = List<Map<String, dynamic>>.from(movies);
         _isLoading = false;
       });
     } catch (e, stackTrace) {
@@ -54,7 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
         print('Error fetching movie lists: $e');
         print(stackTrace);
       }
-      // Handle error or display a message to the user
     }
   }
 
@@ -71,85 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         children: <Widget>[
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 40.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.location_on),
-                          onPressed: () {
-                            // Handle location button press
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                        DropdownButton<String>(
-                          value: _selectedCity,
-                          items: _buildDropdownItems(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedCity = value;
-                            });
-                          },
-                          hint: const Text('Select City'),
-                        ),
-                        const Spacer(),
-                        IconButton(
-                          icon: const Icon(Icons.notifications),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const NotificationScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                _isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : Column(
-                        children: [
-                          _carouselImages.isNotEmpty
-                              ? SizedBox(
-                                  height: screenHeight * 0.3,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: _carouselImages.length,
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width * 0.9,
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: NetworkImage(_carouselImages[index]),
-                                              fit: BoxFit.cover,
-                                            ),
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                )
-                              : Container(),
-                          _buildMovieSection('New Releases', _newReleases),
-                          _buildMovieSection('Trending in Theatre', _trendingInTheatre),
-                          _buildMovieSection('Upcoming', _upcoming),
-                        ],
-                      ),
-              ],
-            ),
-          ),
+          _buildHomePage(screenHeight),
           const SearchScreen(),
           const OffersScreen(),
           const ProfilePage(),
@@ -185,6 +113,114 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildHomePage(double screenHeight) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 40.0),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.location_on),
+                    onPressed: () {},
+                  ),
+                  const SizedBox(width: 8),
+                  DropdownButton<String>(
+                    value: _selectedCity,
+                    items: _buildDropdownItems(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedCity = value;
+                      });
+                    },
+                    hint: const Text('Select City'),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.notifications),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                  children: [
+                    _carouselImages.isNotEmpty
+                        ? SizedBox(
+                            height: screenHeight * 0.3,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: _carouselImages.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        width: MediaQuery.of(context).size.width * 0.9,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: NetworkImage(_carouselImages[index]["image_path"]),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 10,
+                                        right: 10,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            color: Colors.black54,
+                                            borderRadius: BorderRadius.circular(5),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                _carouselImages[index]["rating"].toString(),
+                                                style: const TextStyle(color: Colors.white),
+                                              ),
+                                              const Icon(
+                                                Icons.star,
+                                                color: Colors.yellow,
+                                                size: 16,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                        : Container(),
+                    _buildMovieSection('New Releases', _newReleases),
+                    _buildMovieSection('Trending in Theatre', _trendingInTheatre),
+                    _buildMovieSection('Upcoming', _upcoming),
+                  ],
+                ),
+        ],
+      ),
+    );
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -197,90 +233,88 @@ class _HomeScreenState extends State<HomeScreen> {
       'Mumbai', 'Delhi - NCR', 'Bengaluru', 'Hyderabad', 'Ahmedabad',
       'Chandigarh', 'Pune', 'Chennai', 'Kolkata', 'Kochi'
     ];
-    return cities.map((String city) {
+    return cities.map((String value) {
       return DropdownMenuItem<String>(
-        value: city,
-        child: Text(city),
+        value: value,
+        child: Text(value),
       );
     }).toList();
   }
 
-  Widget _buildMovieSection(String title, List<String> movieImages) {
-    if (movieImages.isEmpty) {
-      return Container();
-    }
-    return Column(
+Widget _buildMovieSection(String title, List<Map<String, dynamic>> movies) {
+  if (movies.isEmpty) {
+    return const SizedBox.shrink();
+  }
+
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 2.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MovieGridScreen(
-                        title: title,
-                        images: movieImages,
-                      ),
-                    ),
-                  );
-                },
-                child: const Text(
-                  'See All >',
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
+        Text(
+          title,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         SizedBox(
-          height: 270,
+          height: 340,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: movieImages.length,
+            itemCount: movies.length,
             itemBuilder: (context, index) {
+              final imagePath = movies[index]['image_path'] ?? '';
+              final movieTitle = movies[index]['title'] ?? 'No Title';
+              final duration = movies[index]['duration'] ?? '';
+              final description = movies[index]['description'] ?? '';
+              // final cast = (movies[index]['cast'] ?? '').split(',').join(', '); // Split and join cast
+
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => MovieDetailsScreen(
-                        movieTitle: title,
-                        imageUrl: movieImages[index],
-                        duration: '2h', // Add relevant details here
-                        genre: 'Comedy', // Add relevant details here
-                        description: 'Short film', // Add relevant details here
-                        topOffers: 'Buy 1 get 1 FREE', // Add relevant details here
-                        cast: const [], // Add relevant details here
+                        genre: 'movies[index]',
+                        movieTitle: movieTitle,
+                        imageUrl: imagePath,
+                        duration: duration,
+                        description: description,
+                        topOffers: 'Buy 1 Get 1 Free',
+                        cast: const [''],
                       ),
                     ),
                   );
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: 180,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(movieImages[index]),
-                        fit: BoxFit.cover,
+                  child: Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Image.network(
+                          imagePath,
+                          height: 300,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              height: 150,
+                              width: 200,
+                              color: Colors.grey,
+                              child: const Icon(Icons.error),
+                            );
+                          },
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                      const SizedBox(height: 5),
+                      SizedBox(
+                        width: 100,
+                        child: Text(
+                          movieTitle,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               );
@@ -288,6 +322,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ],
-    );
-  }
+    ),
+  );
+}
+
+
+
 }
