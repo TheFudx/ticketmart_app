@@ -1,14 +1,22 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ticketmart/ticket_screen.dart';
+import 'package:ticketmart/api_connection.dart'; // Import the API connection file
 
 class TheaterBookingScreen extends StatefulWidget {
+  final String theatreId;
   final String theaterName;
+  final String movieId;
   final String movieTitle;
+  final int ticketCount;
 
   const TheaterBookingScreen({
     super.key,
+    required this.theatreId,
     required this.theaterName,
-    required this.movieTitle, required int ticketCount,
+    required this.movieId,
+    required this.movieTitle,
+    required this.ticketCount,
   });
 
   @override
@@ -20,319 +28,339 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
   TimeOfDay _selectedTime = TimeOfDay.now();
   List<int> selectedSeats = [];
   int totalSeatPrice = 0;
+  Map<int, int> seatData = {};
 
-
-  // Define seat prices for different rows
   final Map<int, int> rowPrices = {
-    0: 50, // Rows A to B
-    1: 50, // Rows A to B
-    2: 150, // Rows C to F
-    3: 150, // Rows C to F
-    4: 150, // Rows C to F
-    5: 150, // Rows C to F
+    0: 50,
+    1: 50,
+    2: 150,
+    3: 150,
+    4: 150,
+    5: 150,
+    6: 100,
+    7: 100,
+    8: 100,
+    9: 100,
   };
 
-  List<List<SeatStatus>> seats = List.generate(
-    6,
-    (row) => List.generate(
-      10,
-      (column) => SeatStatus.available,
+  @override
+  void initState() {
+    super.initState();
+    _fetchSeatData();
+  }
+
+  Future<void> _fetchSeatData() async {
+    try {
+      final screens = await ApiConnection.fetchScreens('');
+      setState(() {
+        seatData = screens.fold({}, (acc, screen) {
+          acc[screen['screen_id']] = screen['seat_count'];
+          return acc;
+        });
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        print('Failed to fetch seat data: $e');
+      }
+    }
+  }
+
+  int calculateTotalSeatPrice() {
+    return selectedSeats.fold(0, (totalPrice, seat) {
+      int row = seat ~/ 10;
+      return totalPrice + (rowPrices[row] ?? 0);
+    });
+  }
+
+  void _navigateToTicketScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TicketScreen(
+          theaterName: widget.theaterName,
+          movieTitle: widget.movieTitle,
+          selectedDate: _selectedDate,
+          selectedTime: _selectedTime,
+          seats: selectedSeats,
+          totalSeatPrice: calculateTotalSeatPrice(),
+        ),
+      ),
+    );
+  }
+
+  void _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
+
+  void _selectTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime,
+    );
+    if (picked != null && picked != _selectedTime) {
+      setState(() {
+        _selectedTime = picked;
+      });
+    }
+  }
+
+  Widget _buildDateTimeSelector(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: () => _selectDate(context),
+            child: Container(
+              padding: const EdgeInsets.all(15.0),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Column(
+                children: [
+                  const Icon(Icons.calendar_today),
+                  const SizedBox(height: 5.0),
+                  Text(
+                    'Date: ${_selectedDate.toLocal()}'.split(' ')[0],
+                    style: const TextStyle(fontSize: 16.0),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 20.0),
+        Expanded(
+          child: GestureDetector(
+            onTap: () => _selectTime(context),
+            child: Container(
+              padding: const EdgeInsets.all(15.0),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Column(
+                children: [
+                  const Icon(Icons.access_time),
+                  const SizedBox(height: 5.0),
+                  Text(
+                    'Time: ${_selectedTime.format(context)}',
+                    style: const TextStyle(fontSize: 16.0),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSeatLayout() {
+  return SingleChildScrollView(
+    scrollDirection: Axis.vertical,
+    child: Column(
+      children: [
+        // Curved theater screen
+        SizedBox(
+          height: 80.0,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Normal curve line
+              Container(
+                height: 40.0,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.grey[300]!, Colors.grey],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(50.0),
+                    bottomRight: Radius.circular(50.0),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              // Text below the curve
+              const Text(
+                'Screen this side',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Seat layout
+        Container(
+          padding: const EdgeInsets.only(bottom: 10.0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Column(
+              children: List.generate(10, (rowIndex) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(10, (seatIndex) {
+                    int seatNumber = rowIndex * 10 + seatIndex;
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (selectedSeats.contains(seatNumber)) {
+                            selectedSeats.remove(seatNumber);
+                          } else if (selectedSeats.length < widget.ticketCount) {
+                            selectedSeats.add(seatNumber);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'You can select up to ${widget.ticketCount} seats only.'),
+                              ),
+                            );
+                          }
+                          totalSeatPrice = calculateTotalSeatPrice();
+                        });
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.all(3.0), // Reduced margin
+                        padding: const EdgeInsets.all(8.0), // Reduced padding
+                        decoration: BoxDecoration(
+                          color: selectedSeats.contains(seatNumber)
+                              ? Colors.redAccent
+                              : Colors.grey[300],
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        child: Text(
+                          '${String.fromCharCode(65 + rowIndex)}${seatIndex + 1}',
+                          style: TextStyle(
+                            color: selectedSeats.contains(seatNumber)
+                                ? Colors.white
+                                : Colors.black,
+                            fontSize: 10.0, // Reduced font size
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                );
+              }),
+            ),
+          ),
+        ),
+      ],
     ),
   );
+}
+
+  Widget _buildSelectedSeatsDisplay() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Selected Seats: ${selectedSeats.map((seat) => '${String.fromCharCode(65 + seat ~/ 10)}${seat % 10 + 1}').join(', ')}',
+          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10.0),
+        Text(
+          'Total Price: ₹$totalSeatPrice',
+          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+        title: Row(
+          children: [
+            Text(widget.theatreId),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                widget.theaterName,
+                style: const TextStyle(fontSize: 16),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Tickets: ${widget.ticketCount}',
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              widget.movieId,
+              style: const TextStyle(fontSize: 16),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
         ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              _buildDateSelector(),
+            children: [
+              const Text(
+                                'Select Date and Time',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 20.0),
-              _buildTimeSelector(),
+              _buildDateTimeSelector(context),
               const SizedBox(height: 20.0),
-              _buildSeatMap(),
+              const Text(
+                'Select Seats',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 20.0),
-              _buildPriceInfo(),
+              _buildSeatLayout(),
               const SizedBox(height: 20.0),
-              _buildConfirmButton(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDateSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Select Date',
-          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List.generate(7, (index) {
-            final date = DateTime.now().add(Duration(days: index));
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  _selectedDate = date;
-                });
-              },
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: _selectedDate.day == date.day ? Colors.redAccent : Colors.grey,
-                  borderRadius: BorderRadius.circular(8.0),
+              _buildSelectedSeatsDisplay(),
+              const SizedBox(height: 20.0),
+              ElevatedButton(
+                onPressed: () => _navigateToTicketScreen(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 15.0,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                 ),
-                child: Column(
-                  children: [
-                    Text(
-                      ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.weekday - 1],
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    const SizedBox(height: 4.0),
-                    Text(
-                      date.day.toString(),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ],
+                child: const Text(
+                  'Proceed to Payment',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            );
-          }),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTimeSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Select Time',
-          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 10),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              _buildTimeButton('10:30 am'),
-              _buildTimeButton('12:00 pm'),
-              _buildTimeButton('01:20 pm'),
-              _buildTimeButton('02:45 pm'),
-              _buildTimeButton('03:15 pm'),
-              _buildTimeButton('05:10 pm'),
-              // Add more time buttons if needed
             ],
           ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildTimeButton(String time) {
-  return GestureDetector(
-    onTap: () {
-      setState(() {
-        _selectedTime = TimeOfDay.fromDateTime(DateTime(
-          _selectedDate.year,
-          _selectedDate.month,
-          _selectedDate.day,
-          int.parse(time.split(':')[0]),
-          int.parse(time.split(':')[1].split(' ')[0]),
-        ));
-      });
-    },
-    child: Container(
-      padding: const EdgeInsets.all(8.0),
-      margin: const EdgeInsets.symmetric(horizontal: 4.0),
-      decoration: BoxDecoration(
-        color: _selectedTime.hour == int.parse(time.split(':')[0]) &&
-                _selectedTime.minute == int.parse(time.split(':')[1].split(' ')[0])
-            ? Colors.redAccent
-            : Colors.grey,
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Text(
-        time,
-        style: const TextStyle(color: Colors.white),
-      ),
-    ),
-  );
-}
-
- Widget _buildSeatMap() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'Select Seats',
-        style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
-      ),
-      const SizedBox(height: 10),
-      Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 20.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-          border: Border.all(color: Colors.redAccent),
-        ),
-        child: Column(
-          children: List.generate(6, (rowIndex) {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(10, (columnIndex) {
-                      final seatIndex = rowIndex * 10 + columnIndex;
-                      final seatStatus = seats[rowIndex][columnIndex];
-                      final seatPrice = rowPrices[rowIndex] ?? 0;
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            if (seatStatus == SeatStatus.available) {
-                              seats[rowIndex][columnIndex] = SeatStatus.selected;
-                              selectedSeats.add(seatIndex);
-                              totalSeatPrice += seatPrice;
-                            } else if (seatStatus == SeatStatus.selected) {
-                              seats[rowIndex][columnIndex] = SeatStatus.available;
-                              selectedSeats.remove(seatIndex);
-                              totalSeatPrice -= seatPrice;
-                            }
-                          });
-                        },
-                        child: Container(
-                          width: 24.0,
-                          height: 24.0,
-                          margin: const EdgeInsets.all(4.0),
-                          decoration: BoxDecoration(
-                            color: seatStatus == SeatStatus.available
-                                ? Colors.grey
-                                : seatStatus == SeatStatus.selected
-                                    ? Colors.redAccent
-                                    : Colors.black,
-                            borderRadius: BorderRadius.circular(4.0),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '${String.fromCharCode(65 + rowIndex)}${columnIndex + 1}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12.0,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
-                ),
-                // Display price info in the same row
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Text(
-                    'Row ${String.fromCharCode(65 + rowIndex)}: \$seatPrice',
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }),
-        ),
-      ),
-    ],
-  );
-}
-
-  Widget _buildPriceInfo() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Price Info',
-          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 10),
-        ...rowPrices.entries.map((entry) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Text(
-              '\$${entry.value} (${String.fromCharCode(65 + entry.key)}-${String.fromCharCode(65 + entry.key + 1)})',
-              style: const TextStyle(color: Colors.black, fontSize: 16),
-            ),
-          );
-        }),
-        const SizedBox(height: 10),
-        Text(
-          'Total: \$${totalSeatPrice.toString()}',
-          style: const TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildConfirmButton() {
-    return ElevatedButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TicketScreen(
-              theaterName: widget.theaterName,
-              movieTitle: widget.movieTitle,
-              selectedDate: _selectedDate,
-              selectedTime: _selectedTime,
-              seats: selectedSeats,
-              totalSeatPrice: totalSeatPrice,
-            ),
-          ),
-        );
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.redAccent,
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-      ),
-      child: Text(
-        'Confirm (${selectedSeats.length} seat${selectedSeats.length == 1 ? '' : 's'})',
-        style: const TextStyle(
-          fontSize: 18.0,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
       ),
     );
   }
-}
-
-enum SeatStatus {
-  available,
-  selected,
-  booked,
 }

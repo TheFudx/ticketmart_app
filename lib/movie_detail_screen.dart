@@ -3,6 +3,7 @@ import 'package:share/share.dart'; // Import the share package
 import 'package:ticketmart/theatres_list_screen.dart';
 
 class MovieDetailsScreen extends StatelessWidget {
+  final String movieId;
   final String movieTitle;
   final String imageUrl; // Assuming you pass the image URL for the movie
   final String duration;
@@ -13,6 +14,7 @@ class MovieDetailsScreen extends StatelessWidget {
 
   const MovieDetailsScreen({
     super.key,
+    required this.movieId,
     required this.movieTitle,
     required this.imageUrl,
     required this.duration,
@@ -95,6 +97,7 @@ class MovieDetailsScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20.0),
+              _buildDetailRow('id', movieId),
               _buildDetailRow('Duration', duration),
               _buildDetailRow('Genre', genre),
               _buildDetailRow('Description', description),
@@ -106,7 +109,7 @@ class MovieDetailsScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => TheatersListScreen(imageUrl: imageUrl, movieTitle: movieTitle),
+                      builder: (context) => TheatersListScreen(imageUrl: imageUrl, movieTitle: movieTitle, movieId: movieId),
                     ),
                   );
                 },

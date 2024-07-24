@@ -261,6 +261,7 @@ Widget _buildMovieSection(String title, List<Map<String, dynamic>> movies) {
             scrollDirection: Axis.horizontal,
             itemCount: movies.length,
             itemBuilder: (context, index) {
+              final id = movies[index]['id'] ?? '';
               final imagePath = movies[index]['image_path'] ?? '';
               final movieTitle = movies[index]['title'] ?? 'No Title';
               final duration = movies[index]['duration'] ?? '';
@@ -274,6 +275,7 @@ Widget _buildMovieSection(String title, List<Map<String, dynamic>> movies) {
                     MaterialPageRoute(
                       builder: (context) => MovieDetailsScreen(
                         genre: 'movies[index]',
+                        movieId: id,
                         movieTitle: movieTitle,
                         imageUrl: imagePath,
                         duration: duration,

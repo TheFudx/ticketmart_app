@@ -8,6 +8,8 @@ class ApiConnection {
   static String get movies => "$baseUrl$userEndpoint/movies.php";
   static String get theatres => "$baseUrl$userEndpoint/theatres.php";
   static String get dataUrl => "$baseUrl$userEndpoint/profile_modal.php";
+  static String get seatCount =>"$baseUrl$userEndpoint/seat_count.php";
+  static String get screeens => "$baseUrl$userEndpoint/screen.php";
 
 
   static Future<List<Map<String, dynamic>>> fetchCarouselImages() async {
@@ -71,6 +73,30 @@ class ApiConnection {
       throw Exception('Failed to load theatres');
     }
   }
+
+  static Future<List<Map<String, dynamic>>> fetchSeatCount() async {
+    final response = await http.get(Uri.parse(seatCount));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return List<Map<String, dynamic>>.from(data['seatCount']);
+    } else {
+      throw Exception('Failed to load seat count');
+    }
+  }
+
+   static Future<List<Map<String, dynamic>>> fetchScreens(String movieId) async {
+    final response = await http.get(Uri.parse(screeens));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return List<Map<String, dynamic>>.from(data['seatCount']);
+    } else {
+      throw Exception('Failed to load seat count');
+    }
+  }
+
+
 
 
   // Add other API functions here as needed
