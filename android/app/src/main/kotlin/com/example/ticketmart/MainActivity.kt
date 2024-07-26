@@ -1,4 +1,4 @@
-package com.example.ticketmart
+package com.alphastudioz.ticketmart
 
 import io.flutter.embedding.android.FlutterActivity
 
