@@ -337,12 +337,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           movieId: movies[index]['id'],
                           movieTitle: movies[index]['title'],
                           movieReleaseDate: movies[index]['release_date'],
+                          rating: movies[index]['rating'],
                           imageUrl: movies[index]['image_path'], 
                           duration: movies[index]['duration'], 
                           genre: movies[index]['genre'], 
                           description: movies[index]['description'], 
                           topOffers: 'BUY 1 GET 1 FREE', 
-                          cast: const [],),
+        cast: movies[index]['cast'].split(','), // Split the cast string into a list
+                        ),
                         ),
                       );
                     },

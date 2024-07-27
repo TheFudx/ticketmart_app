@@ -2,15 +2,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ApiConnection {
-  static const String baseUrl ="https://ticketmart.co/public/flutter-app"; // Replace with your server address
+  static const String baseUrl = "https://ticketmart.co/public/flutter-app"; // Replace with your server address
   static const String userEndpoint = "/user";
 
   static String get movies => "$baseUrl$userEndpoint/movies.php";
   static String get theatres => "$baseUrl$userEndpoint/theatres.php";
   static String get dataUrl => "$baseUrl$userEndpoint/profile_modal.php";
-  static String get seatCount =>"$baseUrl$userEndpoint/seat_count.php";
-  static String get screeens => "$baseUrl$userEndpoint/screen.php";
-
+  static String get seatCount => "$baseUrl$userEndpoint/seat_count.php";
+  static String get screens => "$baseUrl$userEndpoint/screen.php";
 
   static Future<List<Map<String, dynamic>>> fetchCarouselImages() async {
     final response = await http.get(Uri.parse(movies));
@@ -63,41 +62,35 @@ class ApiConnection {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> fetchTheatres() async {
-    final response = await http.get(Uri.parse(theatres));
+  static Future<List<Map<String, dynamic>>> fetchScreens(String movieId) async {
+    final response = await http.get(Uri.parse('$theatres?movie_id=$movieId'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
+      if (data['status'] == 'error') {
+        throw Exception(data['message']);
+      }
       return List<Map<String, dynamic>>.from(data['theatres']);
     } else {
       throw Exception('Failed to load theatres');
     }
   }
 
-  static Future<List<Map<String, dynamic>>> fetchSeatCount() async {
+  // Example method for fetching seat counts (you may need to implement this)
+  static Future<List<Map<String, dynamic>>> fetchSeatCount(String cinemaId) async {
     final response = await http.get(Uri.parse(seatCount));
-
-    if (response.statusCode == 200) {
+ if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return List<Map<String, dynamic>>.from(data['seatCount']);
+      // Check if 'seat_counts' exists and is a list
+      if (data != null && data['seat_counts'] != null) {
+        return List<Map<String, dynamic>>.from(data['seat_counts']);
+      } else {
+        return []; // Return an empty list if 'seat_counts' is null
+      }
     } else {
-      throw Exception('Failed to load seat count');
+      throw Exception('Failed to load seat counts');
     }
   }
-
-   static Future<List<Map<String, dynamic>>> fetchScreens(String movieId) async {
-    final response = await http.get(Uri.parse(screeens));
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return List<Map<String, dynamic>>.from(data['seatCount']);
-    } else {
-      throw Exception('Failed to load seat count');
-    }
-  }
-
-
-
 
   // Add other API functions here as needed
 }

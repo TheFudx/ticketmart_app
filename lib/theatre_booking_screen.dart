@@ -16,7 +16,7 @@ class TheaterBookingScreen extends StatefulWidget {
     required this.theaterName,
     required this.movieId,
     required this.movieTitle,
-    required this.ticketCount,
+    required this.ticketCount, required showtime,
   });
 
   @override
