@@ -1,6 +1,6 @@
-// movie_details_bloc.dart
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:ticketmart/api_connection.dart'; // Ensure this path is correct
 
 // Events
 abstract class MovieDetailsEvent extends Equatable {
@@ -11,12 +11,13 @@ abstract class MovieDetailsEvent extends Equatable {
 }
 
 class LoadTheatreCards extends MovieDetailsEvent {
-  final String selectedDate;
+  final String date;
+  final String movieId;
 
-  const LoadTheatreCards(this.selectedDate);
+  const LoadTheatreCards(this.date, this.movieId);
 
   @override
-  List<Object> get props => [selectedDate];
+  List<Object> get props => [date, movieId];
 }
 
 // States
@@ -30,7 +31,7 @@ abstract class MovieDetailsState extends Equatable {
 class MovieDetailsInitial extends MovieDetailsState {}
 
 class TheatreCardsLoaded extends MovieDetailsState {
-  final List<String> theatreCards;
+  final List<Map<String, dynamic>> theatreCards;
 
   const TheatreCardsLoaded(this.theatreCards);
 
@@ -49,24 +50,19 @@ class TheatreCardsError extends MovieDetailsState {
 
 // BLoC
 class MovieDetailsBloc extends Bloc<MovieDetailsEvent, MovieDetailsState> {
-  MovieDetailsBloc() : super(MovieDetailsInitial());
-
-  Stream<MovieDetailsState> mapEventToState(MovieDetailsEvent event) async* {
-    if (event is LoadTheatreCards) {
-      try {
-        // Fetch data based on the selected date
-        final theatreCards = await _fetchTheatreCards(event.selectedDate);
-        yield TheatreCardsLoaded(theatreCards);
-      } catch (e) {
-        yield const TheatreCardsError('Failed to load theatre cards');
-      }
-    }
+  MovieDetailsBloc() : super(MovieDetailsInitial()) {
+    on<LoadTheatreCards>(_onLoadTheatreCards);
   }
 
-  Future<List<String>> _fetchTheatreCards(String date) async {
-    // Simulate fetching data
-    await Future.delayed(const Duration(seconds: 1)); // Simulate network delay
-    // This is where you would normally fetch data from an API
-    return ['Card for $date'];
+  Future<void> _onLoadTheatreCards(
+    LoadTheatreCards event,
+    Emitter<MovieDetailsState> emit,
+  ) async {
+    try {
+      final theatreCards = await ApiConnection.fetchScreens(event.movieId);
+      emit(TheatreCardsLoaded(theatreCards));
+    } catch (e) {
+      emit(TheatreCardsError(e.toString()));
+    }
   }
 }

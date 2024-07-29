@@ -38,7 +38,7 @@ class MovieDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Row(
@@ -251,8 +251,13 @@ class MovieDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildCheckTheatresButton(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20.0),
+  double screenWidth = MediaQuery.of(context).size.width;
+  double buttonWidth = screenWidth - 40; // 20 padding on each side
+
+  return Container(
+    padding: const EdgeInsets.symmetric(vertical: 20.0),
+    child: SizedBox(
+      width: buttonWidth,
       child: ElevatedButton(
         onPressed: () {
           Navigator.push(
@@ -261,7 +266,6 @@ class MovieDetailsScreen extends StatelessWidget {
               builder: (context) => TheatersListScreen(
                 movieTitle: movieTitle,
                 movieId: movieId,
-                
               ),
             ),
           );
@@ -269,21 +273,22 @@ class MovieDetailsScreen extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
           backgroundColor: Colors.redAccent,
-          padding: const EdgeInsets.symmetric(horizontal: 120.0, vertical: 15),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(8.0),
           ),
         ),
         child: const Text(
           'Check Theatres',
           style: TextStyle(
-            fontSize: 18.0,
+            fontSize: 14.0,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   void _shareMovie(BuildContext context) {
     final RenderBox box = context.findRenderObject() as RenderBox;

@@ -92,5 +92,16 @@ class ApiConnection {
     }
   }
 
+  // static Future<List<Map<String, dynamic>>> fetchScreens(String movieId, String date) async {
+  //   final response = await http.get(Uri.parse('https://api.example.com/screens?movieId=$movieId&date=$date'));
+
+  //   if (response.statusCode == 200) {
+  //     final List<dynamic> data = json.decode(response.body);
+  //     return data.cast<Map<String, dynamic>>();
+  //   } else {
+  //     throw Exception('Failed to load screens');
+  //   }
+  // }
+
   // Add other API functions here as needed
 }

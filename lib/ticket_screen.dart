@@ -3,16 +3,12 @@ import 'package:flutter/material.dart';
 class TicketScreen extends StatefulWidget {
   final String theaterName;
   final String movieTitle;
-  final DateTime selectedDate;
-  final TimeOfDay selectedTime;
   final List<int> seats;
 
   const TicketScreen({
     super.key,
     required this.theaterName,
     required this.movieTitle,
-    required this.selectedDate,
-    required this.selectedTime,
     required this.seats, required int totalSeatPrice,
   });
 
@@ -115,11 +111,9 @@ class _TicketScreenState extends State<TicketScreen> {
               ],
             ),
             const SizedBox(height: 10.0),
-            Row(
+             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildTicketDetailColumn('Date', '${widget.selectedDate.day} ${_getMonthName(widget.selectedDate.month)} ${widget.selectedDate.year}'),
-                _buildTicketDetailColumn('Time', widget.selectedTime.format(context)),
               ],
             ),
             const SizedBox(height: 10.0),

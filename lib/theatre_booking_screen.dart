@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ticketmart/ticket_screen.dart';
 import 'package:ticketmart/api_connection.dart'; // Import the API connection file
+import 'dart:ui'; // Import to use CustomPainter
 
 class TheaterBookingScreen extends StatefulWidget {
   final String theatreId;
@@ -9,6 +10,7 @@ class TheaterBookingScreen extends StatefulWidget {
   final String movieId;
   final String movieTitle;
   final int ticketCount;
+  final Map<String, dynamic> showtime;
 
   const TheaterBookingScreen({
     super.key,
@@ -16,7 +18,8 @@ class TheaterBookingScreen extends StatefulWidget {
     required this.theaterName,
     required this.movieId,
     required this.movieTitle,
-    required this.ticketCount, required showtime,
+    required this.ticketCount,
+    required this.showtime,
   });
 
   @override
@@ -24,8 +27,6 @@ class TheaterBookingScreen extends StatefulWidget {
 }
 
 class TheaterBookingScreenState extends State<TheaterBookingScreen> {
-  DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = TimeOfDay.now();
   List<int> selectedSeats = [];
   int totalSeatPrice = 0;
   Map<int, int> seatData = {};
@@ -53,10 +54,9 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
     try {
       final screens = await ApiConnection.fetchScreens('');
       setState(() {
-        seatData = screens.fold({}, (acc, screen) {
-          acc[screen['screen_id']] = screen['seat_count'];
-          return acc;
-        });
+        seatData = {
+          for (var screen in screens) screen['screen_id']: screen['seat_count']
+        };
       });
     } catch (e) {
       if (kDebugMode) {
@@ -65,206 +65,111 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
     }
   }
 
-  int calculateTotalSeatPrice() {
+  int _calculateTotalSeatPrice() {
     return selectedSeats.fold(0, (totalPrice, seat) {
       int row = seat ~/ 10;
       return totalPrice + (rowPrices[row] ?? 0);
     });
   }
 
-  void _navigateToTicketScreen(BuildContext context) {
+  void _navigateToTicketScreen() {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => TicketScreen(
           theaterName: widget.theaterName,
           movieTitle: widget.movieTitle,
-          selectedDate: _selectedDate,
-          selectedTime: _selectedTime,
           seats: selectedSeats,
-          totalSeatPrice: calculateTotalSeatPrice(),
+          totalSeatPrice: _calculateTotalSeatPrice(),
         ),
       ),
     );
   }
 
-  void _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
-  }
-
-  void _selectTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: _selectedTime,
-    );
-    if (picked != null && picked != _selectedTime) {
-      setState(() {
-        _selectedTime = picked;
-      });
-    }
-  }
-
-  Widget _buildDateTimeSelector(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: GestureDetector(
-            onTap: () => _selectDate(context),
-            child: Container(
-              padding: const EdgeInsets.all(15.0),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Column(
-                children: [
-                  const Icon(Icons.calendar_today),
-                  const SizedBox(height: 5.0),
-                  Text(
-                    'Date: ${_selectedDate.toLocal()}'.split(' ')[0],
-                    style: const TextStyle(fontSize: 16.0),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 20.0),
-        Expanded(
-          child: GestureDetector(
-            onTap: () => _selectTime(context),
-            child: Container(
-              padding: const EdgeInsets.all(15.0),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Column(
-                children: [
-                  const Icon(Icons.access_time),
-                  const SizedBox(height: 5.0),
-                  Text(
-                    'Time: ${_selectedTime.format(context)}',
-                    style: const TextStyle(fontSize: 16.0),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildSeatLayout() {
-  return SingleChildScrollView(
-    scrollDirection: Axis.vertical,
-    child: Column(
-      children: [
-        // Curved theater screen
-        SizedBox(
-          height: 80.0,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Normal curve line
-              Container(
-                height: 40.0,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.grey[300]!, Colors.grey],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(50.0),
-                    bottomRight: Radius.circular(50.0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8.0),
-              // Text below the curve
-              const Text(
-                'Screen this side',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-        // Seat layout
-        Container(
-          padding: const EdgeInsets.only(bottom: 10.0),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Column(
-              children: List.generate(10, (rowIndex) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(10, (seatIndex) {
-                    int seatNumber = rowIndex * 10 + seatIndex;
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          if (selectedSeats.contains(seatNumber)) {
-                            selectedSeats.remove(seatNumber);
-                          } else if (selectedSeats.length < widget.ticketCount) {
-                            selectedSeats.add(seatNumber);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                    'You can select up to ${widget.ticketCount} seats only.'),
-                              ),
-                            );
-                          }
-                          totalSeatPrice = calculateTotalSeatPrice();
-                        });
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.all(3.0), // Reduced margin
-                        padding: const EdgeInsets.all(8.0), // Reduced padding
-                        decoration: BoxDecoration(
-                          color: selectedSeats.contains(seatNumber)
-                              ? Colors.redAccent
-                              : Colors.grey[300],
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        child: Text(
-                          '${String.fromCharCode(65 + rowIndex)}${seatIndex + 1}',
-                          style: TextStyle(
-                            color: selectedSeats.contains(seatNumber)
-                                ? Colors.white
-                                : Colors.black,
-                            fontSize: 10.0, // Reduced font size
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
-                );
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Column(
+        children: [
+          _buildPolygonScreen(),
+          const SizedBox(height: 20.0), // Spacing between the screen and seats
+          _buildSeatGrid(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPolygonScreen() {
+    return SizedBox(
+      height: 100.0, // Adjust height as needed for the screen
+      width: double.infinity,
+      child: CustomPaint(
+        size: const Size(double.infinity, 160.0),
+        painter: _PolygonPainter(),
+      ),
+    );
+  }
+
+  Widget _buildSeatGrid() {
+    return Container(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Column(
+          children: List.generate(10, (rowIndex) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(10, (seatIndex) {
+                int seatNumber = rowIndex * 10 + seatIndex;
+                return _buildSeat(seatNumber, rowIndex, seatIndex);
               }),
-            ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSeat(int seatNumber, int rowIndex, int seatIndex) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (selectedSeats.contains(seatNumber)) {
+            selectedSeats.remove(seatNumber);
+          } else if (selectedSeats.length < widget.ticketCount) {
+            selectedSeats.add(seatNumber);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    'You can select up to ${widget.ticketCount} seats only.'),
+              ),
+            );
+          }
+          totalSeatPrice = _calculateTotalSeatPrice();
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.all(3.0),
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: selectedSeats.contains(seatNumber)
+              ? Colors.redAccent
+              : Colors.grey[300],
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        child: Text(
+          '${String.fromCharCode(65 + rowIndex)}${seatIndex + 1}',
+          style: TextStyle(
+            color: selectedSeats.contains(seatNumber)
+                ? Colors.white
+                : Colors.black,
+            fontSize: 10.0,
           ),
         ),
-      ],
-    ),
-  );
-}
+      ),
+    );
+  }
 
   Widget _buildSelectedSeatsDisplay() {
     return Column(
@@ -320,24 +225,12 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
-                                'Select Date and Time',
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20.0),
-              _buildDateTimeSelector(context),
-              const SizedBox(height: 20.0),
-              const Text(
-                'Select Seats',
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20.0),
               _buildSeatLayout(),
               const SizedBox(height: 20.0),
               _buildSelectedSeatsDisplay(),
               const SizedBox(height: 20.0),
               ElevatedButton(
-                onPressed: () => _navigateToTicketScreen(context),
+                onPressed: _navigateToTicketScreen,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.redAccent,
                   padding: const EdgeInsets.symmetric(
@@ -363,4 +256,25 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
       ),
     );
   }
+}
+
+class _PolygonPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..color = Colors.blueAccent
+      ..style = PaintingStyle.fill;
+
+    final Path path = Path()
+      ..moveTo(size.width * 0.1, 0) // Top-left corner (shorter edge)
+      ..lineTo(size.width * 0.9, 0) // Top-right corner (shorter edge)
+      ..lineTo(size.width * 0.8, size.height) // Bottom-right corner (longer edge)
+      ..lineTo(size.width * 0.2, size.height) // Bottom-left corner (longer edge)
+      ..close(); // Close the path
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
