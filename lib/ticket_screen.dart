@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:barcode_widget/barcode_widget.dart';
 
 class TicketScreen extends StatefulWidget {
   final String theaterName;
   final String movieTitle;
   final List<int> seats;
+  final int totalSeatPrice;
 
   const TicketScreen({
     super.key,
     required this.theaterName,
     required this.movieTitle,
-    required this.seats, required int totalSeatPrice,
+    required this.seats,
+    required this.totalSeatPrice,
   });
 
   @override
@@ -80,7 +83,7 @@ class _TicketScreenState extends State<TicketScreen> {
 
   Widget _buildTicketDetails() {
     return Card(
-      color: Colors.grey[300], // Change card color to light grey
+      color: Colors.grey.shade300, // Change card color to light grey
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
       ),
@@ -135,10 +138,13 @@ class _TicketScreenState extends State<TicketScreen> {
             const SizedBox(height: 10.0),
             const Divider(color: Colors.grey),
             const SizedBox(height: 10.0),
-            Image.asset(
-              'assets/images/barcode.png', // Replace with your barcode asset
+            // Replace with barcode generator
+            BarcodeWidget(
+              barcode: Barcode.code128(), // Choose the type of barcode
+              data: 'Ticket ID: 34678', // Data to encode
+              width: 200.0,
               height: 200.0,
-              width: 300.0,
+              drawText: false,
             ),
           ],
         ),
@@ -199,13 +205,5 @@ class _TicketScreenState extends State<TicketScreen> {
         ),
       ),
     );
-  }
-
-  String _getMonthName(int month) {
-    const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    return months[month - 1];
   }
 }

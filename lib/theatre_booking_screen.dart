@@ -1,8 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ticketmart/ticket_screen.dart';
-import 'package:ticketmart/api_connection.dart'; // Import the API connection file
-import 'dart:ui'; // Import to use CustomPainter
+import 'package:ticketmart/api_connection.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+
 
 class TheaterBookingScreen extends StatefulWidget {
   final String theatreId;
@@ -29,7 +30,71 @@ class TheaterBookingScreen extends StatefulWidget {
 class TheaterBookingScreenState extends State<TheaterBookingScreen> {
   List<int> selectedSeats = [];
   int totalSeatPrice = 0;
-  Map<int, int> seatData = {};
+  Map<int, Map<String, dynamic>> seatData = {};
+    late Razorpay _razorpay;
+
+ @override
+  void initState() {
+    super.initState();
+    _razorpay = Razorpay();
+        _fetchSeatData();
+
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+  }
+
+
+ @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TicketScreen(
+          theaterName: widget.theaterName,
+          movieTitle: widget.movieTitle,
+          seats: selectedSeats,
+          totalSeatPrice: _calculateTotalSeatPrice(),
+        ),
+      ),
+    );
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Payment failed: ${response.message}')),
+    );
+  }
+
+   void _handlePaymentCancel() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Payment canceled')),
+    );
+  }
+
+  void _proceedToPayment() {
+  var options = {
+    'key': 'YOUR_RAZORPAY_KEY', // Replace with your Razorpay key
+    'amount': totalSeatPrice * 100, // Amount in paise (₹1 = 100 paise)
+    'name': 'Theater Booking',
+    'description': 'Booking for ${widget.movieTitle}',
+    'prefill': {
+      'contact': '1234567890',
+      'email': 'example@domain.com',
+    },
+  };
+
+  try {
+    _razorpay.open(options);
+  } catch (e) {
+    print('Error opening Razorpay: $e');
+  }
+}
+
 
   final Map<int, int> rowPrices = {
     0: 50,
@@ -44,18 +109,16 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
     9: 100,
   };
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchSeatData();
-  }
-
   Future<void> _fetchSeatData() async {
     try {
       final screens = await ApiConnection.fetchScreens('');
       setState(() {
         seatData = {
-          for (var screen in screens) screen['screen_id']: screen['seat_count']
+          for (var screen in screens)
+            screen['screen_id']: {
+              'seat_count': screen['seat_count'],
+              'seat_type': _determineSeatType(screen['seat_number'])
+            }
         };
       });
     } catch (e) {
@@ -63,6 +126,15 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
         print('Failed to fetch seat data: $e');
       }
     }
+  }
+
+  String _determineSeatType(int seatNumber) {
+    int rowIndex = seatNumber ~/ 10;
+    String seatLabel = String.fromCharCode(65 + rowIndex);
+
+    if (['A', 'B', 'C'].contains(seatLabel)) return 'Normal';
+    if (['D', 'E', 'F', 'G'].contains(seatLabel)) return 'Executive';
+    return 'Premium';
   }
 
   int _calculateTotalSeatPrice() {
@@ -92,7 +164,6 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
       child: Column(
         children: [
           _buildPolygonScreen(),
-          const SizedBox(height: 20.0), // Spacing between the screen and seats
           _buildSeatGrid(),
         ],
       ),
@@ -100,13 +171,18 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
   }
 
   Widget _buildPolygonScreen() {
-    return SizedBox(
-      height: 100.0, // Adjust height as needed for the screen
-      width: double.infinity,
-      child: CustomPaint(
-        size: const Size(double.infinity, 160.0),
-        painter: _PolygonPainter(),
-      ),
+    return Column(
+      children: [
+        SizedBox(
+          height: 50.0,
+          width: double.infinity,
+          child: CustomPaint(
+            size: const Size(double.infinity, 160.0),
+            painter: _PolygonPainter(),
+          ),
+        ),
+        const SizedBox(height: 50.0),
+      ],
     );
   }
 
@@ -116,21 +192,79 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Column(
-          children: List.generate(10, (rowIndex) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(10, (seatIndex) {
-                int seatNumber = rowIndex * 10 + seatIndex;
-                return _buildSeat(seatNumber, rowIndex, seatIndex);
-              }),
-            );
-          }),
+          children: [
+            for (var seatType in ['Normal', 'Executive', 'Premium'])
+              _buildSeatSection(seatType),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildSeat(int seatNumber, int rowIndex, int seatIndex) {
+  Widget _buildSeatSection(String seatType) {
+    final seatRanges = _getSeatRanges(seatType);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          child: Text(
+            seatType,
+            style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          child: Column(
+            children: [
+              for (var row in seatRanges)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: row.map((seatLabel) {
+                    int seatNumber = _seatLabelToNumber(seatLabel);
+                    return _buildSeat(seatNumber, seatLabel, seatType);
+                  }).toList(),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<List<String>> _getSeatRanges(String seatType) {
+    final seatRanges = {
+      'Normal': [
+        ...List.generate(10, (index) => 'A${index + 1}'),
+        ...List.generate(10, (index) => 'B${index + 1}'),
+        ...List.generate(10, (index) => 'C${index + 1}'),
+      ],
+      'Executive': [
+        ...List.generate(10, (index) => 'D${index + 1}'),
+        ...List.generate(10, (index) => 'E${index + 1}'),
+        ...List.generate(10, (index) => 'F${index + 1}'),
+        ...List.generate(10, (index) => 'G${index + 1}'),
+        ...List.generate(10, (index) => 'H${index + 1}'),
+      ],
+      'Premium': [
+        ...List.generate(10, (index) => 'I${index + 1}'),
+        ...List.generate(10, (index) => 'J${index + 1}'),
+      ],
+    };
+
+    return seatRanges[seatType]!.fold<List<List<String>>>([], (acc, seat) {
+      if (acc.isEmpty || acc.last.length >= 10) acc.add([]);
+      acc.last.add(seat);
+      return acc;
+    });
+  }
+
+  int _seatLabelToNumber(String seatLabel) {
+    return seatLabel.codeUnitAt(0) - 65 + (int.parse(seatLabel.substring(1)) - 1) * 10;
+  }
+
+  Widget _buildSeat(int seatNumber, String seatLabel, String seatType) {
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -150,20 +284,20 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
         });
       },
       child: Container(
-        margin: const EdgeInsets.all(3.0),
-        padding: const EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(4.0),
+        padding: const EdgeInsets.all(4.0),
         decoration: BoxDecoration(
-          color: selectedSeats.contains(seatNumber)
-              ? Colors.redAccent
-              : Colors.grey[300],
+          color: selectedSeats.contains(seatNumber) ? Colors.lightBlue : Colors.white,
+          border: Border.all(
+            color: selectedSeats.contains(seatNumber) ? Colors.white : Colors.lightBlue,
+            width: 0.5,
+          ),
           borderRadius: BorderRadius.circular(5.0),
         ),
         child: Text(
-          '${String.fromCharCode(65 + rowIndex)}${seatIndex + 1}',
+          seatLabel,
           style: TextStyle(
-            color: selectedSeats.contains(seatNumber)
-                ? Colors.white
-                : Colors.black,
+            color: selectedSeats.contains(seatNumber) ? Colors.white : Colors.grey.shade600,
             fontSize: 10.0,
           ),
         ),
@@ -177,82 +311,119 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
       children: [
         Text(
           'Selected Seats: ${selectedSeats.map((seat) => '${String.fromCharCode(65 + seat ~/ 10)}${seat % 10 + 1}').join(', ')}',
-          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10.0),
         Text(
           'Total Price: ₹$totalSeatPrice',
-          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
         ),
+        const SizedBox(height: 20.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildSeatStatusIndicator('Available', Colors.transparent, Colors.blue.shade200),
+            _buildSeatStatusIndicator('Selected', Colors.lightBlue, Colors.transparent),
+            _buildSeatStatusIndicator('Sold', Colors.grey.shade300, Colors.transparent),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSeatStatusIndicator(String status, Color backgroundColor, Color borderColor) {
+    return Row(
+      children: [
+        Container(
+          width: 20,
+          height: 20,
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            border: Border.all(color: borderColor, width: 2.0),
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+        ),
+        const SizedBox(width: 5),
+        Text(status, style: const TextStyle(fontSize: 14.0)),
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
-          children: [
-            Text(widget.theatreId),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                widget.theaterName,
-                style: const TextStyle(fontSize: 16),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'Tickets: ${widget.ticketCount}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              widget.movieId,
-              style: const TextStyle(fontSize: 16),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
+  children: [
+    Text(widget.theatreId),
+    const SizedBox(width: 8),
+    Expanded(
+      child: Text(
+        widget.theaterName,
+        style: const TextStyle(fontSize: 16),
+        overflow: TextOverflow.ellipsis,
+      ),
+    ),
+    const SizedBox(width: 8),
+    Text('Seats: ${widget.ticketCount}', style: const TextStyle(fontSize: 16)),
+    const SizedBox(width: 8),
+    Text(widget.movieTitle, style: const TextStyle(fontSize: 16), overflow: TextOverflow.ellipsis),
+    const SizedBox(width: 8),
+     Text(
+      widget.showtime['time'] ?? 'Showtime',
+
+      style: const TextStyle(fontSize: 16),
+      overflow: TextOverflow.ellipsis,
+    ),
+        const SizedBox(width: 8),
+    Text(widget.movieId, style: const TextStyle(fontSize: 16)),
+
+  ],
+)
+
+,
         centerTitle: true,
         backgroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildSeatLayout(),
-              const SizedBox(height: 20.0),
-              _buildSelectedSeatsDisplay(),
-              const SizedBox(height: 20.0),
-              ElevatedButton(
-                onPressed: _navigateToTicketScreen,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0,
-                    vertical: 15.0,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                child: const Text(
-                  'Proceed to Payment',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildSeatLayout(),
+                    const SizedBox(height: 20.0),
+                    _buildSelectedSeatsDisplay(),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+          Padding(
+  padding: const EdgeInsets.all(50.0),
+  child: SizedBox(
+    width: screenWidth * 0.9,
+    child: ElevatedButton(
+      onPressed: _proceedToPayment,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.blue.shade900,
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      ),
+      child: const Text(
+        'Proceed to Payment',
+        style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
+      ),
+    ),
+  ),
+)
+
+        ],
       ),
     );
   }
@@ -261,18 +432,44 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
 class _PolygonPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final Paint paint = Paint()
-      ..color = Colors.blueAccent
+    final Paint borderPaint = Paint()
+      ..color = Colors.white10
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 10.0;
+
+    final Path borderPath = Path()
+      ..moveTo(size.width * 0.1, 0)
+      ..lineTo(size.width * 0.9, 0)
+      ..lineTo(size.width * 0.8, size.height)
+      ..lineTo(size.width * 0.2, size.height)
+      ..close();
+
+    canvas.drawPath(borderPath, borderPaint);
+
+    final Paint bottomBorderPaint = Paint()
+      ..color = Colors.blue.shade400
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 40.0
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 100.0);
+
+    final Path bottomBorderPath = Path()
+      ..moveTo(size.width * 0.2, size.height)
+      ..lineTo(size.width * 0.8, size.height);
+
+    canvas.drawPath(bottomBorderPath, bottomBorderPaint);
+
+    final Paint fillPaint = Paint()
+      ..color = Colors.blue.shade400
       ..style = PaintingStyle.fill;
 
-    final Path path = Path()
-      ..moveTo(size.width * 0.1, 0) // Top-left corner (shorter edge)
-      ..lineTo(size.width * 0.9, 0) // Top-right corner (shorter edge)
-      ..lineTo(size.width * 0.8, size.height) // Bottom-right corner (longer edge)
-      ..lineTo(size.width * 0.2, size.height) // Bottom-left corner (longer edge)
-      ..close(); // Close the path
+    final Path fillPath = Path()
+      ..moveTo(size.width * 0.1, 0)
+      ..lineTo(size.width * 0.9, 0)
+      ..lineTo(size.width * 0.8, size.height)
+      ..lineTo(size.width * 0.2, size.height)
+      ..close();
 
-    canvas.drawPath(path, paint);
+    canvas.drawPath(fillPath, fillPaint);
   }
 
   @override

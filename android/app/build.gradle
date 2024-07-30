@@ -76,3 +76,11 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // Your existing dependencies
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // Add the Razorpay dependency here
+    implementation 'com.razorpay:checkout:1.6.12'
+}

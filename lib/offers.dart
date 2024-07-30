@@ -60,7 +60,7 @@ class OffersList extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
+                  backgroundColor: Colors.blue.shade900,
                 ),
                 child: const Text('Copy Code', style: TextStyle(color: Colors.white)),
               ),

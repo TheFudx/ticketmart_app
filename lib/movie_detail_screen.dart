@@ -252,12 +252,12 @@ class MovieDetailsScreen extends StatelessWidget {
 
   Widget _buildCheckTheatresButton(BuildContext context) {
   double screenWidth = MediaQuery.of(context).size.width;
-  double buttonWidth = screenWidth - 40; // 20 padding on each side
 
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 20.0),
     child: SizedBox(
-      width: buttonWidth,
+                    width: screenWidth * 0.9, // 80% of screen width
+
       child: ElevatedButton(
         onPressed: () {
           Navigator.push(
@@ -272,7 +272,7 @@ class MovieDetailsScreen extends StatelessWidget {
         },
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
-          backgroundColor: Colors.redAccent,
+          backgroundColor: Colors.blue.shade900,
           padding: const EdgeInsets.symmetric(vertical: 10),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),

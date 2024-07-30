@@ -115,7 +115,7 @@ class _TheatersListScreenState extends State<TheatersListScreen> {
                         border: Border.all(
                           color: isSelected ? Colors.blue : Colors.grey[200]!,
 
-                          width: 1.0,
+                          width: 0.0,
                         ),
                       ),
                       child: Column(
@@ -154,11 +154,11 @@ class _TheatersListScreenState extends State<TheatersListScreen> {
                   } else if (state is TheatreCardsLoaded) {
                     final theatres = state.theatreCards;
                     return SingleChildScrollView(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(10.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          const SizedBox(height: 20.0),
+                          const SizedBox(height: 10.0),
                           ...theatres
                               .map<Widget>((theatre) => _buildTheaterCard(
                                     theatre['cinema_name'] ?? '',
@@ -214,7 +214,7 @@ class _TheatersListScreenState extends State<TheatersListScreen> {
       ),
       color: Colors.grey.shade100,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -234,7 +234,7 @@ class _TheatersListScreenState extends State<TheatersListScreen> {
                     Text(
                       city,
                       style: const TextStyle(
-                        fontSize: 16.0,
+                        fontSize: 14.0,
                       ),
                     ),
                   ],
@@ -260,7 +260,7 @@ class _TheatersListScreenState extends State<TheatersListScreen> {
                 child: Text(
                   'No shows available',
                   style: TextStyle(
-                    fontSize: 16.0,
+                    fontSize: 14.0,
                     color: Colors.blue.shade700,
                     fontWeight: FontWeight.bold,
                   ),
@@ -321,7 +321,7 @@ class _TheatersListScreenState extends State<TheatersListScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 0.0),
           child: Image.asset(
             'assets/images/Untitled design (59).png',
-            width: 43,
+            width: 35,
             height: 100,
           ),
         );
@@ -340,7 +340,7 @@ void _showSeatSelectionBottomSheet(
         builder: (context, setState) {
           return Container(
             width: double.infinity,
-            height: 600,
+            height: 500,
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisSize: MainAxisSize.max,
@@ -353,7 +353,7 @@ void _showSeatSelectionBottomSheet(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 10.0),
                 // Display seat images
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
@@ -361,13 +361,13 @@ void _showSeatSelectionBottomSheet(
                   switchOutCurve: Curves.easeInOut,
                   child: _buildSeatImages(selectedSeats),
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 10.0),
                 // Container for circular numbers
                 Wrap(
                   spacing: 8.0,
                   runSpacing: 8.0,
                   alignment: WrapAlignment.center,
-                  children: List.generate(9, (index) {
+                  children: List.generate(10, (index) {
                     final number = index + 1;
                     return GestureDetector(
                       onTap: () {
@@ -378,8 +378,8 @@ void _showSeatSelectionBottomSheet(
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.easeInOut,
-                        width: 30,
-                        height: 30,
+                        width: 25,
+                        height: 25,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
@@ -396,7 +396,7 @@ void _showSeatSelectionBottomSheet(
                           child: Text(
                             '$number',
                             style: TextStyle(
-                              fontSize: 18.0,
+                              fontSize: 14.0,
                               fontWeight: FontWeight.bold,
                               color: selectedSeats == number
                                   ? Colors.white
@@ -408,9 +408,9 @@ void _showSeatSelectionBottomSheet(
                     );
                   }),
                 ),
-                const SizedBox(height: 30.0),
+                const SizedBox(height: 20.0),
                 const Divider(color: Colors.grey),
-                const SizedBox(height: 30.0),
+                const SizedBox(height: 20.0),
                 // Row of three containers
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -432,7 +432,7 @@ void _showSeatSelectionBottomSheet(
                     ),
                   ],
                 ),
-                const SizedBox(height: 30.0),
+                const SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -457,10 +457,10 @@ void _showSeatSelectionBottomSheet(
                     ),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 150.0,
-                      vertical: 15.0,
+                      vertical: 10.0,
                     ),
                   ),
-                  child: const Text('Proceed', style: TextStyle(fontSize: 16)),
+                  child: const Text('Proceed', style: TextStyle(fontSize: 14)),
                 ),
               ],
             ),

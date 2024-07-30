@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Ticket Mart',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.redAccent),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
       home: const SplashScreen(),

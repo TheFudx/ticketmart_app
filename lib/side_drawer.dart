@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'about_page.dart';
-import 'services_page.dart';
 import 'contact_page.dart';
 import 'settings_page.dart';
-import 'order_page.dart';
-import 'stream_page.dart';
-import 'help_page.dart';
-import 'support_page.dart';
+import 'privacy_page.dart';
+
 
 class SideDrawer extends StatelessWidget {
   const SideDrawer({super.key});
@@ -19,7 +16,7 @@ class SideDrawer extends StatelessWidget {
         children: <Widget>[
           const DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.redAccent,
+              color: Colors.blueAccent,
             ),
             child: Text(
               'Menu',
@@ -45,19 +42,6 @@ class SideDrawer extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const AboutPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.room_service_sharp),
-            title: const Text('Services'),
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ServicesPage(),
                 ),
               );
             },
@@ -89,53 +73,14 @@ class SideDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.online_prediction_rounded),
-            title: const Text('Order'),
+            leading: const Icon(Icons.privacy_tip),
+            title: const Text('Privacy Policy'),
             onTap: () {
               Navigator.pop(context); // Close the drawer
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const OrderPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.stream),
-            title: const Text('Stream'),
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const StreamPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.help),
-            title: const Text('Help'),
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const HelpPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.support),
-            title: const Text('Support'),
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SupportPage(),
+                  builder: (context) => const PrivacyPage(),
                 ),
               );
             },

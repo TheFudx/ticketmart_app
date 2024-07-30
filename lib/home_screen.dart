@@ -9,6 +9,8 @@ import 'package:ticketmart/search_screen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'side_drawer.dart'; // Add this import
+import 'package:translator/translator.dart'; // Import the translator package
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,15 +22,32 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String? _selectedCity;
-  int _selectedIndex = 0;
+  String? _translatedCity; 
+   int _selectedIndex = 0;
   List<Map<String, dynamic>> _carouselImages = [];
   List<Map<String, dynamic>> _newReleases = [];
   List<Map<String, dynamic>> _trendingInTheatre = [];
   List<Map<String, dynamic>> _upcoming = [];
   bool _isLoading = true;
   bool _isLocationLoading = false;
+  final List<String> _predefinedCities = [
+    'Mumbai',
+    'Delhi',
+    'Jaipur',
+    'Bengaluru',
+    'Kolkata',
+    'Pune',
+    'Thane',
+    'Chennai',
+    'Hyderabad',
+    'Ahmedabad',
+    'Kochi'
+  ];
+
 
   final PageController _pageController = PageController();
+  final GoogleTranslator _translator = GoogleTranslator(); // Translator instance
+
 
   @override
   void initState() {
@@ -100,14 +119,18 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future<void> _getAddressFromLatLng(Position position) async {
+   Future<void> _getAddressFromLatLng(Position position) async {
     try {
       final placeMarks = await placemarkFromCoordinates(
           position.latitude, position.longitude);
       if (placeMarks.isNotEmpty) {
         final place = placeMarks.first;
+        final city = place.locality;
+
+        // Translate city name
+        final translated = await _translator.translate(city ?? '', to: 'en');
         setState(() {
-          _selectedCity = place.locality;
+          _translatedCity = translated.text; // Store the translated text
         });
       }
     } catch (e) {
@@ -190,24 +213,28 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(width: 8),
                 _isLocationLoading
-                    ? const CircularProgressIndicator()
-                    : DropdownButton<String>(
-                        value: _selectedCity,
-                        items: _selectedCity != null
-                            ? [
-                                DropdownMenuItem<String>(
-                                  value: _selectedCity,
-                                  child: Text(_selectedCity!),
-                                ),
-                              ]
-                            : [],
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedCity = value;
-                          });
-                        },
-                        hint: const Text('Choose Location'),
-                      ),
+                      ? const CircularProgressIndicator()
+                      : DropdownButton<String>(
+                          value: _selectedCity ?? _translatedCity,
+                          items: [
+                            ..._predefinedCities.map((city) => DropdownMenuItem<String>(
+                                  value: city,
+                                  child: Text(city),
+                                )),
+                            if (_translatedCity != null)
+                              DropdownMenuItem<String>(
+                                value: _translatedCity,
+                                child: Text(_translatedCity!),
+                              ),
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedCity = value;
+                              _translatedCity = value; // Update the translated city if needed
+                            });
+                          },
+                          hint: const Text('Choose Location'),
+                        ),
                 const Spacer(),
                 IconButton(
                   icon: const Icon(Icons.notifications),
@@ -245,43 +272,64 @@ class _HomeScreenState extends State<HomeScreen> {
                             itemBuilder: (context, index) {
                               return Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width * 0.9,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(_carouselImages[index]["image_path"]),
-                                          fit: BoxFit.cover,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => MovieDetailsScreen(
+                                          movieId: _carouselImages[index]['id'],
+                                          movieTitle: _carouselImages[index]['title'],
+                                          movieReleaseDate: _carouselImages[index]['release_date'],
+                                          rating: _carouselImages[index]['rating'],
+                                          imageUrl: _carouselImages[index]['image_path'],
+                                          duration: _carouselImages[index]['duration'],
+                                          genre: _carouselImages[index]['genre'],
+                                          description: _carouselImages[index]['description'],
+                                          topOffers: 'BUY 1 GET 1 FREE',
+                                          cast: _carouselImages[index]['cast'].split(','), // Split the cast string into a list
                                         ),
-                                        borderRadius: BorderRadius.circular(10),
                                       ),
-                                    ),
-                                    Positioned(
-                                      top: 10,
-                                      right: 10,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(5),
+                                    );
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        width: MediaQuery.of(context).size.width * 0.9,
                                         decoration: BoxDecoration(
-                                          color: Colors.black54,
-                                          borderRadius: BorderRadius.circular(5),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              _carouselImages[index]["rating"].toString(),
-                                              style: const TextStyle(color: Colors.white),
-                                            ),
-                                            const Icon(
-                                              Icons.star,
-                                              color: Colors.yellow,
-                                              size: 16,
-                                            ),
-                                          ],
+                                          image: DecorationImage(
+                                            image: NetworkImage(_carouselImages[index]["image_path"]),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          borderRadius: BorderRadius.circular(10),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                      Positioned(
+                                        top: 10,
+                                        right: 10,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            color: Colors.black54,
+                                            borderRadius: BorderRadius.circular(5),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                _carouselImages[index]["rating"].toString(),
+                                                style: const TextStyle(color: Colors.white),
+                                              ),
+                                              const Icon(
+                                                Icons.star,
+                                                color: Colors.yellow,
+                                                size: 16,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             },

@@ -90,7 +90,7 @@ class ProfilePage extends StatelessWidget {
                   _showOtpDialog(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
+                  backgroundColor: Colors.blue.shade900,
                   padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
@@ -130,7 +130,7 @@ class ProfilePage extends StatelessWidget {
               onPressed: () {
                 // Add your OTP submission logic here
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue.shade900),
               child: const Text('Submit', style: TextStyle(color: Colors.white)),
             ),
           ],
