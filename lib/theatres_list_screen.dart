@@ -484,7 +484,7 @@ Widget _buildTicketOption(String title, String price, String availability) {
       children: [
         Text(
           title,
-          style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4.0),
         Text(

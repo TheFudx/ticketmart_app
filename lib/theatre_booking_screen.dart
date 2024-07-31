@@ -70,11 +70,6 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
     );
   }
 
-   void _handlePaymentCancel() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Payment canceled')),
-    );
-  }
 
   void _proceedToPayment() {
   var options = {
@@ -91,22 +86,24 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
   try {
     _razorpay.open(options);
   } catch (e) {
-    print('Error opening Razorpay: $e');
+    if (kDebugMode) {
+      print('Error opening Razorpay: $e');
+    }
   }
 }
 
 
   final Map<int, int> rowPrices = {
-    0: 50,
-    1: 50,
-    2: 150,
-    3: 150,
-    4: 150,
-    5: 150,
-    6: 100,
-    7: 100,
-    8: 100,
-    9: 100,
+    0: 230,
+    1: 230,
+    2: 230,
+    3: 250,
+    4: 250,
+    5: 250,
+    6: 250,
+    7: 250,
+    8: 300,
+    9: 300,
   };
 
   Future<void> _fetchSeatData() async {
@@ -144,19 +141,6 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
     });
   }
 
-  void _navigateToTicketScreen() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TicketScreen(
-          theaterName: widget.theaterName,
-          movieTitle: widget.movieTitle,
-          seats: selectedSeats,
-          totalSeatPrice: _calculateTotalSeatPrice(),
-        ),
-      ),
-    );
-  }
 
   Widget _buildSeatLayout() {
     return SingleChildScrollView(

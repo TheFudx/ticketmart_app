@@ -132,14 +132,14 @@ class MovieDetailsScreen extends StatelessWidget {
                 const Icon(
                   Icons.star,
                   color: Colors.yellow,
-                  size: 16.0,
+                  size: 14.0,
                 ),
                 const SizedBox(width: 4.0),
                 Text(
                   rating,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 14.0,
+                    fontSize: 12.0,
                   ),
                 ),
               ],
@@ -173,7 +173,7 @@ class MovieDetailsScreen extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: const TextStyle(fontSize: 14.0, color: Colors.black),
+        style: const TextStyle(fontSize: 12.0, color: Colors.black),
       ),
     );
   }
@@ -193,7 +193,7 @@ class MovieDetailsScreen extends StatelessWidget {
     return Text(
       title,
       style: const TextStyle(
-        fontSize: 16.0,
+        fontSize: 12.0,
         fontWeight: FontWeight.bold,
         color: Colors.black,
       ),
@@ -203,7 +203,7 @@ class MovieDetailsScreen extends StatelessWidget {
   Widget _buildDescription(String description) {
     return Text(
       description,
-      style: const TextStyle(fontSize: 14.0, color: Colors.black),
+      style: const TextStyle(fontSize: 12.0, color: Colors.black),
     );
   }
 
@@ -235,7 +235,7 @@ class MovieDetailsScreen extends StatelessWidget {
         child: Center(
           child: Text(
             offer,
-            style: const TextStyle(fontSize: 14.0, color: Colors.black),
+            style: const TextStyle(fontSize: 12.0, color: Colors.black),
             textAlign: TextAlign.left,
           ),
         ),
@@ -246,7 +246,7 @@ class MovieDetailsScreen extends StatelessWidget {
   Widget _buildStarCast(List<String> cast) {
     return Text(
       cast.join(', '),
-      style: const TextStyle(fontSize: 14.0, color: Colors.grey),
+      style: const TextStyle(fontSize: 12.0, color: Colors.grey),
     );
   }
 
@@ -281,7 +281,7 @@ class MovieDetailsScreen extends StatelessWidget {
         child: const Text(
           'Check Theatres',
           style: TextStyle(
-            fontSize: 14.0,
+            fontSize: 12.0,
             fontWeight: FontWeight.bold,
           ),
         ),
