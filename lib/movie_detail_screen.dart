@@ -208,40 +208,47 @@ class MovieDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildOffersSection() {
-    return SizedBox(
-      height: 60.0, // Adjust height as needed
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: <Widget>[
-          _buildOfferCard('HDFC: 10% off on movie tickets'),
-          const SizedBox(width: 10.0),
-          _buildOfferCard('Kotak: 15% off on first purchase'),
-          const SizedBox(width: 10.0),
-          _buildOfferCard('Axis: 5% cashback on movie tickets'),
+  return SizedBox(
+    height: 60.0, // Adjust height as needed
+    child: ListView(
+      scrollDirection: Axis.horizontal,
+      children: <Widget>[
+        _buildOfferCard(Icons.local_offer, 'HDFC: 10% off on movie tickets'),
+        const SizedBox(width: 10.0),
+        _buildOfferCard(Icons.local_offer, 'Kotak: 15% off on first purchase'),
+        const SizedBox(width: 10.0),
+        _buildOfferCard(Icons.local_offer, 'Axis: 5% cashback on movie tickets'),
+      ],
+    ),
+  );
+}
+
+Widget _buildOfferCard(IconData icon, String offer) {
+  return Card(
+    elevation: 5,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(0.0),
+    ),
+    child: Container(
+      width: 300.0, // Adjust width as needed
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        children: [
+          Icon(icon, size: 16.0, color: Colors.black),
+          const SizedBox(width: 8.0), // Adjust spacing as needed
+          Expanded(
+            child: Text(
+              offer,
+              style: const TextStyle(fontSize: 12.0, color: Colors.black),
+              textAlign: TextAlign.left,
+            ),
+          ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
-  Widget _buildOfferCard(String offer) {
-    return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(0.0),
-      ),
-      child: Container(
-        width: 300.0, // Adjust width as needed
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Text(
-            offer,
-            style: const TextStyle(fontSize: 12.0, color: Colors.black),
-            textAlign: TextAlign.left,
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _buildStarCast(List<String> cast) {
     return Text(
