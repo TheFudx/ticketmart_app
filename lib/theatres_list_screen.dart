@@ -109,7 +109,7 @@ class _TheatersListScreenState extends State<TheatersListScreen> {
                       margin: const EdgeInsets.symmetric(horizontal: 5.0),
                       padding: const EdgeInsets.all(5.0),
                       decoration: BoxDecoration(
-                        color: isSelected ? Colors.blue : Colors.grey[200],
+                        color: isSelected ? Colors.blue : Colors.blue[50],
 
                         borderRadius: BorderRadius.circular(8.0),
                         border: Border.all(
@@ -125,19 +125,19 @@ class _TheatersListScreenState extends State<TheatersListScreen> {
                             dateInfo['day']!,
                             style: TextStyle(
                                 color: isSelected ? Colors.white : Colors.blue,
-                                fontSize: 12),
+                                fontSize: 11),
                           ),
                           Text(
                             dateInfo['date']!,
                             style: TextStyle(
                                 color: isSelected ? Colors.white : Colors.blue,
-                                fontSize: 12),
+                                fontSize: 11),
                           ),
                           Text(
                             dateInfo['month']!,
                             style: TextStyle(
                                 color: isSelected ? Colors.white : Colors.blue,
-                                fontSize: 12),
+                                fontSize: 11),
                           ),
                         ],
                       ),

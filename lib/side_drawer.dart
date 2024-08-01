@@ -14,18 +14,7 @@ class SideDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blueAccent,
-            ),
-            child: Text(
-              'Menu',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
-            ),
-          ),
+          const SizedBox(height: 100),
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text('Home'),
