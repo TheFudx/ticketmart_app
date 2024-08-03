@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ticketmart/ticket_screen.dart';
 import 'package:ticketmart/api_connection.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
-
+import 'email_phone_input.dart';
+import 'package:intl/intl.dart';
 
 class TheaterBookingScreen extends StatefulWidget {
   final String theatreId;
@@ -31,80 +31,25 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
   List<int> selectedSeats = [];
   int totalSeatPrice = 0;
   Map<int, Map<String, dynamic>> seatData = {};
-    late Razorpay _razorpay;
-
- @override
-  void initState() {
-    super.initState();
-    _razorpay = Razorpay();
-        _fetchSeatData();
-
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-  }
-
-
- @override
-  void dispose() {
-    _razorpay.clear();
-    super.dispose();
-  }
-
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TicketScreen(
-          theaterName: widget.theaterName,
-          movieTitle: widget.movieTitle,
-          seats: selectedSeats,
-          totalSeatPrice: _calculateTotalSeatPrice(),
-        ),
-      ),
-    );
-  }
-
-  void _handlePaymentError(PaymentFailureResponse response) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Payment failed: ${response.message}')),
-    );
-  }
-
-
-  void _proceedToPayment() {
-  var options = {
-    'key': 'YOUR_RAZORPAY_KEY', // Replace with your Razorpay key
-    'amount': totalSeatPrice * 100, // Amount in paise (₹1 = 100 paise)
-    'name': 'Theater Booking',
-    'description': 'Booking for ${widget.movieTitle}',
-    'prefill': {
-      'contact': '1234567890',
-      'email': 'example@domain.com',
-    },
-  };
-
-  try {
-    _razorpay.open(options);
-  } catch (e) {
-    if (kDebugMode) {
-      print('Error opening Razorpay: $e');
-    }
-  }
-}
-
 
   final Map<int, int> rowPrices = {
-    0: 230,
-    1: 230,
-    2: 230,
-    3: 250,
-    4: 250,
-    5: 250,
-    6: 250,
-    7: 250,
-    8: 300,
-    9: 300,
+    0: 50,
+    1: 50,
+    2: 150,
+    3: 150,
+    4: 150,
+    5: 150,
+    6: 100,
+    7: 100,
+    8: 100,
+    9: 100,
   };
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSeatData();
+  }
 
   Future<void> _fetchSeatData() async {
     try {
@@ -113,8 +58,8 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
         seatData = {
           for (var screen in screens)
             screen['screen_id']: {
-              'seat_count': screen['seat_count'],
-              'seat_type': _determineSeatType(screen['seat_number'])
+              'seat_count': screen['total_seats'],
+              'seat_type': _determineSeatType(screen['screen_id']) // Adjust this as needed
             }
         };
       });
@@ -124,7 +69,6 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
       }
     }
   }
-
   String _determineSeatType(int seatNumber) {
     int rowIndex = seatNumber ~/ 10;
     String seatLabel = String.fromCharCode(65 + rowIndex);
@@ -141,6 +85,37 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
     });
   }
 
+  void _navigateToTicketScreen(String email, String phone) {
+    if (kDebugMode) {
+      print('Navigating to TicketScreen with Email: $email, Phone: $phone');
+    } // Debugging line
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TicketScreen(
+          theaterName: widget.theaterName,
+          movieTitle: widget.movieTitle,
+          seats: selectedSeats,
+          totalSeatPrice: _calculateTotalSeatPrice(),
+          email: email,
+          phone: phone,
+        ),
+      ),
+    );
+  }
+
+  void _showEmailPhoneDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return EmailPhoneInput(
+          onSubmit: (email, phone) {
+            _navigateToTicketScreen(email, phone);
+          },
+        );
+      },
+    );
+  }
 
   Widget _buildSeatLayout() {
     return SingleChildScrollView(
@@ -245,7 +220,9 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
   }
 
   int _seatLabelToNumber(String seatLabel) {
-    return seatLabel.codeUnitAt(0) - 65 + (int.parse(seatLabel.substring(1)) - 1) * 10;
+    return seatLabel.codeUnitAt(0) -
+        65 +
+        (int.parse(seatLabel.substring(1)) - 1) * 10;
   }
 
   Widget _buildSeat(int seatNumber, String seatLabel, String seatType) {
@@ -271,9 +248,13 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
         margin: const EdgeInsets.all(4.0),
         padding: const EdgeInsets.all(4.0),
         decoration: BoxDecoration(
-          color: selectedSeats.contains(seatNumber) ? Colors.lightBlue : Colors.white,
+          color: selectedSeats.contains(seatNumber)
+              ? Colors.lightBlue
+              : Colors.white,
           border: Border.all(
-            color: selectedSeats.contains(seatNumber) ? Colors.white : Colors.lightBlue,
+            color: selectedSeats.contains(seatNumber)
+                ? Colors.white
+                : Colors.lightBlue,
             width: 0.5,
           ),
           borderRadius: BorderRadius.circular(5.0),
@@ -281,7 +262,9 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
         child: Text(
           seatLabel,
           style: TextStyle(
-            color: selectedSeats.contains(seatNumber) ? Colors.white : Colors.grey.shade600,
+            color: selectedSeats.contains(seatNumber)
+                ? Colors.white
+                : Colors.grey.shade600,
             fontSize: 10.0,
           ),
         ),
@@ -306,16 +289,20 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildSeatStatusIndicator('Available', Colors.transparent, Colors.blue.shade200),
-            _buildSeatStatusIndicator('Selected', Colors.lightBlue, Colors.transparent),
-            _buildSeatStatusIndicator('Sold', Colors.grey.shade300, Colors.transparent),
+            _buildSeatStatusIndicator(
+                'Available', Colors.transparent, Colors.blue.shade200),
+            _buildSeatStatusIndicator(
+                'Selected', Colors.lightBlue, Colors.transparent),
+            _buildSeatStatusIndicator(
+                'Sold', Colors.grey.shade300, Colors.transparent),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildSeatStatusIndicator(String status, Color backgroundColor, Color borderColor) {
+  Widget _buildSeatStatusIndicator(
+      String status, Color backgroundColor, Color borderColor) {
     return Row(
       children: [
         Container(
@@ -333,6 +320,14 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
     );
   }
 
+  String _formatDate(String? date) {
+    if (date == null) return 'Date';
+
+    final dateFormat = DateFormat('E, dd MMM');
+    final parsedDate = DateTime.parse(date);
+    return dateFormat.format(parsedDate);
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -340,36 +335,68 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Row(
-  children: [
-    Text(widget.theatreId),
-    const SizedBox(width: 8),
-    Expanded(
-      child: Text(
-        widget.theaterName,
-        style: const TextStyle(fontSize: 16),
-        overflow: TextOverflow.ellipsis,
-      ),
-    ),
-    const SizedBox(width: 8),
-    Text('Seats: ${widget.ticketCount}', style: const TextStyle(fontSize: 16)),
-    const SizedBox(width: 8),
-    Text(widget.movieTitle, style: const TextStyle(fontSize: 16), overflow: TextOverflow.ellipsis),
-    const SizedBox(width: 8),
-     Text(
-      widget.showtime['time'] ?? 'Showtime',
+          children: [
+            // Theater and Movie Details
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.theaterName,
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    widget.movieTitle,
+                    style: const TextStyle(fontSize: 14),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            // Spacer for positioning
+            const Spacer(),
+            // Theater ID
+            Expanded(
+              flex: 1,
+              child: Text(
+                widget.theatreId,
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Expanded(
+              child: Text(
+                widget.movieId,
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
 
-      style: const TextStyle(fontSize: 16),
-      overflow: TextOverflow.ellipsis,
-    ),
-        const SizedBox(width: 8),
-    Text(widget.movieId, style: const TextStyle(fontSize: 16)),
-
-  ],
-)
-
-,
-        centerTitle: true,
-        backgroundColor: Colors.white,
+            const Spacer(),
+            Container(
+              decoration: BoxDecoration(
+                border:
+                    Border.all(color: Colors.grey, width: 0.5), // Blue border
+                borderRadius:
+                    BorderRadius.circular(4.0), // Circular border radius
+              ),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                  vertical: 3.0), // Padding inside the container
+              child: Text(
+                widget.showtime['showtime_start_time'] ?? 'Start Time',
+                style: const TextStyle(fontSize: 11, color: Colors.green),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            // Movie ID
+          ],
+        ),
       ),
       body: Column(
         children: [
@@ -380,6 +407,53 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context); // Navigate to the previous page
+                      },
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              _formatDate(widget.showtime['showtime_date']),
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                  vertical:
+                                      4.0), // Padding inside the container
+                              child: const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [],
+                              ),
+                            ),
+                            const Spacer(),
+                            const Icon(
+                              Icons.edit_outlined,
+                              size: 12.0,
+                              color: Colors.blue,
+                            ),
+                            const SizedBox(width: 5.0),
+                            Text(
+                              '${widget.ticketCount} Ticket',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10.0),
                     _buildSeatLayout(),
                     const SizedBox(height: 20.0),
                     _buildSelectedSeatsDisplay(),
@@ -389,24 +463,29 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
             ),
           ),
           Padding(
-  padding: const EdgeInsets.all(50.0),
-  child: SizedBox(
-    width: screenWidth * 0.9,
-    child: ElevatedButton(
-      onPressed: _proceedToPayment,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue.shade900,
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      ),
-      child: const Text(
-        'Proceed to Payment',
-        style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
-      ),
-    ),
-  ),
-)
-
+            padding: const EdgeInsets.all(50.0),
+            child: SizedBox(
+              width: screenWidth * 0.9,
+              child: ElevatedButton(
+                onPressed: _showEmailPhoneDialog,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue.shade900,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 10.0),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                ),
+                child: const Text(
+                  'Proceed to Payment',
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

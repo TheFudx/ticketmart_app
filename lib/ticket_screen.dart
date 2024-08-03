@@ -6,13 +6,17 @@ class TicketScreen extends StatefulWidget {
   final String movieTitle;
   final List<int> seats;
   final int totalSeatPrice;
+   final String email;
+  final String phone;
 
   const TicketScreen({
     super.key,
     required this.theaterName,
     required this.movieTitle,
     required this.seats,
-    required this.totalSeatPrice,
+    required this.totalSeatPrice, 
+    required this.email,
+    required this.phone,
   });
 
   @override
@@ -206,4 +210,6 @@ class _TicketScreenState extends State<TicketScreen> {
       ),
     );
   }
+
+  
 }

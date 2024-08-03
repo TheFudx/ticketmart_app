@@ -76,32 +76,18 @@ class ApiConnection {
     }
   }
 
-  // Example method for fetching seat counts (you may need to implement this)
-  static Future<List<Map<String, dynamic>>> fetchSeatCount(String cinemaId) async {
+  static Future<List<Map<String, dynamic>>> fetchSeatCount(String movieId) async {
     final response = await http.get(Uri.parse(seatCount));
- if (response.statusCode == 200) {
+    if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      // Check if 'seat_counts' exists and is a list
-      if (data != null && data['seat_counts'] != null) {
-        return List<Map<String, dynamic>>.from(data['seat_counts']);
+      if (data != null && data['seatCount'] != null) {
+        return List<Map<String, dynamic>>.from(data['seatCount']);
       } else {
-        return []; // Return an empty list if 'seat_counts' is null
+        return [];
       }
     } else {
-      throw Exception('Failed to load seat counts');
+      throw Exception('Failed to load screens');
     }
   }
 
-  // static Future<List<Map<String, dynamic>>> fetchScreens(String movieId, String date) async {
-  //   final response = await http.get(Uri.parse('https://api.example.com/screens?movieId=$movieId&date=$date'));
-
-  //   if (response.statusCode == 200) {
-  //     final List<dynamic> data = json.decode(response.body);
-  //     return data.cast<Map<String, dynamic>>();
-  //   } else {
-  //     throw Exception('Failed to load screens');
-  //   }
-  // }
-
-  // Add other API functions here as needed
 }

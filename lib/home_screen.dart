@@ -447,8 +447,10 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             Container(
-              width: 150,
-              height: 240,
+              width: MediaQuery.of(context).size.width *
+                  0.3, // 30% of the screen width
+              height: MediaQuery.of(context).size.height *
+                  0.27, // 40% of the screen height
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(movies[index]['image_path']),
@@ -459,9 +461,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              movies[index]['title'],
+              movies[index]['title'].length > 12
+                  ? '${movies[index]['title'].substring(0, 12)}...'
+                  : movies[index]['title'],
               style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 2),
             Text(

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ticketmart/theatre_booking_screen.dart'; // For date formatting
 import 'package:ticketmart/bloc/movie_details_bloc.dart'; // Import the BLoC file
+import 'package:flutter/foundation.dart';
 
 class TheatersListScreen extends StatefulWidget {
   final String movieId;
@@ -434,34 +435,58 @@ void _showSeatSelectionBottomSheet(
                 ),
                 const SizedBox(height: 20.0),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TheaterBookingScreen(
-                          showtime: showtime,
-                          theatreId: cinemaId,
-                          theaterName: theaterName,
-                          movieId: widget.movieId,
-                          movieTitle: widget.movieTitle,
-                          ticketCount: selectedSeats,
-                        ),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.blue.shade900,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 150.0,
-                      vertical: 10.0,
-                    ),
-                  ),
-                  child: const Text('Proceed', style: TextStyle(fontSize: 14)),
-                ),
+  onPressed: () {
+    // Print statements for debugging
+    if (kDebugMode) {
+      print('Navigating to TheaterBookingScreen with the following details:');
+    }
+    if (kDebugMode) {
+      print('Showtime: $showtime');
+    }
+    if (kDebugMode) {
+      print('Theatre ID: $cinemaId');
+    }
+    if (kDebugMode) {
+      print('Theater Name: $theaterName');
+    }
+    if (kDebugMode) {
+      print('Movie ID: ${widget.movieId}');
+    }
+    if (kDebugMode) {
+      print('Movie Title: ${widget.movieTitle}');
+    }
+    if (kDebugMode) {
+      print('Ticket Count: $selectedSeats');
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TheaterBookingScreen(
+          showtime: showtime,
+          theatreId: cinemaId,
+          theaterName: theaterName,
+          movieId: widget.movieId,
+          movieTitle: widget.movieTitle,
+          ticketCount: selectedSeats,
+        ),
+      ),
+    );
+  },
+  style: ElevatedButton.styleFrom(
+    foregroundColor: Colors.white,
+    backgroundColor: Colors.blue.shade900,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8.0),
+    ),
+    padding: const EdgeInsets.symmetric(
+      horizontal: 150.0,
+      vertical: 10.0,
+    ),
+  ),
+  child: const Text('Proceed', style: TextStyle(fontSize: 14)),
+),
+
               ],
             ),
           );
