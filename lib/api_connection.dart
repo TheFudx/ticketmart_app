@@ -76,8 +76,8 @@ class ApiConnection {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> fetchSeatCount(String movieId) async {
-    final response = await http.get(Uri.parse(seatCount));
+   static Future<List<Map<String, dynamic>>> fetchSeatCount(String screenId) async {
+    final response = await http.get(Uri.parse(screens));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       if (data != null && data['seatCount'] != null) {
@@ -86,7 +86,7 @@ class ApiConnection {
         return [];
       }
     } else {
-      throw Exception('Failed to load screens');
+      throw Exception('Failed to load seat count');
     }
   }
 

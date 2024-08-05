@@ -6,7 +6,7 @@ class TicketScreen extends StatefulWidget {
   final String movieTitle;
   final List<int> seats;
   final int totalSeatPrice;
-   final String email;
+  final String email;
   final String phone;
 
   const TicketScreen({
@@ -14,7 +14,7 @@ class TicketScreen extends StatefulWidget {
     required this.theaterName,
     required this.movieTitle,
     required this.seats,
-    required this.totalSeatPrice, 
+    required this.totalSeatPrice,
     required this.email,
     required this.phone,
   });
@@ -23,16 +23,52 @@ class TicketScreen extends StatefulWidget {
   State<TicketScreen> createState() => _TicketScreenState();
 }
 
-class _TicketScreenState extends State<TicketScreen> {
+class _TicketScreenState extends State<TicketScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _animationController;
+  late final Animation<Offset> _slideAnimation;
+  late final Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    )..forward();
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 10),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.5,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Change background color to white
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black), // Change icon color to black
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -40,17 +76,16 @@ class _TicketScreenState extends State<TicketScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              const SizedBox(height: 20.0),
               _buildSuccessMessage(),
-              const SizedBox(height: 20.0),
-              _buildTicketDetails(),
-              const SizedBox(height: 20.0),
-              _buildDownloadButton(context),
               const SizedBox(height: 10.0),
+              _buildTicketDetails(),
+              _buildAdditionalDetails(),
+              const SizedBox(height: 10.0),
+              _buildDownloadButton(context),
               _buildBackButton(context),
             ],
           ),
@@ -60,97 +95,122 @@ class _TicketScreenState extends State<TicketScreen> {
   }
 
   Widget _buildSuccessMessage() {
-    return const Column(
+    return Column(
       children: [
-        Icon(Icons.check_circle, color: Colors.green, size: 50.0), // Change icon color to green
-        SizedBox(height: 10.0),
-        Text(
+        SlideTransition(
+          position: _slideAnimation,
+          child: ScaleTransition(
+            scale: _scaleAnimation,
+            child:
+                const Icon(Icons.check_circle, color: Colors.green, size: 50.0),
+          ),
+        ),
+        const SizedBox(height: 10.0),
+        const Text(
           'Success!',
           style: TextStyle(
-            color: Colors.black, // Change text color to black
-            fontSize: 24.0,
+            color: Colors.black,
+            fontSize: 20.0,
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 10.0),
-        Text(
+        const SizedBox(height: 10.0),
+        const Text(
           'Your payment completed successfully! You can\n download your tickets now',
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Colors.black, // Change text color to black
-            fontSize: 16.0,
+            color: Colors.black,
+            fontSize: 12.0,
           ),
         ),
+        const SizedBox(height: 10.0),
       ],
     );
   }
 
   Widget _buildTicketDetails() {
-    return Card(
-      color: Colors.grey.shade300, // Change card color to light grey
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Row(
-              children: [
-                Image.asset(
-                  'assets/images/splash_image.png', // Replace with your movie poster asset
+    return ClipPath(
+      clipper: TicketClipper(),
+      child: Card(
+        color: Colors.grey.shade300,
+        shape: const RoundedRectangleBorder(),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Center(
+                child: Image.asset(
+                  'assets/images/splash_image.png',
                   height: 80.0,
-                  width: 100,
+                  width: 250,
                 ),
-                const SizedBox(width: 10.0),
-                Expanded(
-                  child: Text(
-                    widget.movieTitle,
-                    style: const TextStyle(
-                      color: Colors.black, // Change text color to black
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic
-                    ),
+                
+              ),
+              const SizedBox(height: 10.0),
+              Center(
+                child: Text(
+                  widget.movieTitle,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 10.0),
-             const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildTicketDetailColumn('Seat', widget.seats.map((seat) => '${seat ~/ 10 + 1}${String.fromCharCode(65 + seat % 10)}').join(', ')),
-                _buildTicketDetailColumn('Location', widget.theaterName),
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildTicketDetailColumn('Payment', 'Apple Pay'),
-                _buildTicketDetailColumn('Order #', '34678'),
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            const Divider(color: Colors.grey),
-            const SizedBox(height: 10.0),
-            // Replace with barcode generator
-            BarcodeWidget(
-              barcode: Barcode.code128(), // Choose the type of barcode
-              data: 'Ticket ID: 34678', // Data to encode
-              width: 200.0,
-              height: 200.0,
-              drawText: false,
-            ),
-          ],
+              ),
+              const SizedBox(height: 10.0),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildTicketDetailColumn(
+                    'Seat',
+                    widget.seats
+                        .map((seat) =>
+                            '${seat ~/ 10 + 1}${String.fromCharCode(65 + seat % 10)}')
+                        .join(', '),
+                  ),
+                  const SizedBox(height: 10.0),
+                  _buildTicketDetailColumn('Location', widget.theaterName),
+                  const SizedBox(height: 10.0),
+                  _buildTicketDetailColumn('Payment', 'Card'),
+                  const SizedBox(height: 10.0),
+                  _buildTicketDetailColumn('Order #', '34678'),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAdditionalDetails() {
+    return ClipPath(
+      clipper: InvertedTicketClipper(),
+      child: Container(
+        color: Colors.grey.shade300,
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              const Text(
+                'Scan this barcode at the entrance of the Theatre',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14.0,
+                ),
+              ),
+              const SizedBox(height: 10.0),
+              BarcodeWidget(
+                barcode: Barcode.code128(),
+                data: 'Ticket ID: 34678',
+                height: 100.0,
+                drawText: false,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -162,12 +222,12 @@ class _TicketScreenState extends State<TicketScreen> {
       children: [
         Text(
           title,
-          style: const TextStyle(color: Colors.grey),
+          style: const TextStyle(color: Colors.blue),
         ),
         const SizedBox(height: 5.0),
         Text(
           detail,
-          style: const TextStyle(color: Colors.black), // Change text color to black
+          style: const TextStyle(color: Colors.black),
         ),
       ],
     );
@@ -179,8 +239,8 @@ class _TicketScreenState extends State<TicketScreen> {
         // Implement download functionality here
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green, // Change button color to green
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        backgroundColor: Colors.blueAccent,
+        padding: const EdgeInsets.symmetric(vertical: 12.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
@@ -188,9 +248,9 @@ class _TicketScreenState extends State<TicketScreen> {
       child: const Text(
         'Download tickets',
         style: TextStyle(
-          fontSize: 18.0,
+          fontSize: 14.0,
           fontWeight: FontWeight.bold,
-          color: Colors.white, // Change text color to white
+          color: Colors.white,
         ),
       ),
     );
@@ -204,12 +264,45 @@ class _TicketScreenState extends State<TicketScreen> {
       child: const Text(
         'Back to home',
         style: TextStyle(
-          color: Colors.black, // Change text color to black
-          fontSize: 16.0,
+          color: Colors.black,
+          fontSize: 12.0,
         ),
       ),
     );
   }
+}
 
-  
+class TicketClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.lineTo(0, size.height * 0.75);
+    path.lineTo(size.width * 0.05, size.height);
+    path.lineTo(size.width * 0.95, size.height);
+    path.lineTo(size.width, size.height * 0.75);
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+
+class InvertedTicketClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.lineTo(0, size.height * 0.25);
+    path.lineTo(size.width * 0.05, 0);
+    path.lineTo(size.width * 0.95, 0);
+    path.lineTo(size.width, size.height * 0.25);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

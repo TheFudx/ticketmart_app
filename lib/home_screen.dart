@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildHomePage(screenHeight),
           const SearchScreen(),
           const OffersScreen(),
-          const ProfilePage(),
+          const ProfilePage(theaterName: 'theatreName', movieTitle: 'movie', seats: [1,2,3], totalSeatPrice: 100, email: 'email', phone: 'phone',),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

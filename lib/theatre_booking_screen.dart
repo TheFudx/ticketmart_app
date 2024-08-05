@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:ticketmart/ticket_screen.dart';
+import 'package:ticketmart/profile_page.dart';
 import 'package:ticketmart/api_connection.dart';
-import 'email_phone_input.dart';
 import 'package:intl/intl.dart';
 
 class TheaterBookingScreen extends StatefulWidget {
@@ -20,7 +19,7 @@ class TheaterBookingScreen extends StatefulWidget {
     required this.movieId,
     required this.movieTitle,
     required this.ticketCount,
-    required this.showtime,
+    required this.showtime, required String seatType,
   });
 
   @override
@@ -59,7 +58,8 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
           for (var screen in screens)
             screen['screen_id']: {
               'seat_count': screen['total_seats'],
-              'seat_type': _determineSeatType(screen['screen_id']) // Adjust this as needed
+              'seat_type': _determineSeatType(
+                  screen['screen_id']) // Adjust this as needed
             }
         };
       });
@@ -69,6 +69,7 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
       }
     }
   }
+
   String _determineSeatType(int seatNumber) {
     int rowIndex = seatNumber ~/ 10;
     String seatLabel = String.fromCharCode(65 + rowIndex);
@@ -85,37 +86,7 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
     });
   }
 
-  void _navigateToTicketScreen(String email, String phone) {
-    if (kDebugMode) {
-      print('Navigating to TicketScreen with Email: $email, Phone: $phone');
-    } // Debugging line
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TicketScreen(
-          theaterName: widget.theaterName,
-          movieTitle: widget.movieTitle,
-          seats: selectedSeats,
-          totalSeatPrice: _calculateTotalSeatPrice(),
-          email: email,
-          phone: phone,
-        ),
-      ),
-    );
-  }
 
-  void _showEmailPhoneDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return EmailPhoneInput(
-          onSubmit: (email, phone) {
-            _navigateToTicketScreen(email, phone);
-          },
-        );
-      },
-    );
-  }
 
   Widget _buildSeatLayout() {
     return SingleChildScrollView(
@@ -467,7 +438,21 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
             child: SizedBox(
               width: screenWidth * 0.9,
               child: ElevatedButton(
-                onPressed: _showEmailPhoneDialog,
+                onPressed: () {
+                  // Navigate to ProfilePage
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ProfilePage(
+                              theaterName: 'theatreName',
+                              movieTitle: 'movie',
+                              seats: [1, 2, 3],
+                              totalSeatPrice: 100,
+                              email: 'email',
+                              phone: 'phone',
+                            )),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue.shade900,
                   padding: const EdgeInsets.symmetric(
