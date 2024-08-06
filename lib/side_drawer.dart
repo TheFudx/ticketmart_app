@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ticketmart/booked_tickets.dart';
 import 'about_page.dart';
 import 'contact_page.dart';
 import 'settings_page.dart';
@@ -80,6 +81,19 @@ class SideDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pop(context); // Close the drawer
               // Implement logout functionality
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.movie_creation_outlined),
+            title: const Text('Booked Tickets'),
+            onTap: () {
+              Navigator.pop(context); // Close the drawer
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const BookedTicketsScreen(bookedTickets: [],),
+                ),
+              );
             },
           ),
         ],

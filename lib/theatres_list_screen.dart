@@ -440,6 +440,8 @@ void _showSeatSelectionBottomSheet(
                           selectedSeatType = 'Normal';
                         });
                       },
+                      price: '₹150',
+                      availability: 'Available',
                     ),
                     _buildSeatTypeOption(
                       'Executive',
@@ -450,6 +452,8 @@ void _showSeatSelectionBottomSheet(
                           selectedSeatType = 'Executive';
                         });
                       },
+                      price: '₹250',
+                      availability: 'Filling Fast',
                     ),
                     _buildSeatTypeOption(
                       'Premium',
@@ -460,6 +464,8 @@ void _showSeatSelectionBottomSheet(
                           selectedSeatType = 'Premium';
                         });
                       },
+                      price: '₹350',
+                      availability: 'Sold out',
                     ),
                   ],
                 ),
@@ -515,62 +521,50 @@ void _showSeatSelectionBottomSheet(
   );
 }
 
-Widget _buildSeatTypeOption(String title, Color color, String selectedSeatType, VoidCallback onTap) {
+Widget _buildSeatTypeOption(String type, Color color, String selectedType, VoidCallback onTap,
+    {required String price, required String availability}) {
   return GestureDetector(
     onTap: onTap,
     child: Container(
+      width: 100.0,
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: selectedSeatType == title ? color : Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(8.0),
+        color: selectedType == type ? color : Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(5.0),
         border: Border.all(
-          color: selectedSeatType == title ? Colors.transparent : Colors.grey,
-          width: 2.0,
+          color: selectedType == type ? color : Colors.transparent,
+          width: 0.0,
         ),
       ),
-      child: Center(
-        child: Text(
-          title,
-          style: TextStyle(
-            fontSize: 14.0,
-            fontWeight: FontWeight.bold,
-            color: selectedSeatType == title ? Colors.white : Colors.black,
+      child: Column(
+        children: [
+          Text(
+            type,
+            style: TextStyle(
+              color: selectedType == type ? Colors.white : color,
+                            fontSize: 12.0,
+              fontWeight: FontWeight.bold,
+              
+            ),
           ),
-        ),
+          const SizedBox(height: 2.0),
+          Text(
+            price,
+            style: TextStyle(
+              color: selectedType == type ? Colors.white : color,
+              fontSize: 12.0,
+            ),
+          ),
+          const SizedBox(height: 4.0),
+          Text(
+            availability,
+            style: TextStyle(
+              color: selectedType == type ? Colors.white : color,
+              fontSize: 10.0,
+            ),
+          ),
+        ],
       ),
-    ),
-  );
-}
-
-
-
-Widget _buildTicketOption(String title, String price, String availability) {
-  return Container(
-    padding: const EdgeInsets.all(8.0),
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.grey),
-      borderRadius: BorderRadius.circular(8.0),
-    ),
-    child: Column(
-      children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 4.0),
-        Text(
-          price,
-          style: const TextStyle(fontSize: 12.0, color: Colors.grey),
-        ),
-        const SizedBox(height: 4.0),
-        Text(
-          availability,
-          style: TextStyle(
-            fontSize: 12.0,
-            color: availability == 'Filling fast' ? Colors.orange : Colors.green,
-          ),
-        ),
-      ],
     ),
   );
 }

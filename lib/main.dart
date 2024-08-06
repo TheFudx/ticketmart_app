@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'home_screen.dart';
 import 'bloc/navigation_bloc.dart';
-import 'dart:io';
+import 'connectivity_cubit.dart';
 import 'my_http_overrides.dart';
+import 'dart:io';
 import 'dart:async';
 
 void main() {
@@ -16,13 +17,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Ticket Mart',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-        useMaterial3: true,
+    return BlocProvider(
+      create: (context) => ConnectivityCubit(),
+      child: MaterialApp(
+        title: 'Ticket Mart',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+          useMaterial3: true,
+        ),
+        home: const SplashScreen(),
       ),
-      home: const SplashScreen(),
     );
   }
 }
@@ -67,23 +71,41 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 
   @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: BlocBuilder<ConnectivityCubit, bool>(
+        builder: (context, isConnected) {
+          return Center(
+            child: isConnected
+                ? FadeTransition(
+                    opacity: _animation,
+                    child: ScaleTransition(
+                      scale: _animation,
+                      child: Image.asset('assets/images/splash_image.png'),
+                    ),
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/images/no_internet.png'),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Optional: Retry logic or navigate to another screen
+                        },
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+          );
+        },
+      ),
+    );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: FadeTransition(
-          opacity: _animation,
-          child: ScaleTransition(
-            scale: _animation,
-            child: Image.asset('assets/images/splash_image.png'),
-          ),
-        ),
-      ),
-    );
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 }

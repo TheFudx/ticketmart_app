@@ -11,6 +11,7 @@ class TheaterBookingScreen extends StatefulWidget {
   final String movieTitle;
   final int ticketCount;
   final Map<String, dynamic> showtime;
+  final String seatType;
 
   const TheaterBookingScreen({
     super.key,
@@ -19,7 +20,8 @@ class TheaterBookingScreen extends StatefulWidget {
     required this.movieId,
     required this.movieTitle,
     required this.ticketCount,
-    required this.showtime, required String seatType,
+    required this.showtime,
+    required this.seatType,
   });
 
   @override
@@ -32,16 +34,16 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
   Map<int, Map<String, dynamic>> seatData = {};
 
   final Map<int, int> rowPrices = {
-    0: 50,
-    1: 50,
+    1: 150,
     2: 150,
     3: 150,
-    4: 150,
-    5: 150,
-    6: 100,
-    7: 100,
-    8: 100,
-    9: 100,
+    4: 250,
+    5: 250,
+    6: 250,
+    7: 250,
+    8: 250,
+    9: 350,
+    10: 350,
   };
 
   @override
@@ -75,7 +77,7 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
     String seatLabel = String.fromCharCode(65 + rowIndex);
 
     if (['A', 'B', 'C'].contains(seatLabel)) return 'Normal';
-    if (['D', 'E', 'F', 'G'].contains(seatLabel)) return 'Executive';
+    if (['D', 'E', 'F', 'G', 'H'].contains(seatLabel)) return 'Executive';
     return 'Premium';
   }
 
@@ -85,8 +87,6 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
       return totalPrice + (rowPrices[row] ?? 0);
     });
   }
-
-
 
   Widget _buildSeatLayout() {
     return SingleChildScrollView(
@@ -131,6 +131,33 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
     );
   }
 
+  List<List<String>> _getSeatRanges(String seatType) {
+    final seatRanges = {
+      'Normal': [
+        ...List.generate(10, (index) => 'A${index + 1}'),
+        ...List.generate(10, (index) => 'B${index + 1}'),
+        ...List.generate(10, (index) => 'C${index + 1}'),
+      ],
+      'Executive': [
+        ...List.generate(10, (index) => 'D${index + 1}'),
+        ...List.generate(10, (index) => 'E${index + 1}'),
+        ...List.generate(10, (index) => 'F${index + 1}'),
+        ...List.generate(10, (index) => 'G${index + 1}'),
+        ...List.generate(10, (index) => 'H${index + 1}'),
+      ],
+      'Premium': [
+        ...List.generate(10, (index) => 'I${index + 1}'),
+        ...List.generate(10, (index) => 'J${index + 1}'),
+      ],
+    };
+
+    return seatRanges[seatType]!.fold<List<List<String>>>([], (acc, seat) {
+      if (acc.isEmpty || acc.last.length >= 10) acc.add([]);
+      acc.last.add(seat);
+      return acc;
+    });
+  }
+
   Widget _buildSeatSection(String seatType) {
     final seatRanges = _getSeatRanges(seatType);
 
@@ -163,54 +190,41 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
     );
   }
 
-  List<List<String>> _getSeatRanges(String seatType) {
-    final seatRanges = {
-      'Normal': [
-        ...List.generate(10, (index) => 'A${index + 1}'),
-        ...List.generate(10, (index) => 'B${index + 1}'),
-        ...List.generate(10, (index) => 'C${index + 1}'),
-      ],
-      'Executive': [
-        ...List.generate(10, (index) => 'D${index + 1}'),
-        ...List.generate(10, (index) => 'E${index + 1}'),
-        ...List.generate(10, (index) => 'F${index + 1}'),
-        ...List.generate(10, (index) => 'G${index + 1}'),
-        ...List.generate(10, (index) => 'H${index + 1}'),
-      ],
-      'Premium': [
-        ...List.generate(10, (index) => 'I${index + 1}'),
-        ...List.generate(10, (index) => 'J${index + 1}'),
-      ],
-    };
-
-    return seatRanges[seatType]!.fold<List<List<String>>>([], (acc, seat) {
-      if (acc.isEmpty || acc.last.length >= 10) acc.add([]);
-      acc.last.add(seat);
-      return acc;
-    });
-  }
-
   int _seatLabelToNumber(String seatLabel) {
-    return seatLabel.codeUnitAt(0) -
-        65 +
-        (int.parse(seatLabel.substring(1)) - 1) * 10;
+    int rowIndex = seatLabel.codeUnitAt(0) - 65;
+    int seatIndex = int.parse(seatLabel.substring(1)) - 1;
+    return rowIndex * 10 + seatIndex;
   }
 
-  Widget _buildSeat(int seatNumber, String seatLabel, String seatType) {
+   Widget _buildSeat(int seatNumber, String seatLabel, String seatType) {
     return GestureDetector(
       onTap: () {
+        if (_determineSeatType(seatNumber) != widget.seatType) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content:
+                  Text('You selection was set to ${widget.seatType} seats.'),
+              backgroundColor: Colors.blue.shade500,
+            ),
+          );
+          return;
+        }
+
         setState(() {
           if (selectedSeats.contains(seatNumber)) {
             selectedSeats.remove(seatNumber);
-          } else if (selectedSeats.length < widget.ticketCount) {
-            selectedSeats.add(seatNumber);
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                    'You can select up to ${widget.ticketCount} seats only.'),
-              ),
-            );
+            final seatsToSelect = _getConsecutiveSeats(seatNumber, widget.ticketCount);
+            if (seatsToSelect.isNotEmpty && seatsToSelect.length == widget.ticketCount) {
+              selectedSeats.addAll(seatsToSelect);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Unable to select ${widget.ticketCount} consecutive seats.'),
+                  backgroundColor: Colors.blue.shade500,
+                ),
+              );
+            }
           }
           totalSeatPrice = _calculateTotalSeatPrice();
         });
@@ -243,6 +257,18 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
     );
   }
 
+  List<int> _getConsecutiveSeats(int startSeat, int count) {
+    final row = startSeat ~/ 10;
+    final start = startSeat % 10;
+    final seats = List.generate(count, (index) => row * 10 + start + index);
+
+    if (seats.any((seat) => selectedSeats.contains(seat) || _determineSeatType(seat) != widget.seatType)) {
+      return [];
+    }
+    return seats;
+  }
+
+  
   Widget _buildSelectedSeatsDisplay() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -413,7 +439,7 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
                             ),
                             const SizedBox(width: 5.0),
                             Text(
-                              '${widget.ticketCount} Ticket',
+                              '${widget.ticketCount} Ticket, ${widget.seatType}',
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.blue,
