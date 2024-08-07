@@ -1,28 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:ticketmart/ticket_screen.dart';
 import 'package:ticketmart/terms_conditions_modal.dart'; // Import the new file
+import 'package:ticketmart/api_connection.dart'; // Import your ApiConnection class
 
 class ProfilePage extends StatefulWidget {
+  final String theatreId;
   final String theaterName;
+  final String movieId;
   final String movieTitle;
   final List<int> seats;
   final int totalSeatPrice;
+  final String seatType;
+  final Map<String, dynamic> showTime;
   final String email;
   final String phone;
 
-  const ProfilePage({super.key, 
-    required this.theaterName, 
-    required this.movieTitle, 
-    required this.seats, 
-    required this.totalSeatPrice, 
-    required this.email, 
-    required this.phone});
+  const ProfilePage({
+    super.key,
+    required this.theaterName,
+    required this.movieTitle,
+    required this.seats,
+    required this.showTime,
+    required this.seatType,
+    required this.totalSeatPrice,
+    required this.email,
+    required this.phone, 
+    required this.theatreId, 
+    required this.movieId,
+    
+  });
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.text = widget.email;
+    _phoneController.text = widget.phone;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,9 +57,19 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildTextField('Your email', 'Enter your email', TextInputType.emailAddress),
+            _buildTextField(
+              'Your email',
+              'Enter your email',
+              TextInputType.emailAddress,
+              _emailController,
+            ),
             const SizedBox(height: 14.0),
-            _buildTextField('Mobile number', 'Enter your phone number', TextInputType.phone),
+            _buildTextField(
+              'Mobile number',
+              'Enter your phone number',
+              TextInputType.phone,
+              _phoneController,
+            ),
             const SizedBox(height: 2.0),
             Text(
               'Your number will be used for sending tickets',
@@ -66,7 +99,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Align(
               alignment: Alignment.centerLeft,
               child: ElevatedButton(
-                onPressed: () => _showOtpDialog(context),
+                onPressed: _isLoading ? null : () => _submitForm(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue.shade900,
                   padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
@@ -74,7 +107,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
-                child: const Text('Submit', style: TextStyle(color: Colors.white)),
+                child: _isLoading
+                    ? const CircularProgressIndicator()
+                    : const Text('Submit', style: TextStyle(color: Colors.white)),
               ),
             ),
           ],
@@ -83,7 +118,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildTextField(String label, String hint, TextInputType keyboardType) {
+  Widget _buildTextField(String label, String hint, TextInputType keyboardType, TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -103,6 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           child: TextFormField(
             keyboardType: keyboardType,
+            controller: controller,
             decoration: InputDecoration(
               hintText: hint,
               border: InputBorder.none,
@@ -113,110 +149,63 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  void _showOtpDialog(BuildContext context) {
+  void _submitForm(BuildContext context) async {
+    final email = _emailController.text;
+    final phone = _phoneController.text;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final result = await ApiConnection.loginOrRegisterUser(email, phone);
+      if (result['status'] == 'success') {
+        // If login/register is successful, navigate to the TicketScreen
+        Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
+          context,
+          MaterialPageRoute(
+            builder: (context) => TicketScreen(
+              showTime: widget.showTime,
+              theaterName: widget.theaterName,
+              movieTitle: widget.movieTitle,
+              seats: widget.seats,
+              totalSeatPrice: widget.totalSeatPrice, 
+              seatType: widget.seatType, 
+              selectedSeats: widget.seats, 
+              ticketCount: widget.totalSeatPrice, 
+              email: widget.email, 
+              phone: widget.phone, theatreId: 
+              widget.theatreId, 
+              movieId: widget.movieId,
+            ),
+          ),
+        );
+      } else {
+        _showErrorDialog(result['message']);
+      }
+    } catch (e) {
+      _showErrorDialog('Failed to connect to the server');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _showErrorDialog(String message) {
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Enter OTP'),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('A 6-digit OTP has been sent to your mobile number.'),
-              SizedBox(height: 12.0),
-              OtpInputFields(),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(), // Close the dialog
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // Add your OTP submission logic here
-
-                // Close the dialog first
-                Navigator.of(context).pop();
-
-                // Navigate to TicketScreen
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TicketScreen(
-                      theaterName: widget.theaterName,
-                      movieTitle: widget.movieTitle,
-                      seats: widget.seats,
-                      totalSeatPrice: widget.totalSeatPrice,
-                      email: widget.email,
-                      phone: widget.phone,
-                    ),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue.shade900),
-              child: const Text('Submit', style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class OtpInputFields extends StatefulWidget {
-  const OtpInputFields({super.key});
-
-  @override
-  OtpInputFieldsState createState() => OtpInputFieldsState();
-}
-
-class OtpInputFieldsState extends State<OtpInputFields> {
-  late List<TextEditingController> _controllers;
-
-  @override
-  void initState() {
-    super.initState();
-    _controllers = List.generate(6, (_) => TextEditingController());
-  }
-
-  @override
-  void dispose() {
-    for (var controller in _controllers) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: List.generate(6, (index) {
-        return SizedBox(
-          width: 40.0,
-          height: 40.0,
-          child: TextField(
-            controller: _controllers[index],
-            keyboardType: TextInputType.number,
-            maxLength: 1,
-            textAlign: TextAlign.center,
-            decoration: InputDecoration(
-              counterText: '',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            ),
-            onChanged: (value) {
-              if (value.length == 1 && index != 5) {
-                FocusScope.of(context).nextFocus();
-              } else if (value.isEmpty && index != 0) {
-                FocusScope.of(context).previousFocus();
-              }
-            },
-          ),
-        );
-      }),
+        ],
+      ),
     );
   }
 }

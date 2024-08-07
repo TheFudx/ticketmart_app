@@ -1,22 +1,37 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 
 class TicketScreen extends StatefulWidget {
+  final String theatreId;
   final String theaterName;
+  final String movieId;
   final String movieTitle;
   final List<int> seats;
   final int totalSeatPrice;
+  final Map<String, dynamic> showTime;
+  final String seatType;
+  final int ticketCount;
   final String email;
-  final String phone;
+  final String phone; 
+
+
 
   const TicketScreen({
     super.key,
+    required this.theatreId,
     required this.theaterName,
+    required this.movieId,
     required this.movieTitle,
     required this.seats,
     required this.totalSeatPrice,
-    required this.email,
+    required this.showTime,
+    required this.seatType, 
+    required List<int> selectedSeats, 
+    required this.ticketCount, 
+    required this.email, 
     required this.phone,
+   
   });
 
   @override
@@ -25,12 +40,11 @@ class TicketScreen extends StatefulWidget {
 
 class _TicketScreenState extends State<TicketScreen>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _animationController;
+  late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
@@ -55,11 +69,10 @@ class _TicketScreenState extends State<TicketScreen>
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              // _buildSuccessMessage(),
               const SizedBox(height: 10.0),
               _buildTicketDetails(),
               _buildAdditionalDetails(),
@@ -75,57 +88,126 @@ class _TicketScreenState extends State<TicketScreen>
 
   Widget _buildTicketDetails() {
     return ClipPath(
-      clipper: TicketClipper(),
-      child: Card(
-        color: Colors.blue.shade900,
-        shape: const RoundedRectangleBorder(),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+        clipper: TicketClipper(),
+        child: Card(
+          color: Colors.blue.shade900,
+          shape: const RoundedRectangleBorder(),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            
+           child: DottedBorder(
+  color: Colors.white, // Border color
+  strokeWidth: 2.0, // Border width
+  dashPattern: const [4, 4], // Pattern for dots and gaps
+  borderType: BorderType.RRect, // Rounded rectangle
+  radius: const Radius.circular(2.0), // Optional: border radius
+  child: Container(
+    padding: const EdgeInsets.all(5.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Center(
+          child: Image.asset(
+            'assets/images/popcorn.png',
+            height: 300.0,
+          ),
+        ),
+        Center(
+          child: Text(
+            widget.movieTitle,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14.0,
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10.0),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.white,
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(0.0),
+          ),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Center(
-                child: Image.asset(
-                  'assets/images/popcorn.png',
-                  height: 200.0,
-                ),
-                
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildTicketDetailRow(
+                'Seat',
+                widget.seats
+                    .map((seat) =>
+                        '${seat ~/ 10 + 1}${String.fromCharCode(65 + seat % 10)}')
+                    .join(', '),
               ),
               const SizedBox(height: 10.0),
-              Center(
-                child: Text(
-                  widget.movieTitle,
-                  style: const TextStyle(
+              _buildTicketDetailRow('Location', widget.theaterName),
+              const SizedBox(height: 10.0),
+              _buildTicketDetailRow('Payment', 'Card'),
+              const SizedBox(height: 10.0),
+              _buildTicketDetailRow('Order #', '34678'),
+              const SizedBox(height: 10.0),
+              _buildTicketDetailRow('Amount', '450'),
+              const SizedBox(height: 10.0),
+              _buildTicketDetailRow('GST', '100'),
+            ],
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.green, // Green background color
+            borderRadius: BorderRadius.circular(0.0),
+          ),
+          padding: const EdgeInsets.all(15.0),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Your ticket booked successfully',
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18.0,
+                    fontSize: 12.0,
                     fontWeight: FontWeight.bold,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildTicketDetailColumn(
-                    'Seat',
-                    widget.seats
-                        .map((seat) =>
-                            '${seat ~/ 10 + 1}${String.fromCharCode(65 + seat % 10)}')
-                        .join(', '),
-                  ),
-                  const SizedBox(height: 10.0),
-                  _buildTicketDetailColumn('Location', widget.theaterName),
-                  const SizedBox(height: 10.0),
-                  _buildTicketDetailColumn('Payment', 'Card'),
-                  const SizedBox(height: 10.0),
-                  _buildTicketDetailColumn('Order #', '34678'),
-                ],
+                  )),
+              SizedBox(width: 10),
+              Icon(
+                Icons.thumb_up,
+                color: Colors.yellow,
               ),
             ],
           ),
         ),
-      ),
+      ],
+    ),
+  ),
+)
+
+          ),
+        ));
+  }
+
+  Widget _buildTicketDetailRow(String title, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 12.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 12.0,
+            color: Colors.white,
+          ),
+        ),
+      ],
     );
   }
 
@@ -133,49 +215,43 @@ class _TicketScreenState extends State<TicketScreen>
     return ClipPath(
       clipper: InvertedTicketClipper(),
       child: Container(
-        color: Colors.grey,
+        color: Colors.grey.shade300,
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              const Text(
-                'Scan this barcode at the entrance of the Theatre',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14.0,
-                ),
+          child: DottedBorder(
+  color: Colors.black, // Border color
+  strokeWidth: 1.0, // Border width
+  dashPattern: const [4, 4], // Pattern for dots and gaps
+  borderType: BorderType.RRect, // Rounded rectangle
+  radius: const Radius.circular(0.0), 
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  const Text(
+                    'Scan this barcode at the entrance of the Theatre',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12.0,
+                    ),
+                  ),
+                  const SizedBox(height: 10.0),
+                  BarcodeWidget(
+                    barcode: Barcode.code128(),
+                    data: 'Ticket ID: 34678',
+                    height: 70.0,
+                    drawText: false,
+                  ),
+                ],
               ),
-              const SizedBox(height: 10.0),
-              BarcodeWidget(
-                barcode: Barcode.code128(),
-                data: 'Ticket ID: 34678',
-                height: 100.0,
-                drawText: false,
-              ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildTicketDetailColumn(String title, String detail) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(color: Colors.white),
-        ),
-        const SizedBox(height: 5.0),
-        Text(
-          detail,
-          style: const TextStyle(color: Colors.white),
-        ),
-      ],
-    );
-  }
 
   Widget _buildDownloadButton(BuildContext context) {
     return ElevatedButton(
@@ -192,7 +268,7 @@ class _TicketScreenState extends State<TicketScreen>
       child: const Text(
         'Download tickets',
         style: TextStyle(
-          fontSize: 14.0,
+          fontSize: 12.0,
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),

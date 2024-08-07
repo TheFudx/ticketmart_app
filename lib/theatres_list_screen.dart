@@ -211,9 +211,9 @@ class _TheatersListScreenState extends State<TheatersListScreen> {
   final nowDate = DateTime(now.year, now.month, now.day, now.hour, now.minute); // Current date and time
 
   // Filter showtimes to include only those on the selected date
-  final filteredShowtimes = showtimes.where((showtime) {
+  final filteredShowtimes = showtimes.where((showTime) {
     final showtimeDate = DateFormat('yyyy-MM-dd').format(
-      DateTime.parse(showtime['showtime_date']),
+      DateTime.parse(showTime['showtime_date']),
     );
     return showtimeDate == DateFormat('yyyy-MM-dd').format(_selectedDate);
   }).toList();
@@ -284,8 +284,8 @@ class _TheatersListScreenState extends State<TheatersListScreen> {
                   child: Wrap(
                     spacing: 8.0, // Horizontal spacing between items
                     runSpacing: 4.0, // Vertical spacing between lines
-                    children: filteredShowtimes.map<Widget>((showtime) {
-                      final showtimeStart = showtime['showtime_start_time'];
+                    children: filteredShowtimes.map<Widget>((showTime) {
+                      final showtimeStart = showTime['showtime_start_time'];
                       final showtimeDateTime = _parseShowtime(
                         DateFormat('yyyy-MM-dd').format(_selectedDate),
                         showtimeStart,
@@ -293,7 +293,7 @@ class _TheatersListScreenState extends State<TheatersListScreen> {
                       final isPast = showtimeDateTime.isBefore(nowDate); // Updated comparison
 
                       return GestureDetector(
-                        onTap: isPast ? null : () => _showSeatSelectionBottomSheet(showtime, cinemaId, theaterName),
+                        onTap: isPast ? null : () => _showSeatSelectionBottomSheet(showTime, cinemaId, theaterName),
                         child: Container(
                           width: 65,
                           margin: const EdgeInsets.only(bottom: 2.0),
@@ -345,9 +345,10 @@ class _TheatersListScreenState extends State<TheatersListScreen> {
   }
 
 void _showSeatSelectionBottomSheet(
-    dynamic showtime, String cinemaId, String theaterName) {
+    dynamic showTime, String cinemaId, String theaterName) {
   showModalBottomSheet(
     context: context,
+    isScrollControlled: true, // Allows the modal sheet to expand fully
     builder: (context) {
       int selectedSeats = 1;
       String selectedSeatType = 'Normal';
@@ -355,164 +356,165 @@ void _showSeatSelectionBottomSheet(
       return StatefulBuilder(
         builder: (context, setState) {
           return Container(
-            width: double.infinity,
-            height: 600, // Increased height to accommodate new elements
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                const Text(
-                  'Select Seats',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const Text(
+                    'Select Seats',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10.0),
-                // Display seat images
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  switchInCurve: Curves.easeInOut,
-                  switchOutCurve: Curves.easeInOut,
-                  child: _buildSeatImages(selectedSeats),
-                ),
-                const SizedBox(height: 10.0),
-                // Container for circular numbers
-                Wrap(
-                  spacing: 8.0,
-                  runSpacing: 8.0,
-                  alignment: WrapAlignment.center,
-                  children: List.generate(10, (index) {
-                    final number = index + 1;
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedSeats = number;
-                        });
-                      },
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                        width: 25,
-                        height: 25,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
+                  const SizedBox(height: 10.0),
+                  // Display seat images
+                  SizedBox(
+                    height: 120.0, // Adjust height as needed
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: _buildSeatImages(selectedSeats),
+                    ),
+                  ),
+                  const SizedBox(height: 10.0),
+                  // Container for circular numbers
+                  Wrap(
+                    spacing: 8.0,
+                    runSpacing: 8.0,
+                    alignment: WrapAlignment.center,
+                    children: List.generate(10, (index) {
+                      final number = index + 1;
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedSeats = number;
+                          });
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          width: 25,
+                          height: 25,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: selectedSeats == number
+                                  ? Colors.blue.shade900
+                                  : Colors.transparent,
+                              width: 2.0,
+                            ),
                             color: selectedSeats == number
                                 ? Colors.blue.shade900
-                                : Colors.transparent,
-                            width: 2.0,
+                                : Colors.grey.shade300,
                           ),
-                          color: selectedSeats == number
-                              ? Colors.blue.shade900
-                              : Colors.grey.shade300,
-                        ),
-                        child: Center(
-                          child: Text(
-                            '$number',
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold,
-                              color: selectedSeats == number
-                                  ? Colors.white
-                                  : Colors.grey.shade800,
+                          child: Center(
+                            child: Text(
+                              '$number',
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold,
+                                color: selectedSeats == number
+                                    ? Colors.white
+                                    : Colors.grey.shade800,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  }),
-                ),
-                const SizedBox(height: 20.0),
-                const Divider(color: Colors.grey),
-                const SizedBox(height: 20.0),
-                // Row of three containers for seat types
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildSeatTypeOption(
-                      'Normal',
-                      Colors.blue.shade900,
-                      selectedSeatType,
-                      () {
-                        setState(() {
-                          selectedSeatType = 'Normal';
-                        });
-                      },
-                      price: '₹150',
-                      availability: 'Available',
-                    ),
-                    _buildSeatTypeOption(
-                      'Executive',
-                      Colors.green.shade700,
-                      selectedSeatType,
-                      () {
-                        setState(() {
-                          selectedSeatType = 'Executive';
-                        });
-                      },
-                      price: '₹250',
-                      availability: 'Filling Fast',
-                    ),
-                    _buildSeatTypeOption(
-                      'Premium',
-                      Colors.red.shade700,
-                      selectedSeatType,
-                      () {
-                        setState(() {
-                          selectedSeatType = 'Premium';
-                        });
-                      },
-                      price: '₹350',
-                      availability: 'Sold out',
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20.0),
-                ElevatedButton(
-                  onPressed: () {
-                    // Print statements for debugging
-                    if (kDebugMode) {
-                      print('Navigating to TheaterBookingScreen with the following details:');
-                      print('Showtime: $showtime');
-                      print('Theatre ID: $cinemaId');
-                      print('Theater Name: $theaterName');
-                      print('Movie ID: ${widget.movieId}');
-                      print('Movie Title: ${widget.movieTitle}');
-                      print('Ticket Count: $selectedSeats');
-                      print('Seat Type: $selectedSeatType');
-                    }
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TheaterBookingScreen(
-                          showtime: showtime,
-                          theatreId: cinemaId,
-                          theaterName: theaterName,
-                          movieId: widget.movieId,
-                          movieTitle: widget.movieTitle,
-                          ticketCount: selectedSeats,
-                          seatType: selectedSeatType, // Pass selected seat type
-                        ),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.blue.shade900,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 150.0,
-                      vertical: 10.0,
-                    ),
+                      );
+                    }),
                   ),
-                  child: const Text('Proceed', style: TextStyle(fontSize: 14)),
-                ),
-              ],
+                  const SizedBox(height: 20.0),
+                  const Divider(color: Colors.grey),
+                  const SizedBox(height: 20.0),
+                  // Row of three containers for seat types
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildSeatTypeOption(
+                        'Normal',
+                        Colors.blue.shade900,
+                        selectedSeatType,
+                        () {
+                          setState(() {
+                            selectedSeatType = 'Normal';
+                          });
+                        },
+                        price: '₹150',
+                        availability: 'Available',
+                      ),
+                      _buildSeatTypeOption(
+                        'Executive',
+                        Colors.green.shade700,
+                        selectedSeatType,
+                        () {
+                          setState(() {
+                            selectedSeatType = 'Executive';
+                          });
+                        },
+                        price: '₹250',
+                        availability: 'Filling Fast',
+                      ),
+                      _buildSeatTypeOption(
+                        'Premium',
+                        Colors.red.shade700,
+                        selectedSeatType,
+                        () {
+                          setState(() {
+                            selectedSeatType = 'Premium';
+                          });
+                        },
+                        price: '₹350',
+                        availability: 'Sold out',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Print statements for debugging
+                      if (kDebugMode) {
+                        print('Navigating to TheaterBookingScreen with the following details:');
+                        print('Showtime: $showTime');
+                        print('Theatre ID: $cinemaId');
+                        print('Theater Name: $theaterName');
+                        print('Movie ID: ${widget.movieId}');
+                        print('Movie Title: ${widget.movieTitle}');
+                        print('Ticket Count: $selectedSeats');
+                        print('Seat Type: $selectedSeatType');
+                      }
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TheaterBookingScreen(
+                            showtime: showTime,
+                            theatreId: cinemaId,
+                            theaterName: theaterName,
+                            movieId: widget.movieId,
+                            movieTitle: widget.movieTitle,
+                            ticketCount: selectedSeats,
+                            seatType: selectedSeatType, // Pass selected seat type
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.blue.shade900,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.3,
+                        vertical: 10.0,
+                      ),
+                    ),
+                    child: const Text('Proceed', style: TextStyle(fontSize: 14)),
+                  ),
+                ],
+              ),
             ),
           );
         },
@@ -520,7 +522,6 @@ void _showSeatSelectionBottomSheet(
     },
   );
 }
-
 Widget _buildSeatTypeOption(String type, Color color, String selectedType, VoidCallback onTap,
     {required String price, required String availability}) {
   return GestureDetector(

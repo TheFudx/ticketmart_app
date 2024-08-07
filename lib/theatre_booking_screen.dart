@@ -26,6 +26,7 @@ class TheaterBookingScreen extends StatefulWidget {
 
   @override
   TheaterBookingScreenState createState() => TheaterBookingScreenState();
+  
 }
 
 class TheaterBookingScreenState extends State<TheaterBookingScreen> {
@@ -475,7 +476,7 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
                               seats: [1, 2, 3],
                               totalSeatPrice: 100,
                               email: 'email',
-                              phone: 'phone',
+                              phone: 'phone', showTime: {}, seatType: '', theatreId: '', movieId: '',
                             )),
                   );
                 },

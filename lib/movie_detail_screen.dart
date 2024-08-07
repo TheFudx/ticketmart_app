@@ -43,7 +43,7 @@ class MovieDetailsScreen extends StatelessWidget {
         ),
         title: Row(
           mainAxisSize: MainAxisSize
-              .min, // Ensure the row only takes up as much space as needed
+              .max, // Ensure the row only takes up as much space as needed
           children: [
             Text(
               movieTitle,
@@ -180,7 +180,7 @@ class MovieDetailsScreen extends StatelessWidget {
 
   Widget _buildSeparator() {
     return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      padding: EdgeInsets.symmetric(horizontal: 4.0),
       child: Text(
         '•',
         style: TextStyle(
@@ -280,10 +280,13 @@ Widget _buildOfferCard(IconData icon, String offer) {
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
           backgroundColor: Colors.blue.shade900,
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          shape: RoundedRectangleBorder(
+ padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.3,
+                        vertical: 10.0,
+                      ),          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
+
         ),
         child: const Text(
           'Check Theatres',

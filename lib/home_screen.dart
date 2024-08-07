@@ -6,7 +6,7 @@ import 'package:ticketmart/api_connection.dart';
 import 'package:ticketmart/movie_detail_screen.dart';
 import 'package:ticketmart/notification.dart';
 import 'package:ticketmart/offers.dart';
-import 'package:ticketmart/profile_page.dart';
+// import 'package:ticketmart/profile_page.dart';
 import 'package:ticketmart/search_screen.dart';
 import 'package:ticketmart/side_drawer.dart';
 
@@ -150,7 +150,8 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildHomePage(screenHeight),
           const SearchScreen(),
           const OffersScreen(),
-          const ProfilePage(theaterName: 'theatreName', movieTitle: 'movie', seats: [1,2,3], totalSeatPrice: 100, email: 'email', phone: 'phone',),
+          // const ProfilePage(theaterName: 'theatreName', movieTitle: 'movie', seats: [1,2,3], totalSeatPrice: 100, email: 'email', phone: 'phone', 
+          // showTime: ,),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -278,120 +279,113 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildCarouselImage(BuildContext context, int index) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MovieDetailsScreen(
-                movieId: _carouselImages[index]['id'],
-                movieTitle: _carouselImages[index]['title'],
-                movieReleaseDate: _carouselImages[index]['release_date'],
-                rating: _carouselImages[index]['rating'],
-                imageUrl: _carouselImages[index]['image_path'],
-                duration: _carouselImages[index]['duration'],
-                genre: _carouselImages[index]['genre'],
-                description: _carouselImages[index]['description'],
-                topOffers: 'BUY 1 GET 1 FREE',
-                cast: _carouselImages[index]['cast']
-                    .split(','), // Split the cast string into a list
-              ),
+  return Padding(
+    padding: const EdgeInsets.all(10.0),
+    child: GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MovieDetailsScreen(
+              movieId: _carouselImages[index]['id'],
+              movieTitle: _carouselImages[index]['title'],
+              movieReleaseDate: _carouselImages[index]['release_date'],
+              rating: _carouselImages[index]['rating'],
+              imageUrl: _carouselImages[index]['image_path'],
+              duration: _carouselImages[index]['duration'],
+              genre: _carouselImages[index]['genre'],
+              description: _carouselImages[index]['description'],
+              topOffers: 'BUY 1 GET 1 FREE',
+              cast: _carouselImages[index]['cast'].split(','), // Split the cast string into a list
             ),
-          );
-        },
-        child: Stack(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.9,
+          ),
+        );
+      },
+      child: Stack(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(_carouselImages[index]["image_path"]),
+                fit: BoxFit.cover,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
               decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(_carouselImages[index]["image_path"]),
-                  fit: BoxFit.cover,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
                 ),
-                borderRadius: BorderRadius.circular(10),
+                color: Colors.black.withOpacity(0.6),
               ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(10),
-                    bottomRight: Radius.circular(10),
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        _carouselImages[index]["title"],
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Spacer(),
+                      Text(
+                        _carouselImages[index]["release_date"],
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
                   ),
-                  color: Colors.black.withOpacity(0.6),
-                ),
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          _carouselImages[index]["title"],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          _carouselImages[index]["release_date"],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                ],
               ),
             ),
-            Positioned(
-              top: 10,
-              left: 320,
-              right: 10,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.black.withOpacity(0.6),
-                ),
-                padding: const EdgeInsets.all(5.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.star,
-                          color: Colors.yellow,
-                          size: 14,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          _carouselImages[index]["rating"].toString(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
+          ),
+          Positioned(
+            top: 10,
+            right: 10,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.black.withOpacity(0.6),
+              ),
+              padding: const EdgeInsets.all(5.0),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.star,
+                    color: Colors.yellow,
+                    size: 14,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    _carouselImages[index]["rating"].toString(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildMovieSection(String title, List<Map<String, dynamic>> movies) {
     return Padding(
@@ -403,10 +397,10 @@ class _HomeScreenState extends State<HomeScreen> {
             title,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 5),
           SizedBox(
-            height: 300,
-            child: ListView.builder(
+              height: MediaQuery.of(context).size.height *
+                  0.27,            child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: movies.length,
               itemBuilder: (context, index) {
@@ -450,23 +444,23 @@ class _HomeScreenState extends State<HomeScreen> {
               width: MediaQuery.of(context).size.width *
                   0.3, // 30% of the screen width
               height: MediaQuery.of(context).size.height *
-                  0.27, // 40% of the screen height
+                  0.22, // 40% of the screen height
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(movies[index]['image_path']),
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fitHeight,
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 2),
             Text(
               movies[index]['title'].length > 12
                   ? '${movies[index]['title'].substring(0, 12)}...'
                   : movies[index]['title'],
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 0),
             Text(
               movies[index]['release_date'],
               style: const TextStyle(fontSize: 10, color: Colors.grey),
