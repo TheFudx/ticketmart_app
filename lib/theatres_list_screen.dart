@@ -483,6 +483,7 @@ void _showSeatSelectionBottomSheet(
                         print('Movie Title: ${widget.movieTitle}');
                         print('Ticket Count: $selectedSeats');
                         print('Seat Type: $selectedSeatType');
+                        print('Screen ID: $cinemaId');
                       }
 
                       Navigator.push(

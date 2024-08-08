@@ -6,7 +6,7 @@ import 'package:ticketmart/api_connection.dart';
 import 'package:ticketmart/movie_detail_screen.dart';
 import 'package:ticketmart/notification.dart';
 import 'package:ticketmart/offers.dart';
-// import 'package:ticketmart/profile_page.dart';
+import 'package:ticketmart/profile_page.dart';
 import 'package:ticketmart/search_screen.dart';
 import 'package:ticketmart/side_drawer.dart';
 
@@ -150,8 +150,16 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildHomePage(screenHeight),
           const SearchScreen(),
           const OffersScreen(),
-          // const ProfilePage(theaterName: 'theatreName', movieTitle: 'movie', seats: [1,2,3], totalSeatPrice: 100, email: 'email', phone: 'phone', 
-          // showTime: ,),
+          const ProfilePage(
+          theaterName: 'theatreName', 
+          movieTitle: 'movie', 
+          seats: [1,2,3], 
+          totalSeatPrice: 100, 
+          email: 'email', 
+          phone: 'phone', 
+          seatType: '', 
+          theatreId: '', 
+          movieId: '', showTime: {},),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -291,7 +299,8 @@ class _HomeScreenState extends State<HomeScreen> {
               movieTitle: _carouselImages[index]['title'],
               movieReleaseDate: _carouselImages[index]['release_date'],
               rating: _carouselImages[index]['rating'],
-              imageUrl: _carouselImages[index]['image_path'],
+              bannerimageUrl: _carouselImages[index]['image_path'],
+              imageUrl: _carouselImages[index]['banner_image_path'],
               duration: _carouselImages[index]['duration'],
               genre: _carouselImages[index]['genre'],
               description: _carouselImages[index]['description'],
@@ -307,8 +316,8 @@ class _HomeScreenState extends State<HomeScreen> {
             width: MediaQuery.of(context).size.width * 0.9,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(_carouselImages[index]["image_path"]),
-                fit: BoxFit.cover,
+                image: NetworkImage(_carouselImages[index]["banner_image_path"]),
+                fit: BoxFit.fill,
               ),
               borderRadius: BorderRadius.circular(10),
             ),
@@ -389,7 +398,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildMovieSection(String title, List<Map<String, dynamic>> movies) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(5.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -397,10 +406,9 @@ class _HomeScreenState extends State<HomeScreen> {
             title,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 5),
           SizedBox(
               height: MediaQuery.of(context).size.height *
-                  0.27,            child: ListView.builder(
+                  0.26,            child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: movies.length,
               itemBuilder: (context, index) {
@@ -427,7 +435,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 movieTitle: movies[index]['title'],
                 movieReleaseDate: movies[index]['release_date'],
                 rating: movies[index]['rating'],
-                imageUrl: movies[index]['image_path'],
+                bannerimageUrl: _carouselImages[index]['image_path'],
+                imageUrl: movies[index]['banner_image_path'],
                 duration: movies[index]['duration'],
                 genre: movies[index]['genre'],
                 description: movies[index]['description'],
@@ -453,14 +462,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            const SizedBox(height: 2),
             Text(
               movies[index]['title'].length > 12
                   ? '${movies[index]['title'].substring(0, 12)}...'
                   : movies[index]['title'],
               style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 0),
             Text(
               movies[index]['release_date'],
               style: const TextStyle(fontSize: 10, color: Colors.grey),

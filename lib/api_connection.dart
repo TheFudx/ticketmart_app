@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -14,7 +15,7 @@ class ApiConnection {
   static String get screens => "$baseUrl$userEndpoint/screen.php";
   static String get users => "$baseUrl$userEndpoint/users.php";
   static String get bookings => "$baseUrl$bookingEndpoint/create_booking.php"; // Add this line for the bookings endpoint
-  static String get seats => "$baseUrl$bookingEndpoint/fetch_seats.php"; // Add this line for the bookings endpoint
+  static String get seats => "$baseUrl$userEndpoint/fetch_seats.php"; // Add this line for the bookings endpoint
 
 
 
@@ -98,7 +99,7 @@ class ApiConnection {
     }
   }
 
-static Future<Map<String, dynamic>> loginOrRegisterUser(String email, String mobileNo) async {
+  static Future<Map<String, dynamic>> loginOrRegisterUser(String email, String mobileNo) async {
     final response = await http.post(
       Uri.parse(users),
       headers: <String, String>{
@@ -156,6 +157,13 @@ static Future<Map<String, dynamic>> loginOrRegisterUser(String email, String mob
   static Future<List<Map<String, dynamic>>> fetchSeats(int screenId) async {
     final response = await http.get(Uri.parse('$seats?screen_id=$screenId'));
 
+    if (kDebugMode) {
+      print('Response status: ${response.statusCode}');
+    }
+    if (kDebugMode) {
+      print('Response body: ${response.body}');
+    }
+
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       if (data['status'] == 'error') {
@@ -166,5 +174,4 @@ static Future<Map<String, dynamic>> loginOrRegisterUser(String email, String mob
       throw Exception('Failed to load seats');
     }
   }
-
 }

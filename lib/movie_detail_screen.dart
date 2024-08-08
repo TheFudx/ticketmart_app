@@ -25,7 +25,7 @@ class MovieDetailsScreen extends StatelessWidget {
     required this.topOffers,
     required this.cast,
     required this.movieReleaseDate,
-    required this.rating,
+    required this.rating, required bannerimageUrl,
   });
 
   @override

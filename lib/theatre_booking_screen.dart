@@ -55,7 +55,7 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
 
   Future<void> _fetchSeatData() async {
     try {
-      final screens = await ApiConnection.fetchScreens('');
+      final screens = await ApiConnection.fetchSeats(int.parse(widget.theatreId));
       setState(() {
         seatData = {
           for (var screen in screens)
@@ -326,7 +326,53 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
     return dateFormat.format(parsedDate);
   }
 
-  @override
+  Widget _buildSeatStatusLegend() {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 10.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildSeatStatus('Available', Colors.white),
+        _buildSeatStatus('Selected', Colors.lightBlue),
+        _buildSeatStatus('Sold', Colors.grey),
+      ],
+    ),
+  );
+}
+
+
+Widget _buildSeatStatus(String status, Color color) {
+  return Row(
+    children: [
+      Container(
+        width: 20,
+        height: 20,
+        color: color,
+      ),
+      const SizedBox(width: 5),
+      Text(status),
+    ],
+  );
+}
+
+Widget _buildSeatsDisplay() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Padding(
+        padding: EdgeInsets.symmetric(vertical: 10.0),
+        child: Text(
+          'Seats:',
+          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+        ),
+      ),
+      for (var seatType in ['Normal', 'Executive', 'Premium'])
+        _buildSeatSection(seatType),
+    ],
+  );
+}
+
+    @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
@@ -455,6 +501,8 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
                     _buildSeatLayout(),
                     const SizedBox(height: 20.0),
                     _buildSelectedSeatsDisplay(),
+                     const SizedBox(height: 20.0),
+                    _buildDynamicSeatsDisplay(), 
                   ],
                 ),
               ),
@@ -502,7 +550,135 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
       ),
     );
   }
+
+  //  Widget _buildDynamicSeatsDisplay() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       const Padding(
+  //         padding: EdgeInsets.symmetric(vertical: 10.0),
+  //         child: Text(
+  //           'Dynamic Seat Sections:',
+  //           style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+  //         ),
+  //       ),
+  //       for (var entry in seatData.entries)
+  //         _buildDynamicSeatSection(entry.key as String, entry.value),
+  //     ],
+  //   );
+  // }
+
+  // Widget _buildDynamicSeatSection(String section, Map<String, dynamic> data) {
+  //   final seatType = data['seat_type'];
+  //   final seatCount = data['seat_count'];
+  //   final price = data['price'];
+
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 5.0),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Text(
+  //           '$section - $seatType Seats',
+  //           style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+  //         ),
+  //         Text(
+  //           'Total Seats: $seatCount',
+  //           style: const TextStyle(fontSize: 12.0),
+  //         ),
+  //         Text(
+  //           'Price per Seat: ₹$price',
+  //           style: const TextStyle(fontSize: 12.0),
+  //         ),
+  //         const SizedBox(height: 10.0),
+  //         // Add any additional display logic as needed...
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  Widget _buildDynamicSeatsDisplay() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Padding(
+        padding: EdgeInsets.symmetric(vertical: 10.0),
+        child: Text(
+          'Dynamic Seat Sections:',
+          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+        ),
+      ),
+      for (var entry in seatData.entries)
+        _buildDynamicSeatSection(entry.key as String, entry.value),
+    ],
+  );
 }
+
+Widget _buildDynamicSeatSection(String section, Map<String, dynamic> data) {
+  final seatType = data['seat_type'];
+  final seats = List<String>.from(data['seats']); // Adjust this based on your API response
+
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 5.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '$section - $seatType Seats',
+          style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          child: Column(
+            children: _buildSeatRows(seats),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+List<Widget> _buildSeatRows(List<String> seats) {
+  final seatRows = <Widget>[];
+
+  for (var i = 0; i < seats.length; i += 10) {
+    final rowSeats = seats.sublist(i, i + 10);
+    seatRows.add(
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: rowSeats.map((seatLabel) {
+          return Container(
+            margin: const EdgeInsets.all(4.0),
+            padding: const EdgeInsets.all(4.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(
+                color: Colors.blue.shade200,
+                width: 0.5,
+              ),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            child: Text(
+              seatLabel,
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 10.0,
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  return seatRows;
+}
+}
+
+
+
+
+
 
 class _PolygonPainter extends CustomPainter {
   @override
