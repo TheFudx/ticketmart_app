@@ -109,7 +109,7 @@ class _TicketScreenState extends State<TicketScreen>
         Center(
           child: Image.asset(
             'assets/images/popcorn.png',
-            height: 300.0,
+            height: 200.0,
           ),
         ),
         Center(
@@ -227,7 +227,7 @@ class _TicketScreenState extends State<TicketScreen>
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   const Text(
                     'Scan this barcode at the entrance of the Theatre',

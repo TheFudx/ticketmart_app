@@ -326,52 +326,6 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
     return dateFormat.format(parsedDate);
   }
 
-  Widget _buildSeatStatusLegend() {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildSeatStatus('Available', Colors.white),
-        _buildSeatStatus('Selected', Colors.lightBlue),
-        _buildSeatStatus('Sold', Colors.grey),
-      ],
-    ),
-  );
-}
-
-
-Widget _buildSeatStatus(String status, Color color) {
-  return Row(
-    children: [
-      Container(
-        width: 20,
-        height: 20,
-        color: color,
-      ),
-      const SizedBox(width: 5),
-      Text(status),
-    ],
-  );
-}
-
-Widget _buildSeatsDisplay() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Padding(
-        padding: EdgeInsets.symmetric(vertical: 10.0),
-        child: Text(
-          'Seats:',
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-        ),
-      ),
-      for (var seatType in ['Normal', 'Executive', 'Premium'])
-        _buildSeatSection(seatType),
-    ],
-  );
-}
-
     @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;

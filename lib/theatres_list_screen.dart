@@ -475,7 +475,7 @@ void _showSeatSelectionBottomSheet(
                     onPressed: () {
                       // Print statements for debugging
                       if (kDebugMode) {
-                        print('Navigating to TheaterBookingScreen with the following details:');
+                        print('Navigating to TheaterBookingScreenCopy with the following details:');
                         print('Showtime: $showTime');
                         print('Theatre ID: $cinemaId');
                         print('Theater Name: $theaterName');

@@ -9,6 +9,11 @@ import 'package:ticketmart/offers.dart';
 import 'package:ticketmart/profile_page.dart';
 import 'package:ticketmart/search_screen.dart';
 import 'package:ticketmart/side_drawer.dart';
+import 'train_page.dart';
+import 'flight_page.dart';
+import 'bus_page.dart';
+import 'events_page.dart';
+import 'park_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -188,103 +193,214 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: _onItemTapped,
         showSelectedLabels: true,
         showUnselectedLabels: true,
-      ),
+      ), 
     );
   }
 
-  Widget _buildHomePage(double screenHeight) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 40.0),
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: _determinePosition,
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      width: 60,
-                      height: 60,
-                    ),
+Widget _buildHomePage(double screenHeight) {
+  return SingleChildScrollView(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 40.0),
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: _determinePosition,
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    width: 60,
+                    height: 60,
                   ),
-                  const SizedBox(width: 8),
-                  _isLocationLoading
-                      ? const CircularProgressIndicator()
-                      : DropdownButton<String>(
-                          value: _selectedCity ?? _translatedCity,
-                          items: [
-                            ..._predefinedCities
-                                .map((city) => DropdownMenuItem<String>(
-                                      value: city,
-                                      child: Text(city),
-                                    )),
-                            if (_translatedCity != null)
-                              DropdownMenuItem<String>(
-                                value: _translatedCity,
-                                child: Text(_translatedCity!),
-                              ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedCity = value;
-                              _translatedCity = value;
-                            });
-                          },
-                          hint: const Text('Choose Location'),
-                        ),
-                  const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.notifications),
+                ),
+                const SizedBox(width: 8),
+                _isLocationLoading
+                    ? const CircularProgressIndicator()
+                    : DropdownButton<String>(
+                        value: _selectedCity ?? _translatedCity,
+                        items: [
+                          ..._predefinedCities
+                              .map((city) => DropdownMenuItem<String>(
+                                    value: city,
+                                    child: Text(city),
+                                  )),
+                          if (_translatedCity != null)
+                            DropdownMenuItem<String>(
+                              value: _translatedCity,
+                              child: Text(_translatedCity!),
+                            ),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedCity = value;
+                            _translatedCity = value;
+                          });
+                        },
+                        hint: const Text('Choose Location'),
+                      ),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.notifications),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NotificationScreen(),
+                      ),
+                    );
+                  },
+                ),
+                Builder(
+                  builder: (context) => IconButton(
+                    icon: const Icon(Icons.menu),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const NotificationScreen(),
-                        ),
-                      );
+                      Scaffold.of(context).openEndDrawer();
                     },
                   ),
-                  Builder(
-                    builder: (context) => IconButton(
-                      icon: const Icon(Icons.menu),
-                      onPressed: () {
-                        Scaffold.of(context).openEndDrawer();
-                      },
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : Column(
-                  children: [
-                    if (_carouselImages.isNotEmpty)
-                      SizedBox(
-                        height: screenHeight * 0.3,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: _carouselImages.length,
-                          itemBuilder: (context, index) {
-                            return _buildCarouselImage(context, index);
-                          },
-                        ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildCategoryIcon(
+                icon: Icons.movie,
+                label: 'Movies',
+                isSelected: _selectedIndex == 0,
+                onTap: () {
+                 
+                },
+              ),
+                 _buildCategoryIcon(
+                icon: Icons.event,
+                label: 'Events',
+                isSelected: _selectedIndex == 4,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EventsPage(),
+                    ),
+                  );
+                },
+              ),
+                _buildCategoryIcon(
+                icon: Icons.place,
+                label: 'Theme Park',
+                isSelected: _selectedIndex == 5,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ParkPage(),
+                    ),
+                  );
+                },
+              ),
+                 _buildCategoryIcon(
+                icon: Icons.bus_alert_rounded,
+                label: 'Bus',
+                isSelected: _selectedIndex == 3,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BusPage(),
+                    ),
+                  );
+                },
+              ),
+              _buildCategoryIcon(
+                icon: Icons.train,
+                label: 'Train',
+                isSelected: _selectedIndex == 1,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TrainPage(),
+                    ),
+                  );
+                },
+              ),
+              _buildCategoryIcon(
+                icon: Icons.flight,
+                label: 'Flight',
+                isSelected: _selectedIndex == 2,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const FlightPage(),
+                    ),
+                  );
+                },
+              ),
+           
+           
+            
+            ],
+          ),
+        ),
+        _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                children: [
+                  if (_carouselImages.isNotEmpty)
+                    SizedBox(
+                      height: screenHeight * 0.3,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _carouselImages.length,
+                        itemBuilder: (context, index) {
+                          return _buildCarouselImage(context, index);
+                        },
                       ),
-                    _buildMovieSection('New Releases', _newReleases),
-                    _buildMovieSection(
-                        'Trending in Theatre', _trendingInTheatre),
-                    _buildMovieSection('Upcoming', _upcoming),
-                  ],
-                ),
-        ],
-      ),
-    );
-  }
+                    ),
+                  _buildMovieSection('New Releases', _newReleases),
+                  _buildMovieSection('Trending in Theatre', _trendingInTheatre),
+                  _buildMovieSection('Upcoming', _upcoming),
+                ],
+              ),
+      ],
+    ),
+  );
+}
+
+Widget _buildCategoryIcon({
+  required IconData icon,
+  required String label,
+  required bool isSelected,
+  required VoidCallback onTap,
+}) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Column(
+      children: [
+        Icon(
+          icon,
+          color: isSelected ? Colors.blueAccent : Colors.grey,
+          size: 35,
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.blueAccent : Colors.black,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            fontSize: 12,
+          ),
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildCarouselImage(BuildContext context, int index) {
   return Padding(

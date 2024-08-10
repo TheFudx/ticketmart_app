@@ -114,7 +114,7 @@ class MovieDetailsScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(5.0),
             child: Image.network(
               imageUrl,
-              fit: BoxFit.fitHeight,
+              fit: BoxFit.fill,
             ),
           ),
         ),
