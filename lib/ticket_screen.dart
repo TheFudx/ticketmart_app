@@ -7,15 +7,15 @@ class TicketScreen extends StatefulWidget {
   final String theaterName;
   final String movieId;
   final String movieTitle;
-  final List<int> seats;
+  final List<String> seats;
   final int totalSeatPrice;
   final Map<String, dynamic> showTime;
   final String seatType;
   final int ticketCount;
   final String email;
-  final String phone; 
-
-
+  final String phone;
+  final List<String> selectedSeats; 
+  final int totalPrice;
 
   const TicketScreen({
     super.key,
@@ -26,20 +26,19 @@ class TicketScreen extends StatefulWidget {
     required this.seats,
     required this.totalSeatPrice,
     required this.showTime,
-    required this.seatType, 
-    required List<int> selectedSeats, 
-    required this.ticketCount, 
-    required this.email, 
-    required this.phone,
-   
+    required this.seatType,
+    required this.ticketCount,
+    required this.email,
+    required this.phone, 
+    required this.selectedSeats, 
+    required this.totalPrice,
   });
 
   @override
   State<TicketScreen> createState() => _TicketScreenState();
 }
 
-class _TicketScreenState extends State<TicketScreen>
-    with SingleTickerProviderStateMixin {
+class _TicketScreenState extends State<TicketScreen> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override
@@ -88,104 +87,102 @@ class _TicketScreenState extends State<TicketScreen>
 
   Widget _buildTicketDetails() {
     return ClipPath(
-        clipper: TicketClipper(),
-        child: Card(
-          color: Colors.blue.shade900,
-          shape: const RoundedRectangleBorder(),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            
-           child: DottedBorder(
-  color: Colors.white, // Border color
-  strokeWidth: 2.0, // Border width
-  dashPattern: const [4, 4], // Pattern for dots and gaps
-  borderType: BorderType.RRect, // Rounded rectangle
-  radius: const Radius.circular(2.0), // Optional: border radius
-  child: Container(
-    padding: const EdgeInsets.all(5.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Center(
-          child: Image.asset(
-            'assets/images/popcorn.png',
-            height: 200.0,
-          ),
-        ),
-        Center(
-          child: Text(
-            widget.movieTitle,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14.0,
-              fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.italic,
+      clipper: TicketClipper(),
+      child: Card(
+        color: Colors.blue.shade900,
+        shape: const RoundedRectangleBorder(),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: DottedBorder(
+            color: Colors.white, // Border color
+            strokeWidth: 2.0, // Border width
+            dashPattern: const [4, 4], // Pattern for dots and gaps
+            borderType: BorderType.RRect, // Rounded rectangle
+            radius: const Radius.circular(2.0), // Optional: border radius
+            child: Container(
+              padding: const EdgeInsets.all(5.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Center(
+                    child: Image.asset(
+                      'assets/images/popcorn.png',
+                      height: 200.0,
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      widget.movieTitle,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10.0),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(0.0),
+                    ),
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                       _buildTicketDetailRow(
+                        'Seat',
+                        widget.selectedSeats.join(', '), // Display seat labels directly
+                      ),
+                      const SizedBox(height: 10.0),
+                        _buildTicketDetailRow('Seat Type', widget.seatType),
+                        const SizedBox(height: 10.0),
+                        _buildTicketDetailRow('Location', widget.theaterName),
+                        const SizedBox(height: 10.0),
+                        _buildTicketDetailRow('Payment', 'Card'), 
+                        const SizedBox(height: 10.0),
+                        _buildTicketDetailRow('Total Amount', '${widget.totalPrice}'),
+                        const SizedBox(height: 10.0),
+                        _buildTicketDetailRow('Email', widget.email),
+                        const SizedBox(height: 10.0),
+                        _buildTicketDetailRow('Phone', widget.phone),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.green, // Green background color
+                      borderRadius: BorderRadius.circular(0.0),
+                    ),
+                    padding: const EdgeInsets.all(15.0),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Your ticket booked successfully',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.bold,
+                            )),
+                        SizedBox(width: 10),
+                        Icon(
+                          Icons.thumb_up,
+                          color: Colors.yellow,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-        const SizedBox(height: 10.0),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.white,
-              width: 1.0,
-            ),
-            borderRadius: BorderRadius.circular(0.0),
-          ),
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildTicketDetailRow(
-                'Seat',
-                widget.seats
-                    .map((seat) =>
-                        '${seat ~/ 10 + 1}${String.fromCharCode(65 + seat % 10)}')
-                    .join(', '),
-              ),
-              const SizedBox(height: 10.0),
-              _buildTicketDetailRow('Location', widget.theaterName),
-              const SizedBox(height: 10.0),
-              _buildTicketDetailRow('Payment', 'Card'),
-              const SizedBox(height: 10.0),
-              _buildTicketDetailRow('Order #', '34678'),
-              const SizedBox(height: 10.0),
-              _buildTicketDetailRow('Amount', '450'),
-              const SizedBox(height: 10.0),
-              _buildTicketDetailRow('GST', '100'),
-            ],
-          ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.green, // Green background color
-            borderRadius: BorderRadius.circular(0.0),
-          ),
-          padding: const EdgeInsets.all(15.0),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Your ticket booked successfully',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.bold,
-                  )),
-              SizedBox(width: 10),
-              Icon(
-                Icons.thumb_up,
-                color: Colors.yellow,
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  ),
-)
-
-          ),
-        ));
+      ),
+    );
   }
 
   Widget _buildTicketDetailRow(String title, String value) {
@@ -219,11 +216,11 @@ class _TicketScreenState extends State<TicketScreen>
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: DottedBorder(
-  color: Colors.black, // Border color
-  strokeWidth: 1.0, // Border width
-  dashPattern: const [4, 4], // Pattern for dots and gaps
-  borderType: BorderType.RRect, // Rounded rectangle
-  radius: const Radius.circular(0.0), 
+            color: Colors.black, // Border color
+            strokeWidth: 1.0, // Border width
+            dashPattern: const [4, 4], // Pattern for dots and gaps
+            borderType: BorderType.RRect, // Rounded rectangle
+            radius: const Radius.circular(0.0),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -251,7 +248,6 @@ class _TicketScreenState extends State<TicketScreen>
       ),
     );
   }
-
 
   Widget _buildDownloadButton(BuildContext context) {
     return ElevatedButton(
@@ -313,10 +309,10 @@ class InvertedTicketClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-    path.lineTo(0, size.height * 0.10);
-    path.lineTo(size.width * 0.04, 0);
-    path.lineTo(size.width * 0.96, 0);
-    path.lineTo(size.width, size.height * 0.10);
+    path.lineTo(0, size.height * 0.05);
+    path.lineTo(size.width * 0.05, 0);
+    path.lineTo(size.width * 0.95, 0);
+    path.lineTo(size.width, size.height * 0.05);
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
     path.close();

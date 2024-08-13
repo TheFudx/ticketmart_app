@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ticketmart/ticket_screen.dart';
 import 'package:ticketmart/terms_conditions_modal.dart'; // Import the new file
@@ -8,12 +9,14 @@ class ProfilePage extends StatefulWidget {
   final String theaterName;
   final String movieId;
   final String movieTitle;
-  final List<int> seats;
+  final List<String> seats; // Change to List<String>
   final int totalSeatPrice;
   final String seatType;
   final Map<String, dynamic> showTime;
   final String email;
   final String phone;
+  final int totalPrice;
+ 
 
   const ProfilePage({
     super.key,
@@ -26,7 +29,8 @@ class ProfilePage extends StatefulWidget {
     required this.email,
     required this.phone, 
     required this.theatreId, 
-    required this.movieId,
+    required this.movieId, 
+    required this.totalPrice, 
     
   });
 
@@ -150,48 +154,99 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _submitForm(BuildContext context) async {
-    final email = _emailController.text;
-    final phone = _phoneController.text;
+  final email = _emailController.text;
+  final phone = _phoneController.text;
 
-    setState(() {
-      _isLoading = true;
-    });
+  setState(() {
+    _isLoading = true;
+  });
 
-    try {
-      final result = await ApiConnection.loginOrRegisterUser(email, phone);
-      if (result['status'] == 'success') {
-        // If login/register is successful, navigate to the TicketScreen
-        Navigator.pushReplacement(
-          // ignore: use_build_context_synchronously
-          context,
-          MaterialPageRoute(
-            builder: (context) => TicketScreen(
-              showTime: widget.showTime,
-              theaterName: widget.theaterName,
-              movieTitle: widget.movieTitle,
-              seats: widget.seats,
-              totalSeatPrice: widget.totalSeatPrice, 
-              seatType: widget.seatType, 
-              selectedSeats: widget.seats, 
-              ticketCount: widget.totalSeatPrice, 
-              email: widget.email, 
-              phone: widget.phone, theatreId: 
-              widget.theatreId, 
-              movieId: widget.movieId,
-            ),
-          ),
-        );
-      } else {
-        _showErrorDialog(result['message']);
-      }
-    } catch (e) {
-      _showErrorDialog('Failed to connect to the server');
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
+  try {
+    final result = await ApiConnection.loginOrRegisterUser(email, phone);
+
+    // Debug print statements
+    if (kDebugMode) {
+      print('Email: $email');
     }
+    if (kDebugMode) {
+      print('Phone: $phone');
+    }
+    if (kDebugMode) {
+      print('API Result Status: ${result['status']}');
+    }
+    if (result['status'] == 'success') {
+      if (kDebugMode) {
+        print('Login/Register Successful');
+      }
+      if (kDebugMode) {
+        print('Show Time: ${widget.showTime}');
+      }
+      if (kDebugMode) {
+        print('Theater Name: ${widget.theaterName}');
+      }
+      if (kDebugMode) {
+        print('Movie Title: ${widget.movieTitle}');
+      }
+      if (kDebugMode) {
+        print('Seats: ${widget.seats}');
+      }
+      if (kDebugMode) {
+        print('Total Seat Price: ₹${widget.totalSeatPrice}');
+      }
+      if (kDebugMode) {
+        print('Seat Type: ${widget.seatType}');
+      }
+      if (kDebugMode) {
+        print('Ticket Count: ${widget.totalSeatPrice}');
+      }
+      if (kDebugMode) {
+        print('Email: $email');
+      }
+      if (kDebugMode) {
+        print('Phone: $phone');
+      }
+      if (kDebugMode) {
+        print('Theatre ID: ${widget.theatreId}');
+      }
+      if (kDebugMode) {
+        print('Movie ID: ${widget.movieId}');
+      }
+      if (kDebugMode) {
+        print('Total Price: ₹${widget.totalPrice}');
+      }
+
+      Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(
+          builder: (context) => TicketScreen(
+            showTime: widget.showTime,
+            theaterName: widget.theaterName,
+            movieTitle: widget.movieTitle,
+            seats: widget.seats, // Ensure this is List<String>
+            totalSeatPrice: widget.totalSeatPrice,
+            seatType: widget.seatType,
+            selectedSeats: widget.seats,
+            ticketCount: widget.totalSeatPrice,
+            email: email, // Pass the updated email
+            phone: phone, // Pass the updated phone
+            theatreId: widget.theatreId,
+            movieId: widget.movieId,
+            totalPrice: widget.totalPrice,
+          ),
+        ),
+      );
+    } else {
+      _showErrorDialog(result['message']);
+    }
+  } catch (e) {
+    _showErrorDialog('Failed to connect to the server');
+  } finally {
+    setState(() {
+      _isLoading = false;
+    });
   }
+}
 
   void _showErrorDialog(String message) {
     showDialog(

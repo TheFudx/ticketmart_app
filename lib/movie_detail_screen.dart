@@ -13,6 +13,7 @@ class MovieDetailsScreen extends StatelessWidget {
   final String description;
   final String topOffers;
   final List<String> cast;
+  
 
   const MovieDetailsScreen({
     super.key,

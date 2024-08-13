@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -156,14 +155,6 @@ class ApiConnection {
 
   static Future<List<Map<String, dynamic>>> fetchSeats(int screenId) async {
     final response = await http.get(Uri.parse('$seats?screen_id=$screenId'));
-
-    if (kDebugMode) {
-      print('Response status: ${response.statusCode}');
-    }
-    if (kDebugMode) {
-      print('Response body: ${response.body}');
-    }
-
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       if (data['status'] == 'error') {

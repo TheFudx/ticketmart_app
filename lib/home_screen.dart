@@ -156,15 +156,17 @@ class _HomeScreenState extends State<HomeScreen> {
           const SearchScreen(),
           const OffersScreen(),
           const ProfilePage(
-          theaterName: 'theatreName', 
-          movieTitle: 'movie', 
-          seats: [1,2,3], 
-          totalSeatPrice: 100, 
-          email: 'email', 
-          phone: 'phone', 
-          seatType: '', 
-          theatreId: '', 
-          movieId: '', showTime: {},),
+            theaterName: 'theatreName',
+            movieTitle: 'movie',
+            seats: [],
+            totalSeatPrice: 100,
+            email: 'email',
+            phone: 'phone',
+            seatType: '',
+            theatreId: '',
+            movieId: '',
+            showTime: {}, totalPrice: 1, 
+          ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -193,324 +195,322 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: _onItemTapped,
         showSelectedLabels: true,
         showUnselectedLabels: true,
-      ), 
+      ),
     );
   }
 
-Widget _buildHomePage(double screenHeight) {
-  return SingleChildScrollView(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 40.0),
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: _determinePosition,
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                    width: 60,
-                    height: 60,
+  Widget _buildHomePage(double screenHeight) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 40.0),
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: _determinePosition,
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      width: 60,
+                      height: 60,
+                    ),
                   ),
+                  const SizedBox(width: 8),
+                  _isLocationLoading
+                      ? const CircularProgressIndicator()
+                      : DropdownButton<String>(
+                          value: _selectedCity ?? _translatedCity,
+                          items: [
+                            ..._predefinedCities
+                                .map((city) => DropdownMenuItem<String>(
+                                      value: city,
+                                      child: Text(city),
+                                    )),
+                            if (_translatedCity != null)
+                              DropdownMenuItem<String>(
+                                value: _translatedCity,
+                                child: Text(_translatedCity!),
+                              ),
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedCity = value;
+                              _translatedCity = value;
+                            });
+                          },
+                          hint: const Text('Choose Location'),
+                        ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.notifications),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  Builder(
+                    builder: (context) => IconButton(
+                      icon: const Icon(Icons.menu),
+                      onPressed: () {
+                        Scaffold.of(context).openEndDrawer();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildCategoryIcon(
+                  icon: Icons.movie,
+                  label: 'Movies',
+                  isSelected: _selectedIndex == 0,
+                  onTap: () {},
                 ),
-                const SizedBox(width: 8),
-                _isLocationLoading
-                    ? const CircularProgressIndicator()
-                    : DropdownButton<String>(
-                        value: _selectedCity ?? _translatedCity,
-                        items: [
-                          ..._predefinedCities
-                              .map((city) => DropdownMenuItem<String>(
-                                    value: city,
-                                    child: Text(city),
-                                  )),
-                          if (_translatedCity != null)
-                            DropdownMenuItem<String>(
-                              value: _translatedCity,
-                              child: Text(_translatedCity!),
-                            ),
-                        ],
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedCity = value;
-                            _translatedCity = value;
-                          });
-                        },
-                        hint: const Text('Choose Location'),
-                      ),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.notifications),
-                  onPressed: () {
+                _buildCategoryIcon(
+                  icon: Icons.event,
+                  label: 'Events',
+                  isSelected: _selectedIndex == 4,
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const NotificationScreen(),
+                        builder: (context) => const EventsPage(),
                       ),
                     );
                   },
                 ),
-                Builder(
-                  builder: (context) => IconButton(
-                    icon: const Icon(Icons.menu),
-                    onPressed: () {
-                      Scaffold.of(context).openEndDrawer();
-                    },
-                  ),
+                _buildCategoryIcon(
+                  icon: Icons.place,
+                  label: 'Theme Park',
+                  isSelected: _selectedIndex == 5,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ParkPage(),
+                      ),
+                    );
+                  },
+                ),
+                _buildCategoryIcon(
+                  icon: Icons.bus_alert_rounded,
+                  label: 'Bus',
+                  isSelected: _selectedIndex == 3,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const BusPage(),
+                      ),
+                    );
+                  },
+                ),
+                _buildCategoryIcon(
+                  icon: Icons.train,
+                  label: 'Train',
+                  isSelected: _selectedIndex == 1,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TrainPage(),
+                      ),
+                    );
+                  },
+                ),
+                _buildCategoryIcon(
+                  icon: Icons.flight,
+                  label: 'Flight',
+                  isSelected: _selectedIndex == 2,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const FlightPage(),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
           ),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 5.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildCategoryIcon(
-                icon: Icons.movie,
-                label: 'Movies',
-                isSelected: _selectedIndex == 0,
-                onTap: () {
-                 
-                },
-              ),
-                 _buildCategoryIcon(
-                icon: Icons.event,
-                label: 'Events',
-                isSelected: _selectedIndex == 4,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const EventsPage(),
-                    ),
-                  );
-                },
-              ),
-                _buildCategoryIcon(
-                icon: Icons.place,
-                label: 'Theme Park',
-                isSelected: _selectedIndex == 5,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ParkPage(),
-                    ),
-                  );
-                },
-              ),
-                 _buildCategoryIcon(
-                icon: Icons.bus_alert_rounded,
-                label: 'Bus',
-                isSelected: _selectedIndex == 3,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const BusPage(),
-                    ),
-                  );
-                },
-              ),
-              _buildCategoryIcon(
-                icon: Icons.train,
-                label: 'Train',
-                isSelected: _selectedIndex == 1,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const TrainPage(),
-                    ),
-                  );
-                },
-              ),
-              _buildCategoryIcon(
-                icon: Icons.flight,
-                label: 'Flight',
-                isSelected: _selectedIndex == 2,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const FlightPage(),
-                    ),
-                  );
-                },
-              ),
-           
-           
-            
-            ],
-          ),
-        ),
-        _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : Column(
-                children: [
-                  if (_carouselImages.isNotEmpty)
-                    SizedBox(
-                      height: screenHeight * 0.3,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _carouselImages.length,
-                        itemBuilder: (context, index) {
-                          return _buildCarouselImage(context, index);
-                        },
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                  children: [
+                    if (_carouselImages.isNotEmpty)
+                      SizedBox(
+                        height: screenHeight * 0.3,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: _carouselImages.length,
+                          itemBuilder: (context, index) {
+                            return _buildCarouselImage(context, index);
+                          },
+                        ),
                       ),
-                    ),
-                  _buildMovieSection('New Releases', _newReleases),
-                  _buildMovieSection('Trending in Theatre', _trendingInTheatre),
-                  _buildMovieSection('Upcoming', _upcoming),
-                ],
-              ),
-      ],
-    ),
-  );
-}
-
-Widget _buildCategoryIcon({
-  required IconData icon,
-  required String label,
-  required bool isSelected,
-  required VoidCallback onTap,
-}) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Column(
-      children: [
-        Icon(
-          icon,
-          color: isSelected ? Colors.blueAccent : Colors.grey,
-          size: 35,
-        ),
-        Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.blueAccent : Colors.black,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            fontSize: 12,
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-  Widget _buildCarouselImage(BuildContext context, int index) {
-  return Padding(
-    padding: const EdgeInsets.all(10.0),
-    child: GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MovieDetailsScreen(
-              movieId: _carouselImages[index]['id'],
-              movieTitle: _carouselImages[index]['title'],
-              movieReleaseDate: _carouselImages[index]['release_date'],
-              rating: _carouselImages[index]['rating'],
-              bannerimageUrl: _carouselImages[index]['image_path'],
-              imageUrl: _carouselImages[index]['banner_image_path'],
-              duration: _carouselImages[index]['duration'],
-              genre: _carouselImages[index]['genre'],
-              description: _carouselImages[index]['description'],
-              topOffers: 'BUY 1 GET 1 FREE',
-              cast: _carouselImages[index]['cast'].split(','), // Split the cast string into a list
-            ),
-          ),
-        );
-      },
-      child: Stack(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width * 0.9,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(_carouselImages[index]["banner_image_path"]),
-                fit: BoxFit.fill,
-              ),
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
+                    _buildMovieSection('New Releases', _newReleases),
+                    _buildMovieSection(
+                        'Trending in Theatre', _trendingInTheatre),
+                    _buildMovieSection('Upcoming', _upcoming),
+                  ],
                 ),
-                color: Colors.black.withOpacity(0.6),
-              ),
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        _carouselImages[index]["title"],
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const Spacer(),
-                      Text(
-                        _carouselImages[index]["release_date"],
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCategoryIcon({
+    required IconData icon,
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Icon(
+            icon,
+            color: isSelected ? Colors.blueAccent : Colors.grey,
+            size: 35,
           ),
-          Positioned(
-            top: 10,
-            right: 10,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.black.withOpacity(0.6),
-              ),
-              padding: const EdgeInsets.all(5.0),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.star,
-                    color: Colors.yellow,
-                    size: 14,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    _carouselImages[index]["rating"].toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
+          Text(
+            label,
+            style: TextStyle(
+              color: isSelected ? Colors.blueAccent : Colors.black,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              fontSize: 12,
             ),
           ),
         ],
       ),
-    ),
-  );
-}
+    );
+  }
+
+  Widget _buildCarouselImage(BuildContext context, int index) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MovieDetailsScreen(
+                movieId: _carouselImages[index]['id'],
+                movieTitle: _carouselImages[index]['title'],
+                movieReleaseDate: _carouselImages[index]['release_date'],
+                rating: _carouselImages[index]['rating'],
+                bannerimageUrl: _carouselImages[index]['image_path'],
+                imageUrl: _carouselImages[index]['banner_image_path'],
+                duration: _carouselImages[index]['duration'],
+                genre: _carouselImages[index]['genre'],
+                description: _carouselImages[index]['description'],
+                topOffers: 'BUY 1 GET 1 FREE',
+                cast: _carouselImages[index]['cast']
+                    .split(','),  // Split the cast string into a list
+              ),
+            ),
+          );
+        },
+        child: Stack(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image:
+                      NetworkImage(_carouselImages[index]["banner_image_path"]),
+                  fit: BoxFit.fill,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                  ),
+                  color: Colors.black.withOpacity(0.6),
+                ),
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          _carouselImages[index]["title"],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Spacer(),
+                        Text(
+                          _carouselImages[index]["release_date"],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              top: 10,
+              right: 10,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.black.withOpacity(0.6),
+                ),
+                padding: const EdgeInsets.all(5.0),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.star,
+                      color: Colors.yellow,
+                      size: 14,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      _carouselImages[index]["rating"].toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _buildMovieSection(String title, List<Map<String, dynamic>> movies) {
     return Padding(
@@ -523,8 +523,8 @@ Widget _buildCategoryIcon({
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(
-              height: MediaQuery.of(context).size.height *
-                  0.26,            child: ListView.builder(
+            height: MediaQuery.of(context).size.height * 0.26,
+            child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: movies.length,
               itemBuilder: (context, index) {
@@ -558,7 +558,8 @@ Widget _buildCategoryIcon({
                 description: movies[index]['description'],
                 topOffers: 'BUY 1 GET 1 FREE',
                 cast: movies[index]['cast']
-                    .split(','), // Split the cast string into a list
+                    .split(','), 
+                   // Split the cast string into a list
               ),
             ),
           );
