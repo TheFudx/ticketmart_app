@@ -11,10 +11,20 @@ class BusPage extends StatefulWidget {
 }
 
 class _BusPageState extends State<BusPage> {
-  final TextEditingController _sourceController = TextEditingController();
-  final TextEditingController _destinationController = TextEditingController();
+  final List<String> _cities = [
+    'Delhi',
+    'Mumbai',
+    'Chennai',
+    'Bangalore',
+    'Hyderabad',
+    'Pune',
+    'Kolkata',
+    'Chandigarh'
+  ];
+
+  String? _selectedSourceCity;
+  String? _selectedDestinationCity;
   DateTime? _selectedDate;
-  TimeOfDay? _selectedTime;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime now = DateTime.now();
@@ -36,24 +46,9 @@ class _BusPageState extends State<BusPage> {
     }
   }
 
-  Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay initialTime = _selectedTime ?? TimeOfDay.now();
-
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: initialTime,
-    );
-
-    if (picked != null && picked != _selectedTime) {
-      setState(() {
-        _selectedTime = picked;
-      });
-    }
-  }
-
   void _performSearch() {
-    final source = _sourceController.text;
-    final destination = _destinationController.text;
+    final source = _selectedSourceCity ?? 'Not Selected';
+    final destination = _selectedDestinationCity ?? 'Not Selected';
     final date = _selectedDate != null
         ? DateFormat('EEE, d MMM').format(_selectedDate!)
         : 'Not Selected';
@@ -65,7 +60,6 @@ class _BusPageState extends State<BusPage> {
           source: source,
           destination: destination,
           date: date,
-          time: _selectedTime != null ? _selectedTime!.format(context) : 'Not Selected',
         ),
       ),
     );
@@ -151,9 +145,27 @@ class _BusPageState extends State<BusPage> {
       ),
       child: Column(
         children: [
-          _buildTextField(_sourceController, Icons.directions_bus, 'Enter Source Name'),
+          _buildDropdownWithIcon(
+            icon: Icons.directions_bus,
+            hint: 'Select Source City',
+            value: _selectedSourceCity,
+            onChanged: (newValue) {
+              setState(() {
+                _selectedSourceCity = newValue;
+              });
+            },
+          ),
           const Divider(thickness: 1),
-          _buildTextField(_destinationController, Icons.location_on, 'Enter Destination Name'),
+          _buildDropdownWithIcon(
+            icon: Icons.location_on,
+            hint: 'Select Destination City',
+            value: _selectedDestinationCity,
+            onChanged: (newValue) {
+              setState(() {
+                _selectedDestinationCity = newValue;
+              });
+            },
+          ),
           const Divider(thickness: 1),
           _buildDateAndTimeSelector(dateFormat),
         ],
@@ -161,69 +173,65 @@ class _BusPageState extends State<BusPage> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, IconData icon, String hintText) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon, size: 20),
-        hintText: hintText,
-        border: InputBorder.none,
-      ),
+  Widget _buildDropdownWithIcon({
+    required IconData icon,
+    required String hint,
+    required String? value,
+    required ValueChanged<String?> onChanged,
+  }) {
+    return Row(
+      children: [
+        Icon(icon, color: Colors.grey.shade900),
+        const SizedBox(width: 10),
+        Expanded(
+          child: DropdownButton<String>(
+            value: value,
+            hint: Text(hint),
+            isExpanded: true,
+            items: _cities.map((city) {
+              return DropdownMenuItem<String>(
+                value: city,
+                child: Text(city),
+              );
+            }).toList(),
+            onChanged: onChanged,
+            underline: Container(),
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildDateAndTimeSelector(DateFormat dateFormat) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: InkWell(
-            onTap: () => _selectDate(context),
-            child: InputDecorator(
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.calendar_today, size: 20),
-                border: InputBorder.none,
-              ),
-              child: Text(
-                _selectedDate == null
-                    ? 'Today, ${dateFormat.format(DateTime.now())}'
-                    : dateFormat.format(_selectedDate!),
-                style: const TextStyle(fontSize: 16),
-              ),
-            ),
+        const Text(
+          '            Departure',
+          style: TextStyle(
+            fontSize: 14,
           ),
         ),
-        const SizedBox(width: 10),
-        ElevatedButton(
-          onPressed: () {
-            _selectTime(context);
-          },
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: Colors.blue,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+        Row(
+          children: [
+            Expanded(
+              child: InkWell(
+                onTap: () => _selectDate(context),
+                child: InputDecorator(
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.calendar_today, size: 20, color: Colors.black,),
+                    border: InputBorder.none,
+                  ),
+                  child: Text(
+                    _selectedDate == null
+                        ? 'Today, ${dateFormat.format(DateTime.now())}'
+                        : dateFormat.format(_selectedDate!),
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                ),
+              ),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-            textStyle: const TextStyle(fontSize: 12),
-            elevation: 5,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.access_time,
-                size: 14,
-                color: Colors.white,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                _selectedTime == null
-                    ? 'Select Time'
-                    : _selectedTime!.format(context),
-                style: const TextStyle(fontSize: 12),
-              ),
-            ],
-          ),
+          ],
         ),
       ],
     );
@@ -234,12 +242,12 @@ class _BusPageState extends State<BusPage> {
       onPressed: _performSearch,
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.blue,
-        padding: const EdgeInsets.symmetric(horizontal: 120.0, vertical: 10.0),
+        padding: const EdgeInsets.symmetric(horizontal: 150.0, vertical: 10.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5.0),
         ),
       ),
-      child: const Text('Search', style: TextStyle(color: Colors.white)),
+      child: const Text('Find Buses', style: TextStyle(color: Colors.white)),
     );
   }
 
@@ -255,7 +263,6 @@ class _BusPageState extends State<BusPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 5),
         SizedBox(
           height: 150,
           child: ListView(
@@ -330,50 +337,27 @@ class PopularBusRoutesSection extends StatelessWidget {
           ),
         ),
         SizedBox(height: 10),
-        Divider(),
         PopularBusRouteWidget(
-          route: 'Delhi Buses',
-          destinations: 'To: Manali, Chandigarh, Jaipur, Dehradun',
+          route: 'Delhi to Chandigarh Buses',
+          destinations: 'North Delhi, Ambala, Karnal, Kurukshetra',
         ),
-        Divider(),
         PopularBusRouteWidget(
-          route: 'Mumbai Buses',
-          destinations: 'To: Goa, Pune, Bangalore, Shirdi',
+          route: 'Bangalore to Hyderabad Buses',
+          destinations: 'Bangalore, Anantapur, Kurnool, Mahbubnagar',
         ),
-        Divider(),
         PopularBusRouteWidget(
-          route: 'Chennai Buses',
-          destinations: 'To: Coimbatore, Pondicherry, Bangalore, Hyderabad',
+          route: 'Chennai to Bangalore Buses',
+          destinations: 'Chennai, Vellore, Krishnagiri, Hosur',
         ),
-        Divider(),
         PopularBusRouteWidget(
-          route: 'Bangalore Buses',
-          destinations: 'To: Mumbai, Hyderabad, Chennai, Goa',
-        ),
-        Divider(),
-        PopularBusRouteWidget(
-          route: 'Hyderabad Buses',
-          destinations: 'To: Mumbai, Chennai, Bangalore, Goa',
-        ),
-        Divider(),
-        PopularBusRouteWidget(
-          route: 'Pune Buses',
-          destinations: 'To: Mumbai, Shirdi, Bangalore, Goa',
-        ),
-        Divider(),
-        PopularBusRouteWidget(
-          route: 'Kolkata Buses',
-          destinations: 'To: Digha, Siliguri, Durgapur, Asansol',
-        ),
-        Divider(),
-        PopularBusRouteWidget(
-          route: 'Chandigarh Buses',
-          destinations: 'To: Manali, Shimla, Amritsar, Delhi',
+          route: 'Hyderabad to Goa Buses',
+          destinations: 'Hyderabad, Hubli, Ankola, Karwar',
         ),
       ],
     );
   }
 }
+
 class BusOperatorWidget extends StatelessWidget {
   final String image;
   final String name;
@@ -382,27 +366,42 @@ class BusOperatorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 100,
-      margin: const EdgeInsets.all(5),
-      child: Column(
-        children: [
-          ClipOval(
-            child: AspectRatio(
-              aspectRatio: 1,
+    return SizedBox(
+      width: 150,
+      child: Card(
+        color: Colors.transparent.withOpacity(0.3),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
               child: Image.asset(
                 image,
                 fit: BoxFit.cover,
+                height: 100,
+                width: double.infinity,
               ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            name,
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.white, fontSize: 12),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(0.0),
+              child: Text(
+                name,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -95,6 +95,10 @@ flutter:
     - assets/images/bus_background.png
     - assets/images/bus.jpeg
     - assets/images/whitebus.jpeg
+    - assets/images/whitetrain.jpeg
+    - assets/images/whiteflight.jpeg
+    - assets/images/seater.png
+    - assets/images/sleeper.png
   
 
 

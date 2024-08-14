@@ -12,8 +12,8 @@ import 'package:ticketmart/side_drawer.dart';
 import 'train_page.dart';
 import 'flight_page.dart';
 import 'bus_page.dart';
-import 'events_page.dart';
-import 'park_page.dart';
+// import 'events_page.dart';
+// import 'park_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -278,34 +278,34 @@ class _HomeScreenState extends State<HomeScreen> {
                   isSelected: _selectedIndex == 0,
                   onTap: () {},
                 ),
+                // _buildCategoryIcon(
+                //   icon: Icons.event,
+                //   label: 'Events',
+                //   isSelected: _selectedIndex == 4,
+                //   onTap: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => const EventsPage(),
+                //       ),
+                //     );
+                //   },
+                // ),
+                // _buildCategoryIcon(
+                //   icon: Icons.place,
+                //   label: 'Theme Park',
+                //   isSelected: _selectedIndex == 5,
+                //   onTap: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => const ParkPage(),
+                //       ),
+                //     );
+                //   },
+                // ),
                 _buildCategoryIcon(
-                  icon: Icons.event,
-                  label: 'Events',
-                  isSelected: _selectedIndex == 4,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const EventsPage(),
-                      ),
-                    );
-                  },
-                ),
-                _buildCategoryIcon(
-                  icon: Icons.place,
-                  label: 'Theme Park',
-                  isSelected: _selectedIndex == 5,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ParkPage(),
-                      ),
-                    );
-                  },
-                ),
-                _buildCategoryIcon(
-                  icon: Icons.bus_alert_rounded,
+                  icon: Icons.directions_bus,
                   label: 'Bus',
                   isSelected: _selectedIndex == 3,
                   onTap: () {

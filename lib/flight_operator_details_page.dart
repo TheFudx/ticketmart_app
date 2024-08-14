@@ -1,23 +1,16 @@
 import 'package:flutter/material.dart';
 
-class BusOperatorDetailsPage extends StatelessWidget {
+class FlightOperatorDetailsPage extends StatelessWidget {
   final String operatorName;
   final String operatorType;
   final String operatorTime;
-  final String operatorRating;
-  final String operatorReviews;
-  final String operatorSeatsLeft;
-  final String operatorDuration;
+  
 
-  const BusOperatorDetailsPage({
+  const FlightOperatorDetailsPage({
     super.key,
     required this.operatorName,
     required this.operatorType,
-    required this.operatorTime, 
-    required this.operatorRating, 
-    required  this.operatorReviews, 
-    required  this.operatorSeatsLeft, 
-    required  this.operatorDuration,
+    required this.operatorTime,
   });
 
   @override
@@ -36,51 +29,22 @@ class BusOperatorDetailsPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Text(
-                      operatorName,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const Spacer(),
-                    const Icon(Icons.star, color: Colors.yellow, size: 20),
-                    const SizedBox(width: 5),
-                    Text(
-                      operatorRating,
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                    ),
-                  ],
+                Text(
+                  operatorName,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   operatorType,
-                  style: const TextStyle(fontSize: 12),
+                  style: const TextStyle(fontSize: 14),
                 ),
               ],
             ),
           ),
           const Divider(), // Divider after operator type
-           Row(
-            children: [
-              const Padding(padding: EdgeInsets.all(12)),
-               const Text(
-                'Lower Berth (18)',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(width: 70),
-               Text(
-                operatorTime,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-              ),
-                            const SizedBox(width: 70),
-
-              Text(
-                operatorDuration,
-                style: const TextStyle(fontSize: 14),
-              ),
-
-            ],
+          const Text(
+            '               Lower Berth (18)',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          
           const Expanded(
             child: SingleChildScrollView(
               child: Padding(
@@ -123,19 +87,19 @@ class BusOperatorDetailsPage extends StatelessWidget {
               children: [
                 Text(
                   'COVID safety',
-                  style: TextStyle(fontSize: 14,),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   'Amenities',
-                  style: TextStyle(fontSize: 14, ),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   'Ratings',
-                  style: TextStyle(fontSize: 14, ),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   'Policies',
-                  style: TextStyle(fontSize: 14, ),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -263,12 +227,9 @@ class _SeatLayoutState extends State<SeatLayout> {
           child: const Row(
             children: [
               FilterChipWidget(label: '₹4,400'),
-              
             ],
-            
           ),
         ),
-        
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -358,7 +319,6 @@ class SeatPosition {
   int get hashCode => row.hashCode ^ col.hashCode;
 }
 
-
 class BookingConfirmationPage extends StatelessWidget {
   final List<SeatPosition> selectedSeats;
   final double totalPrice;
@@ -372,187 +332,31 @@ class BookingConfirmationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: const Text('Booking Confirmation'),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildTicketCard(context),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTicketCard(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildTicketHeader(),
-          const Divider(color: Colors.grey),
-          _buildTicketDetails(),
-          const Divider(color: Colors.grey),
-          _buildTicketFooter(),
-          _buildTicketBarcode(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTicketHeader() {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: const BoxDecoration(
-        color: Colors.blue,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(15.0),
-          topRight: Radius.circular(15.0),
-        ),
-      ),
-      child: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'E-Ticket',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Booked Tickets',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-          ),
-          SizedBox(height: 5),
-          Text(
-            'Your journey details',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14,
+            const SizedBox(height: 20),
+            Text(
+              'Selected Seats: ${selectedSeats.map((s) => '(${s.row}, ${s.col})').join(', ')}',
+              style: const TextStyle(fontSize: 16),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTicketDetails() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Selected Seats: ${selectedSeats.map((s) => '(${s.row}, ${s.col})').join(', ')}',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            'Total Price: ₹${totalPrice.toStringAsFixed(2)}',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          _buildPassengerDetails(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPassengerDetails() {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Passenger Name: John Doe',
-          style: TextStyle(fontSize: 14),
+            const SizedBox(height: 10),
+            Text(
+              'Total Price: ₹${totalPrice.toStringAsFixed(2)}',
+              style: const TextStyle(fontSize: 16),
+            ),
+          ],
         ),
-        SizedBox(height: 5),
-        Text(
-          'Date of Journey: 25th Aug 2024',
-          style: TextStyle(fontSize: 14),
-        ),
-        SizedBox(height: 5),
-        Text(
-          'Boarding Time: 10:00 AM',
-          style: TextStyle(fontSize: 14),
-        ),
-        SizedBox(height: 5),
-        Text(
-          'Ticket Number: 123456789',
-          style: TextStyle(fontSize: 14),
-        ),
-        SizedBox(height: 5),
-        Text(
-          'Seat Type: AC Sleeper',
-          style: TextStyle(fontSize: 14),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTicketFooter() {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Colors.blueGrey[50],
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(15.0),
-          bottomRight: Radius.circular(15.0),
-        ),
-      ),
-      child: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Please be at the boarding point 15 minutes before departure.',
-            style: TextStyle(fontSize: 12, color: Colors.grey),
-          ),
-          SizedBox(height: 10),
-          Text(
-            'Enjoy your journey!',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTicketBarcode() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(25, (index) {
-          return Container(
-            width: 5,
-            height: 40,
-            color: index % 2 == 0 ? Colors.black : Colors.transparent,
-          );
-        }),
       ),
     );
   }
 }
-
-// class SeatPosition {
-//   final String row;
-//   final int col;
-
-//   SeatPosition({required this.row, required this.col});
-// }
