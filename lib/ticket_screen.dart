@@ -2,6 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 
+
 class TicketScreen extends StatefulWidget {
   final String theatreId;
   final String theaterName;
@@ -76,7 +77,7 @@ class _TicketScreenState extends State<TicketScreen> with SingleTickerProviderSt
               _buildTicketDetails(),
               _buildAdditionalDetails(),
               const SizedBox(height: 10.0),
-              _buildDownloadButton(context),
+              // _buildDownloadButton(context),
               _buildBackButton(context),
             ],
           ),
@@ -249,28 +250,28 @@ class _TicketScreenState extends State<TicketScreen> with SingleTickerProviderSt
     );
   }
 
-  Widget _buildDownloadButton(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // Implement download functionality here
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blueAccent,
-        padding: const EdgeInsets.symmetric(vertical: 12.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-      ),
-      child: const Text(
-        'Download tickets',
-        style: TextStyle(
-          fontSize: 12.0,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
+  // Widget _buildDownloadButton(BuildContext context) {
+  //   return ElevatedButton(
+  //     onPressed: () {
+  //       // Implement download functionality here
+  //     },
+  //     style: ElevatedButton.styleFrom(
+  //       backgroundColor: Colors.blueAccent,
+  //       padding: const EdgeInsets.symmetric(vertical: 12.0),
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(10.0),
+  //       ),
+  //     ),
+  //     child: const Text(
+  //       'Download tickets',
+  //       style: TextStyle(
+  //         fontSize: 12.0,
+  //         fontWeight: FontWeight.bold,
+  //         color: Colors.white,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildBackButton(BuildContext context) {
     return TextButton(

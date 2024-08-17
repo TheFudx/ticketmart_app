@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+
 
 class FlightOperatorDetailsPage extends StatelessWidget {
   final String operatorName;
@@ -183,35 +185,79 @@ class _SeatLayoutState extends State<SeatLayout> {
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-          ElevatedButton(
-  onPressed: () {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => BookingConfirmationPage(
-          selectedSeats: _selectedSeats.toList(),
-          totalPrice: totalPrice,
-        ),
-      ),
-    );
-  },
-  style: ElevatedButton.styleFrom(
-    foregroundColor: Colors.white, backgroundColor: Colors.blue, // Set the text color to white
-    padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0), // Adjust padding
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8.0), // Adjust border radius
-    ),
-  ),
-  child: const Text(
-    'Pay Now',
-    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-  ),
-),
-
+            ElevatedButton(
+              onPressed: () {
+                _openCheckout(context, totalPrice);
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, 
+                backgroundColor: Colors.blue,
+                padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              child: const Text(
+                'Pay Now',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
           ],
         ),
       );
     },
   );
+}
+
+void _openCheckout(BuildContext context, double totalPrice) {
+  var options = {
+    'key': 'rzp_test_FZs1ciE3h1febU', // Replace with your Razorpay API key
+    'amount': (totalPrice * 100).toInt(), // Amount is in paise
+    'name': 'Bus Booking',
+    'description': 'Ticket Payment',
+    'prefill': {
+      'contact': '1234567890',
+      'email': 'test@example.com',
+    },
+    'external': {
+      'wallets': ['paytm']
+    }
+  };
+
+  try {
+    Razorpay _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (response) => _handlePaymentSuccess(response, context));
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    
+    _razorpay.open(options);
+  } catch (e) {
+    print(e.toString());
+  }
+}
+
+void _handlePaymentSuccess(PaymentSuccessResponse response, BuildContext context) {
+    // Handle successful payment here
+    print("Payment successful: ${response.paymentId}");
+    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Payment successful: ${response.paymentId}")));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (context) => BookingConfirmationPage(
+        selectedSeats: _selectedSeats.toList(),
+        totalPrice: _selectedSeats.length * 4400.0,
+      ),
+    ));
+  }
+
+void _handlePaymentError(PaymentFailureResponse response) {
+  // Handle payment error here
+  print("Payment failed: ${response.code} - ${response.message}");
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Payment failed: ${response.message}")));
+}
+
+void _handleExternalWallet(ExternalWalletResponse response) {
+  // Handle external wallet response here
+  print("External wallet selected: ${response.walletName}");
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("External wallet selected: ${response.walletName}")));
 }
 
   @override

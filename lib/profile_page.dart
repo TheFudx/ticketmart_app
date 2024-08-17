@@ -1,8 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ticketmart/ticket_screen.dart';
 import 'package:ticketmart/terms_conditions_modal.dart'; // Import the new file
 import 'package:ticketmart/api_connection.dart'; // Import your ApiConnection class
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class ProfilePage extends StatefulWidget {
   final String theatreId;
@@ -16,7 +16,6 @@ class ProfilePage extends StatefulWidget {
   final String email;
   final String phone;
   final int totalPrice;
- 
 
   const ProfilePage({
     super.key,
@@ -27,11 +26,10 @@ class ProfilePage extends StatefulWidget {
     required this.seatType,
     required this.totalSeatPrice,
     required this.email,
-    required this.phone, 
-    required this.theatreId, 
-    required this.movieId, 
-    required this.totalPrice, 
-    
+    required this.phone,
+    required this.theatreId,
+    required this.movieId,
+    required this.totalPrice,
   });
 
   @override
@@ -42,12 +40,26 @@ class _ProfilePageState extends State<ProfilePage> {
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   bool _isLoading = false;
+  late Razorpay _razorpay;
 
   @override
   void initState() {
     super.initState();
     _emailController.text = widget.email;
     _phoneController.text = widget.phone;
+
+    // Initialize Razorpay
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+
+  @override
+  void dispose() {
+    // Clean up Razorpay instance
+    _razorpay.clear();
+    super.dispose();
   }
 
   @override
@@ -103,7 +115,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Align(
               alignment: Alignment.centerLeft,
               child: ElevatedButton(
-                onPressed: _isLoading ? null : () => _submitForm(context),
+                onPressed: _isLoading ? null : () => _initiatePayment(),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue.shade900,
                   padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
@@ -153,100 +165,83 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  void _submitForm(BuildContext context) async {
-  final email = _emailController.text;
-  final phone = _phoneController.text;
+  void _initiatePayment() async {
+    final email = _emailController.text;
+    final phone = _phoneController.text;
 
-  setState(() {
-    _isLoading = true;
-  });
-
-  try {
-    final result = await ApiConnection.loginOrRegisterUser(email, phone);
-
-    // Debug print statements
-    if (kDebugMode) {
-      print('Email: $email');
-    }
-    if (kDebugMode) {
-      print('Phone: $phone');
-    }
-    if (kDebugMode) {
-      print('API Result Status: ${result['status']}');
-    }
-    if (result['status'] == 'success') {
-      if (kDebugMode) {
-        print('Login/Register Successful');
-      }
-      if (kDebugMode) {
-        print('Show Time: ${widget.showTime}');
-      }
-      if (kDebugMode) {
-        print('Theater Name: ${widget.theaterName}');
-      }
-      if (kDebugMode) {
-        print('Movie Title: ${widget.movieTitle}');
-      }
-      if (kDebugMode) {
-        print('Seats: ${widget.seats}');
-      }
-      if (kDebugMode) {
-        print('Total Seat Price: ₹${widget.totalSeatPrice}');
-      }
-      if (kDebugMode) {
-        print('Seat Type: ${widget.seatType}');
-      }
-      if (kDebugMode) {
-        print('Ticket Count: ${widget.totalSeatPrice}');
-      }
-      if (kDebugMode) {
-        print('Email: $email');
-      }
-      if (kDebugMode) {
-        print('Phone: $phone');
-      }
-      if (kDebugMode) {
-        print('Theatre ID: ${widget.theatreId}');
-      }
-      if (kDebugMode) {
-        print('Movie ID: ${widget.movieId}');
-      }
-      if (kDebugMode) {
-        print('Total Price: ₹${widget.totalPrice}');
-      }
-
-      Navigator.pushReplacement(
-        // ignore: use_build_context_synchronously
-        context,
-        MaterialPageRoute(
-          builder: (context) => TicketScreen(
-            showTime: widget.showTime,
-            theaterName: widget.theaterName,
-            movieTitle: widget.movieTitle,
-            seats: widget.seats, // Ensure this is List<String>
-            totalSeatPrice: widget.totalSeatPrice,
-            seatType: widget.seatType,
-            selectedSeats: widget.seats,
-            ticketCount: widget.totalSeatPrice,
-            email: email, // Pass the updated email
-            phone: phone, // Pass the updated phone
-            theatreId: widget.theatreId,
-            movieId: widget.movieId,
-            totalPrice: widget.totalPrice,
-          ),
-        ),
-      );
-    } else {
-      _showErrorDialog(result['message']);
-    }
-  } catch (e) {
-    _showErrorDialog('Failed to connect to the server');
-  } finally {
     setState(() {
-      _isLoading = false;
+      _isLoading = true;
     });
+
+    try {
+      final result = await ApiConnection.loginOrRegisterUser(email, phone);
+
+      if (result['status'] == 'success') {
+        _openRazorpayCheckout();
+      } else {
+        _showErrorDialog(result['message']);
+      }
+    } catch (e) {
+      _showErrorDialog('Failed to connect to the server');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
-}
+
+  void _openRazorpayCheckout() {
+    var options = {
+      'key': 'rzp_test_FZs1ciE3h1febU', // Replace with your Razorpay key
+      'amount': widget.totalPrice * 100, // Amount in paise
+      'name': widget.movieTitle,
+      'description': 'Ticket Purchase',
+      'prefill': {
+        'contact': _phoneController.text,
+        'email': _emailController.text,
+      },
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      _showErrorDialog('Failed to open Razorpay checkout');
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TicketScreen(
+          showTime: widget.showTime,
+          theaterName: widget.theaterName,
+          movieTitle: widget.movieTitle,
+          seats: widget.seats,
+          totalSeatPrice: widget.totalSeatPrice,
+          seatType: widget.seatType,
+          selectedSeats: widget.seats,
+          ticketCount: widget.totalSeatPrice,
+          email: _emailController.text,
+          phone: _phoneController.text,
+          theatreId: widget.theatreId,
+          movieId: widget.movieId,
+          totalPrice: widget.totalPrice,
+        ),
+      ),
+    );
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    _showErrorDialog('Payment failed: ${response.message}');
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    _showErrorDialog('Payment failed: ${response.walletName}');
+  }
 
   void _showErrorDialog(String message) {
     showDialog(
