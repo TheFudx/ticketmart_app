@@ -12,6 +12,8 @@ import 'package:ticketmart/side_drawer.dart';
 import 'train_page.dart';
 import 'flight_page.dart';
 import 'bus_page.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+
 // import 'events_page.dart';
 // import 'park_page.dart';
 
@@ -169,32 +171,36 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+      bottomNavigationBar: SalomonBottomBar(
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          _pageController.jumpToPage(index);
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        items: [
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.home),
+            title: const Text("Home"),
+            selectedColor: Colors.purple,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.search),
+            title: const Text("Search"),
+            selectedColor: Colors.orange,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.local_offer),
-            label: 'Offers',
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.local_offer),
+            title: const Text("Offers"),
+            selectedColor: Colors.green,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.person),
+            title: const Text("Profile"),
+            selectedColor: Colors.teal,
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blueAccent,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
       ),
     );
   }
@@ -595,12 +601,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _onItemTapped(int index) {
-    _pageController.jumpToPage(index);
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   void dispose() {
