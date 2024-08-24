@@ -8,7 +8,7 @@ class OffersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Movie Offers & Coupons'),
+        title: const Text('Offers & Coupons'),
       ),
       body: OffersList(),
     );

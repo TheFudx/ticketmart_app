@@ -23,6 +23,19 @@ class SideDrawer extends StatelessWidget {
               Navigator.pop(context); // Close the drawer
             },
           ),
+            ListTile(
+            leading: const Icon(Icons.movie_creation_outlined),
+            title: const Text('Booked Tickets'),
+            onTap: () {
+              Navigator.pop(context); // Close the drawer
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const BookedTicketsScreen(bookedTickets: [],),
+                ),
+              );
+            },
+          ),
           ListTile(
             leading: const Icon(Icons.info),
             title: const Text('About'),
@@ -83,19 +96,7 @@ class SideDrawer extends StatelessWidget {
               // Implement logout functionality
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.movie_creation_outlined),
-            title: const Text('Booked Tickets'),
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const BookedTicketsScreen(bookedTickets: [],),
-                ),
-              );
-            },
-          ),
+        
         ],
       ),
     );

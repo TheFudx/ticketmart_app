@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:ticketmart/movies_list_screen.dart';
 import 'package:translator/translator.dart';
 import 'package:ticketmart/api_connection.dart';
 import 'package:ticketmart/movie_detail_screen.dart';
@@ -274,7 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            padding: const EdgeInsets.symmetric(vertical: 0.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -519,29 +520,56 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildMovieSection(String title, List<Map<String, dynamic>> movies) {
-    return Padding(
-      padding: const EdgeInsets.all(5.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.26,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: movies.length,
-              itemBuilder: (context, index) {
-                return _buildMovieCard(context, movies, index);
-              },
+  return Padding(
+    padding: const EdgeInsets.all(10.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MoviesListScreen(
+                      title: title,
+                      movies: movies,
+                    ),
+                  ),
+                );
+              },
+              child: const Row(
+                children: [
+                  Text(
+                    "See All",
+                    style: TextStyle(fontSize: 14, color: Colors.blue),
+                  ),
+                  Icon(Icons.chevron_right_rounded, color: Colors.blue),
+                ],
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.26,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: movies.length,
+            itemBuilder: (context, index) {
+              return _buildMovieCard(context, movies, index);
+            },
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildMovieCard(
       BuildContext context, List<Map<String, dynamic>> movies, int index) {

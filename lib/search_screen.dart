@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ticketmart/home_screen.dart';
+import 'package:ticketmart/offers.dart';
+import 'package:ticketmart/api_connection.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -9,28 +12,25 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-// Example list for search results
-// List to hold categories images
-
-  void _search(String query) {
-    // Example filtering logic
-    setState(() {
-    });
-  }
+  Future<List<Map<String, dynamic>>>? _theatresFuture;
 
   @override
   void initState() {
     super.initState();
+    _theatresFuture = ApiConnection.fetchTheatres();
   }
 
-
+  void _search(String query) {
+    // Example filtering logic
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, // Removes the back button
-        titleSpacing: 0.0, // Ensures no space between title and leading icon
+        automaticallyImplyLeading: false,
+        titleSpacing: 0.0,
         title: Row(
           children: [
             Expanded(
@@ -38,18 +38,18 @@ class _SearchScreenState extends State<SearchScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade200, // Grey fill color
-                    borderRadius: BorderRadius.circular(20.0), // Curved edges
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: TextField(
                       onChanged: (value) {
-                        _search(value); // Call search method on input change
+                        _search(value);
                       },
                       decoration: const InputDecoration(
-                        hintText: 'Search...',
-                        border: InputBorder.none, // Transparent border
+                        hintText: 'Search Movies, Events & More.. ',
+                        border: InputBorder.none,
                         prefixIcon: Icon(Icons.search),
                       ),
                     ),
@@ -59,8 +59,8 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade200, // Grey fill color
-                borderRadius: BorderRadius.circular(20.0), // Curved edges
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(20.0),
               ),
               child: IconButton(
                 icon: const Icon(Icons.filter_list),
@@ -72,10 +72,10 @@ class _SearchScreenState extends State<SearchScreen> {
           ],
         ),
       ),
-      body: const Column(
+      body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
+          const Padding(
             padding: EdgeInsets.all(8.0),
             child: Text(
               'Explore Categories',
@@ -85,10 +85,124 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
           ),
+          SizedBox(
+            height: 25.0,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              children: [
+                _buildCategoryItem('Movies'),
+                _buildCategoryItem('Events'),
+                _buildCategoryItem('Plays'),
+                _buildCategoryItem('Sports'),
+                _buildCategoryItem('Offers'),
+                _buildCategoryItem('Others'),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          Container(
+            color: Colors.grey.shade300,
+            padding: const EdgeInsets.all(8.0),
+            width: double.infinity,
+            child: const Row(
+              children: [
+                Icon(
+                  Icons.trending_up,
+                  color: Colors.blue,
+                  size: 24.0,
+                ),
+                SizedBox(width: 8.0),
+                Text(
+                  'Trending Searches',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: _theatresFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No theatres available'));
+                } else {
+                  return  ListView.separated(
+  padding: EdgeInsets.zero, // Remove padding from the ListView
+  itemCount: snapshot.data!.length,
+  separatorBuilder: (context, index) => const Divider(
+    height: 0.0, // Reduce the height of the divider
+    thickness: 0.5, // Set the thickness of the divider
+  ),
+  itemBuilder: (context, index) {
+    final theatre = snapshot.data![index];
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
+      title: Text(
+        theatre['title'],
+        style: const TextStyle(fontSize: 14),
+      ),
+      trailing: const Icon(
+        Icons.movie_creation,
+        color: Colors.blue,
+      ),
+    );
+  },
+);
+
+                }
+              },
+            ),
+          ),
         ],
       ),
     );
   }
 
-  // Example mock data
+  Widget _buildCategoryItem(String title) {
+    return GestureDetector(
+      onTap: () {
+        if (title == 'Movies') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+        } else if (title == 'Offers') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const OffersScreen()),
+          );
+        }
+        // Handle other categories if needed
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 5.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          border: Border.all(
+            color: Colors.black.withOpacity(0.4),
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.blue,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

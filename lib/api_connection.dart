@@ -15,6 +15,7 @@ class ApiConnection {
   static String get users => "$baseUrl$userEndpoint/users.php";
   static String get bookings => "$baseUrl$bookingEndpoint/create_booking.php"; // Add this line for the bookings endpoint
   static String get seats => "$baseUrl$userEndpoint/fetch_seats.php"; // Add this line for the bookings endpoint
+  static String get theatresList => "$baseUrl$userEndpoint/theatres_list.php";
 
 
 
@@ -163,6 +164,20 @@ class ApiConnection {
       return List<Map<String, dynamic>>.from(data['seats']);
     } else {
       throw Exception('Failed to load seats');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> fetchTheatres() async {
+    final response = await http.get(Uri.parse(theatresList));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['status'] == 'error') {
+        throw Exception(data['message']);
+      }
+      return List<Map<String, dynamic>>.from(data['theatres']);
+    } else {
+      throw Exception('Failed to load movies');
     }
   }
 }

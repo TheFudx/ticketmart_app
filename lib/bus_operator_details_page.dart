@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
@@ -260,20 +261,24 @@ void _openCheckout(BuildContext context, double totalPrice) {
   };
 
   try {
-    Razorpay _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (response) => _handlePaymentSuccess(response, context));
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    Razorpay razorpay = Razorpay();
+    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (response) => _handlePaymentSuccess(response, context));
+    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     
-    _razorpay.open(options);
+    razorpay.open(options);
   } catch (e) {
-    print(e.toString());
+    if (kDebugMode) {
+      print(e.toString());
+    }
   }
 }
 
 void _handlePaymentSuccess(PaymentSuccessResponse response, BuildContext context) {
     // Handle successful payment here
-    print("Payment successful: ${response.paymentId}");
+    if (kDebugMode) {
+      print("Payment successful: ${response.paymentId}");
+    }
     // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Payment successful: ${response.paymentId}")));
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (context) => BookingConfirmationPage(
@@ -285,13 +290,17 @@ void _handlePaymentSuccess(PaymentSuccessResponse response, BuildContext context
 
 void _handlePaymentError(PaymentFailureResponse response) {
   // Handle payment error here
-  print("Payment failed: ${response.code} - ${response.message}");
+  if (kDebugMode) {
+    print("Payment failed: ${response.code} - ${response.message}");
+  }
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Payment failed: ${response.message}")));
 }
 
 void _handleExternalWallet(ExternalWalletResponse response) {
   // Handle external wallet response here
-  print("External wallet selected: ${response.walletName}");
+  if (kDebugMode) {
+    print("External wallet selected: ${response.walletName}");
+  }
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("External wallet selected: ${response.walletName}")));
 }
 
