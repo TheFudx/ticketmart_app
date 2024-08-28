@@ -13,16 +13,34 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   Future<List<Map<String, dynamic>>>? _theatresFuture;
+  List<Map<String, dynamic>>? _allTheatres; // Holds all theatres data
+  List<Map<String, dynamic>>? _filteredTheatres; // Holds filtered theatres data
 
   @override
   void initState() {
     super.initState();
     _theatresFuture = ApiConnection.fetchTheatres();
+    _theatresFuture!.then((data) {
+      setState(() {
+        _allTheatres = data;
+        _filteredTheatres = data; // Initialize filtered list with all data
+      });
+    });
   }
 
   void _search(String query) {
-    // Example filtering logic
-    setState(() {});
+    if (query.isEmpty) {
+      setState(() {
+        _filteredTheatres = _allTheatres; // Reset to all data if query is empty
+      });
+    } else {
+      setState(() {
+        _filteredTheatres = _allTheatres!
+            .where((theatre) =>
+                theatre['title'].toLowerCase().contains(query.toLowerCase()))
+            .toList(); // Filter based on query
+      });
+    }
   }
 
   @override
@@ -66,7 +84,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 icon: const Icon(Icons.filter_list),
                 onPressed: () {
                   // Handle filter icon press
-                },
+                }, 
               ),
             ),
           ],
@@ -91,12 +109,12 @@ class _SearchScreenState extends State<SearchScreen> {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               children: [
-                _buildCategoryItem('Movies'),
-                _buildCategoryItem('Events'),
-                _buildCategoryItem('Plays'),
-                _buildCategoryItem('Sports'),
-                _buildCategoryItem('Offers'),
-                _buildCategoryItem('Others'),
+                _buildCategoryItem(context, 'Movies'),
+                _buildCategoryItem(context, 'Events'),
+                _buildCategoryItem(context, 'Plays'),
+                _buildCategoryItem(context, 'Sports'),
+                _buildCategoryItem(context, 'Offers'),
+                _buildCategoryItem(context, 'Others'),
               ],
             ),
           ),
@@ -124,49 +142,41 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
           Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: _theatresFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No theatres available'));
-                } else {
-                  return  ListView.separated(
-  padding: EdgeInsets.zero, // Remove padding from the ListView
-  itemCount: snapshot.data!.length,
-  separatorBuilder: (context, index) => const Divider(
-    height: 0.0, // Reduce the height of the divider
-    thickness: 0.5, // Set the thickness of the divider
-  ),
-  itemBuilder: (context, index) {
-    final theatre = snapshot.data![index];
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
-      title: Text(
-        theatre['title'],
-        style: const TextStyle(fontSize: 14),
-      ),
-      trailing: const Icon(
-        Icons.movie_creation,
-        color: Colors.blue,
-      ),
-    );
-  },
-);
-
-                }
-              },
-            ),
+            child: _filteredTheatres == null
+                ? const Center(child: CircularProgressIndicator())
+                : _filteredTheatres!.isEmpty
+                    ? const Center(child: Text('No movies available'))
+                    : ListView.separated(
+                        padding:
+                            EdgeInsets.zero, // Remove padding from the ListView
+                        itemCount: _filteredTheatres!.length,
+                        separatorBuilder: (context, index) => const Divider(
+                          height: 0.0, // Reduce the height of the divider
+                          thickness: 0.5, // Set the thickness of the divider
+                        ),
+                        itemBuilder: (context, index) {
+                          final theatre = _filteredTheatres![index];
+                          return ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 0.0, horizontal: 16.0),
+                            title: Text(
+                              theatre['title'],
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            trailing: const Icon(
+                              Icons.movie_creation,
+                              color: Colors.blue,
+                            ),
+                          );
+                        },
+                      ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCategoryItem(String title) {
+  Widget _buildCategoryItem(BuildContext context, String title) {
     return GestureDetector(
       onTap: () {
         if (title == 'Movies') {

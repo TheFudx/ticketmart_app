@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:ticketmart/amusement_park.dart';
+import 'package:ticketmart/comedy.dart';
+import 'package:ticketmart/coming_soon.dart';
+import 'package:ticketmart/kid.dart';
 import 'package:ticketmart/movies_list_screen.dart';
+import 'package:ticketmart/music.dart';
+import 'package:ticketmart/workshop.dart';
 import 'package:translator/translator.dart';
 import 'package:ticketmart/api_connection.dart';
 import 'package:ticketmart/movie_detail_screen.dart';
@@ -14,9 +20,6 @@ import 'train_page.dart';
 import 'flight_page.dart';
 import 'bus_page.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-
-// import 'events_page.dart';
-// import 'park_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,8 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   List<Map<String, dynamic>> _carouselImages = [];
   List<Map<String, dynamic>> _newReleases = [];
-  List<Map<String, dynamic>> _trendingInTheatre = [];
-  List<Map<String, dynamic>> _upcoming = [];
+  // List<Map<String, dynamic>> _trendingInTheatre = [];
+  // List<Map<String, dynamic>> _upcoming = [];
   bool _isLoading = true;
   bool _isLocationLoading = false;
   final List<String> _predefinedCities = [
@@ -67,8 +70,8 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _carouselImages = List<Map<String, dynamic>>.from(movies);
         _newReleases = List<Map<String, dynamic>>.from(movies);
-        _trendingInTheatre = List<Map<String, dynamic>>.from(movies);
-        _upcoming = List<Map<String, dynamic>>.from(movies);
+        // _trendingInTheatre = List<Map<String, dynamic>>.from(movies);
+        // _upcoming = List<Map<String, dynamic>>.from(movies);
         _isLoading = false;
       });
     } catch (e) {
@@ -168,7 +171,8 @@ class _HomeScreenState extends State<HomeScreen> {
             seatType: '',
             theatreId: '',
             movieId: '',
-            showTime: {}, totalPrice: 1, 
+            showTime: {},
+            totalPrice: 1,
           ),
         ],
       ),
@@ -285,32 +289,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   isSelected: _selectedIndex == 0,
                   onTap: () {},
                 ),
-                // _buildCategoryIcon(
-                //   icon: Icons.event,
-                //   label: 'Events',
-                //   isSelected: _selectedIndex == 4,
-                //   onTap: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //         builder: (context) => const EventsPage(),
-                //       ),
-                //     );
-                //   },
-                // ),
-                // _buildCategoryIcon(
-                //   icon: Icons.place,
-                //   label: 'Theme Park',
-                //   isSelected: _selectedIndex == 5,
-                //   onTap: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //         builder: (context) => const ParkPage(),
-                //       ),
-                //     );
-                //   },
-                // ),
                 _buildCategoryIcon(
                   icon: Icons.directions_bus,
                   label: 'Bus',
@@ -353,28 +331,437 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
+          const SizedBox(height: 20),
+          SizedBox(
+  height: screenHeight * 0.20, // Adjust height as needed
+  width: 422,
+  child: SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    child: Row(
+      children: [
+        _buildImageContainer(
+          context,
+          'assets/images/movie_banner.png',
+          () {
+//             Navigator.push(
+//               context,
+//               MaterialPageRoute(builder: (context) =>  
+// const MoviesListScreen(
+//                         title: "title",
+//                         movies: [],
+//                       ),              
+//               ),
+//             );
+          },
+        ),
+        _buildImageContainer(
+          context,
+          'assets/images/bus_banner.png',
+          () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const BusPage()),
+            );
+          },
+        ),
+        _buildImageContainer(
+          context,
+          'assets/images/train_banner.png',
+          () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const TrainPage()),
+            );
+          },
+        ),
+        _buildImageContainer(
+          context,
+          'assets/images/flight_banner.png',
+          () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const FlightPage()),
+            );
+          },
+        ),
+      ],
+    ),
+  ),
+        
+),
           _isLoading
               ? const Center(child: CircularProgressIndicator())
               : Column(
                   children: [
                     if (_carouselImages.isNotEmpty)
-                      SizedBox(
-                        height: screenHeight * 0.3,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: _carouselImages.length,
-                          itemBuilder: (context, index) {
-                            return _buildCarouselImage(context, index);
-                          },
+                      _buildMovieSection('Recommended Movies', _newReleases),
+                    Container(
+                      padding: const EdgeInsets.all(16.0),
+                      alignment: Alignment.centerLeft,
+                      child: const Text(
+                        'The Best Of Live Events',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ),
+                    SizedBox(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            _buildImageLiveContainer(
+                                'assets/images/amusement.webp',
+                                const AmusementParkPage()),
+                            _buildImageLiveContainer(
+                                'assets/images/workshops.webp',
+                                const WorkshopPage()),
+                            _buildImageLiveContainer(
+                                'assets/images/kidszone.webp', const KidPage()),
+                            _buildImageLiveContainer(
+                                'assets/images/comedyshows.webp',
+                                const ComedyPage()),
+                            _buildImageLiveContainer(
+                                'assets/images/musicshows.webp', const Music()),
+                            _buildImageLiveContainer(
+                                'assets/images/theater.png',
+                                const ComingSoonPage()),
+                            _buildImageLiveContainer(
+                                'assets/images/adventure.png',
+                                const ComingSoonPage()),
+                            _buildImageLiveContainer('assets/images/art.png',
+                                const ComingSoonPage()),
+                          ],
                         ),
                       ),
-                    _buildMovieSection('New Releases', _newReleases),
-                    _buildMovieSection(
-                        'Trending in Theatre', _trendingInTheatre),
-                    _buildMovieSection('Upcoming', _upcoming),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(16.0),
+                      alignment: Alignment.centerLeft,
+                      child: const Text(
+                        'Online Streaming Events',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ),
+                    SizedBox(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            _buildImageOnlineContainer(
+                                'assets/images/online.jpg'),
+                            _buildImageOnlineContainer(
+                                'assets/images/online.jpg'),
+                            _buildImageOnlineContainer(
+                                'assets/images/online.jpg'),
+                            _buildImageOnlineContainer(
+                                'assets/images/online.jpg'),
+                            _buildImageOnlineContainer(
+                                'assets/images/streaming.jpg')
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(16.0),
+                      alignment: Alignment.centerLeft,
+                      child: const Text(
+                        'Outdoor Events',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ),
+                    SizedBox(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            _buildOutdoorContainer('assets/images/img1.avif'),
+                            _buildOutdoorContainer('assets/images/2.avif'),
+                            _buildOutdoorContainer('assets/images/3.avif'),
+                            _buildOutdoorContainer('assets/images/4.avif'),
+                            _buildOutdoorContainer('assets/images/5.avif'),
+                            _buildOutdoorContainer('assets/images/6.avif'),
+                            _buildOutdoorContainer('assets/images/7.avif'),
+                            _buildOutdoorContainer('assets/images/8.avif'),
+                            _buildOutdoorContainer('assets/images/9.avif'),
+                            _buildOutdoorContainer('assets/images/10.avif')
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(15.0),
+                      alignment: Alignment.centerLeft,
+                      child: const Text(
+                        'Laughter Therapy',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ),
+                    SizedBox(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            _buildLaughterContainer('assets/images/11.avif'),
+                            _buildLaughterContainer('assets/images/12.avif'),
+                            _buildLaughterContainer('assets/images/12.avif'),
+                            _buildLaughterContainer('assets/images/14.avif'),
+                            _buildLaughterContainer('assets/images/15.avif'),
+                            _buildLaughterContainer('assets/images/16.avif'),
+                            _buildLaughterContainer('assets/images/17.avif'),
+                            _buildLaughterContainer('assets/images/18.avif'),
+                            _buildLaughterContainer('assets/images/19.avif'),
+                            _buildLaughterContainer('assets/images/20.avif'),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(16.0),
+                      alignment: Alignment.centerLeft,
+                      child: const Text(
+                        'Popular Events',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ),
+                    SizedBox(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            _buildPopularEventsContainer(
+                                'assets/images/21.avif'),
+                            _buildPopularEventsContainer(
+                                'assets/images/22.avif'),
+                            _buildPopularEventsContainer(
+                                'assets/images/23.avif'),
+                            _buildPopularEventsContainer(
+                                'assets/images/24.avif'),
+                            _buildPopularEventsContainer(
+                                'assets/images/25.avif'),
+                            _buildPopularEventsContainer(
+                                'assets/images/26.avif'),
+                            _buildPopularEventsContainer(
+                                'assets/images/27.avif'),
+                            _buildPopularEventsContainer(
+                                'assets/images/28.avif'),
+                            _buildPopularEventsContainer(
+                                'assets/images/29.avif'),
+                            _buildPopularEventsContainer(
+                                'assets/images/30.avif')
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(16.0),
+                      alignment: Alignment.centerLeft,
+                      child: const Text(
+                        'The Latest Plays',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ),
+                    SizedBox(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            _buildLatestPlaysContainer('assets/images/31.avif'),
+                            _buildLatestPlaysContainer('assets/images/32.avif'),
+                            _buildLatestPlaysContainer('assets/images/33.avif'),
+                            _buildLatestPlaysContainer('assets/images/34.avif'),
+                            _buildLatestPlaysContainer('assets/images/35.avif'),
+                            _buildLatestPlaysContainer('assets/images/36.avif'),
+                            _buildLatestPlaysContainer('assets/images/37.avif'),
+                            _buildLatestPlaysContainer('assets/images/38.avif'),
+                            _buildLatestPlaysContainer('assets/images/39.avif'),
+                            _buildLatestPlaysContainer('assets/images/40.avif')
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
         ],
+      ),
+    );
+  }
+
+Widget _buildImageContainer(BuildContext context, String imagePath, VoidCallback onTap) {
+  return InkWell(
+    onTap: onTap, // Handle tap for navigation
+    child: Container(
+      width: MediaQuery.of(context).size.width * 0.97, // Adjust width as a fraction of screen width
+      height: MediaQuery.of(context).size.height * 0.2, // Adjust height as needed
+      margin: const EdgeInsets.symmetric(horizontal: 5.0), // Add margin for spacing
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(imagePath),
+          fit: BoxFit.cover,
+        ),
+        borderRadius: BorderRadius.circular(5), // Optional: Add border radius if needed
+      ),
+    ),
+  );
+}
+
+
+  Widget _buildImageLiveContainer(String imagePath, Widget destinationPage) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => destinationPage),
+        );
+      },
+      child: Container(
+        width:
+            MediaQuery.of(context).size.width * 0.32, // Adjust width as needed
+        height: 140, // Adjust height as needed
+        margin: const EdgeInsets.symmetric(
+            horizontal: 5.0), // Add margin for spacing
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+          ),
+          borderRadius:
+              BorderRadius.circular(8), // Optional: Add border radius if needed
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImageOnlineContainer(String imagePath) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ComingSoonPage()),
+        );
+      },
+      child: Container(
+        width:
+            MediaQuery.of(context).size.width * 0.32, // Adjust width as needed
+        height: 240, // Adjust height as needed
+        margin: const EdgeInsets.symmetric(
+            horizontal: 5.0), // Add margin for spacing
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+          ),
+          borderRadius:
+              BorderRadius.circular(8), // Optional: Add border radius if needed
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOutdoorContainer(String imagePath) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ComingSoonPage()),
+        );
+      },
+      child: Container(
+        width:
+            MediaQuery.of(context).size.width * 0.32, // Adjust width as needed
+        height: 240, // Adjust height as needed
+        margin: const EdgeInsets.symmetric(
+            horizontal: 5.0), // Add margin for spacing
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+          ),
+          borderRadius:
+              BorderRadius.circular(8), // Optional: Add border radius if needed
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLaughterContainer(String imagePath) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ComingSoonPage()),
+        );
+      },
+      child: Container(
+        width:
+            MediaQuery.of(context).size.width * 0.32, // Adjust width as needed
+        height: 240, // Adjust height as needed
+        margin: const EdgeInsets.symmetric(
+            horizontal: 5.0), // Add margin for spacing
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+          ),
+          borderRadius:
+              BorderRadius.circular(8), // Optional: Add border radius if needed
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPopularEventsContainer(String imagePath) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ComingSoonPage()),
+        );
+      },
+      child: Container(
+        width:
+            MediaQuery.of(context).size.width * 0.32, // Adjust width as needed
+        height: 240, // Adjust height as needed
+        margin: const EdgeInsets.symmetric(
+            horizontal: 5.0), // Add margin for spacing
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+          ),
+          borderRadius:
+              BorderRadius.circular(8), // Optional: Add border radius if needed
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLatestPlaysContainer(String imagePath) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ComingSoonPage()),
+        );
+      },
+      child: Container(
+        width:
+            MediaQuery.of(context).size.width * 0.32, // Adjust width as needed
+        height: 240, // Adjust height as needed
+        margin: const EdgeInsets.symmetric(
+            horizontal: 5.0), // Add margin for spacing
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+          ),
+          borderRadius:
+              BorderRadius.circular(8), // Optional: Add border radius if needed
+        ),
       ),
     );
   }
@@ -407,169 +794,58 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildCarouselImage(BuildContext context, int index) {
+  Widget _buildMovieSection(String title, List<Map<String, dynamic>> movies) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MovieDetailsScreen(
-                movieId: _carouselImages[index]['id'],
-                movieTitle: _carouselImages[index]['title'],
-                movieReleaseDate: _carouselImages[index]['release_date'],
-                rating: _carouselImages[index]['rating'],
-                bannerimageUrl: _carouselImages[index]['image_path'],
-                imageUrl: _carouselImages[index]['banner_image_path'],
-                duration: _carouselImages[index]['duration'],
-                genre: _carouselImages[index]['genre'],
-                description: _carouselImages[index]['description'],
-                topOffers: 'BUY 1 GET 1 FREE',
-                cast: _carouselImages[index]['cast']
-                    .split(','),  // Split the cast string into a list
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-            ),
-          );
-        },
-        child: Stack(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.9,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image:
-                      NetworkImage(_carouselImages[index]["banner_image_path"]),
-                  fit: BoxFit.fill,
-                ),
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(10),
-                    bottomRight: Radius.circular(10),
-                  ),
-                  color: Colors.black.withOpacity(0.6),
-                ),
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          _carouselImages[index]["title"],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          _carouselImages[index]["release_date"],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              top: 10,
-              right: 10,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.black.withOpacity(0.6),
-                ),
-                padding: const EdgeInsets.all(5.0),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.star,
-                      color: Colors.yellow,
-                      size: 14,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      _carouselImages[index]["rating"].toString(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MoviesListScreen(
+                        title: title,
+                        movies: movies,
                       ),
                     ),
+                  );
+                },
+                child: const Row(
+                  children: [
+                    Text(
+                      "See All",
+                      style: TextStyle(fontSize: 14, color: Colors.blue),
+                    ),
+                    Icon(Icons.chevron_right_rounded, color: Colors.blue),
                   ],
                 ),
               ),
+            ],
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.26,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: movies.length,
+              itemBuilder: (context, index) {
+                return _buildMovieCard(context, movies, index);
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
-
-  Widget _buildMovieSection(String title, List<Map<String, dynamic>> movies) {
-  return Padding(
-    padding: const EdgeInsets.all(10.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MoviesListScreen(
-                      title: title,
-                      movies: movies,
-                    ),
-                  ),
-                );
-              },
-              child: const Row(
-                children: [
-                  Text(
-                    "See All",
-                    style: TextStyle(fontSize: 14, color: Colors.blue),
-                  ),
-                  Icon(Icons.chevron_right_rounded, color: Colors.blue),
-                ],
-              ),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.26,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: movies.length,
-            itemBuilder: (context, index) {
-              return _buildMovieCard(context, movies, index);
-            },
-          ),
-        ),
-      ],
-    ),
-  );
-}
 
   Widget _buildMovieCard(
       BuildContext context, List<Map<String, dynamic>> movies, int index) {
@@ -591,9 +867,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 genre: movies[index]['genre'],
                 description: movies[index]['description'],
                 topOffers: 'BUY 1 GET 1 FREE',
-                cast: movies[index]['cast']
-                    .split(','), 
-                   // Split the cast string into a list
+                cast: movies[index]['cast'].split(','),
+                // Split the cast string into a list
               ),
             ),
           );
@@ -628,7 +903,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
 
   @override
   void dispose() {

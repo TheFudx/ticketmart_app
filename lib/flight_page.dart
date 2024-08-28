@@ -12,14 +12,8 @@ class FlightPage extends StatefulWidget {
 
 class _FlightPageState extends State<FlightPage> {
   final List<String> _cities = [
-    'Delhi',
-    'Mumbai',
-    'Chennai',
-    'Bangalore',
-    'Hyderabad',
-    'Pune',
-    'Kolkata',
-    'Chandigarh'
+    'Delhi', 'Mumbai', 'Chennai', 'Bangalore', 'Hyderabad',
+    'Pune', 'Kolkata', 'Chandigarh'
   ];
 
   String? _selectedSourceCity;
@@ -70,18 +64,18 @@ class _FlightPageState extends State<FlightPage> {
     final dateFormat = DateFormat('EEE, d MMM');
 
     return Scaffold(
-      appBar: _buildAppBar(context),
+      appBar: _buildAppBar(),
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
           _buildBackground(),
-          _buildContent(context, dateFormat),
+          _buildContent(dateFormat),
         ],
       ),
     );
   }
 
-  AppBar _buildAppBar(BuildContext context) {
+  AppBar _buildAppBar() {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -106,7 +100,7 @@ class _FlightPageState extends State<FlightPage> {
     );
   }
 
-  Widget _buildContent(BuildContext context, DateFormat dateFormat) {
+  Widget _buildContent(DateFormat dateFormat) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 50.0),
       child: SingleChildScrollView(
@@ -114,22 +108,15 @@ class _FlightPageState extends State<FlightPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 50),
-            const Text(
-              'BOOK FLIGHT TICKET',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            const _Title(),
             const SizedBox(height: 20),
             _buildInputForm(dateFormat),
             const SizedBox(height: 20),
             _buildSearchButton(),
             const SizedBox(height: 20),
-            _buildflightOperatorsSection(),
+            _buildFlightOperatorsSection(),
             const SizedBox(height: 20),
-            const PopularflightRoutesSection(),
+            const PopularFlightRoutesSection(),
           ],
         ),
       ),
@@ -204,13 +191,11 @@ class _FlightPageState extends State<FlightPage> {
 
   Widget _buildDateAndTimeSelector(DateFormat dateFormat) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
           '            Departure',
-          style: TextStyle(
-            fontSize: 14,
-          ),
+          style: TextStyle(fontSize: 14),
         ),
         Row(
           children: [
@@ -219,7 +204,7 @@ class _FlightPageState extends State<FlightPage> {
                 onTap: () => _selectDate(context),
                 child: InputDecorator(
                   decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.calendar_today, size: 20),
+                    prefixIcon: Icon(Icons.calendar_today, size: 20, color: Colors.black),
                     border: InputBorder.none,
                   ),
                   child: Text(
@@ -231,7 +216,6 @@ class _FlightPageState extends State<FlightPage> {
                 ),
               ),
             ),
-            const SizedBox(width: 10),
           ],
         ),
       ],
@@ -252,32 +236,22 @@ class _FlightPageState extends State<FlightPage> {
     );
   }
 
-  Widget _buildflightOperatorsSection() {
+  Widget _buildFlightOperatorsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'flight Operators',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 5),
+        const SectionTitle(title: 'Flight Operators'),
         SizedBox(
-          height: 150,
+          height: 135,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: const [
-              FlightOperatorWidget(image: 'assets/images/bus_background.png', name: 'Andhra Pradesh'),
-              FlightOperatorWidget(image: 'assets/images/bus_background.png', name: 'Himachal Road'),
-              FlightOperatorWidget(image: 'assets/images/bus_background.png', name: 'Kadamba'),
-              FlightOperatorWidget(image: 'assets/images/bus_background.png', name: 'South Bengal'),
-              FlightOperatorWidget(image: 'assets/images/bus_background.png', name: 'Telangana'),
-              FlightOperatorWidget(image: 'assets/images/bus_background.png', name: 'Uttar Pradesh'),
-              FlightOperatorWidget(image: 'assets/images/bus_background.png', name: 'West Bengal'),
-              FlightOperatorWidget(image: 'assets/images/bus_background.png', name: 'North Bengal'),
+              FlightOperatorWidget(image: 'assets/images/flight_background.png', name: 'Air India'),
+              FlightOperatorWidget(image: 'assets/images/flight_background.png', name: 'IndiGo'),
+              FlightOperatorWidget(image: 'assets/images/flight_background.png', name: 'SpiceJet'),
+              FlightOperatorWidget(image: 'assets/images/flight_background.png', name: 'GoAir'),
+              FlightOperatorWidget(image: 'assets/images/flight_background.png', name: 'Vistara'),
+              FlightOperatorWidget(image: 'assets/images/flight_background.png', name: 'AirAsia India'),
             ],
           ),
         ),
@@ -286,11 +260,45 @@ class _FlightPageState extends State<FlightPage> {
   }
 }
 
-class PopularflightRouteWidget extends StatelessWidget {
+class _Title extends StatelessWidget {
+  const _Title();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Text(
+      'BOOK FLIGHT TICKET',
+      style: TextStyle(
+        color: Colors.grey,
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+}
+
+class SectionTitle extends StatelessWidget {
+  final String title;
+
+  const SectionTitle({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 14,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+}
+
+class PopularFlightRouteWidget extends StatelessWidget {
   final String route;
   final String destinations;
 
-  const PopularflightRouteWidget({
+  const PopularFlightRouteWidget({
     super.key,
     required this.route,
     required this.destinations,
@@ -298,62 +306,66 @@ class PopularflightRouteWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            route,
-            style: const TextStyle(
-              color: Colors.blue,
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
+    return Card(
+      color: Colors.white.withOpacity(0.9),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      elevation: 10.0,
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              route,
+              style: const TextStyle(
+                color: Colors.blue,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            destinations,
-            style: const TextStyle(color: Colors.white),
-          ),
-        ],
+            const Divider(color: Colors.grey, thickness: 1),
+            Text(
+              destinations,
+              style: const TextStyle(
+                color: Colors.black87,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class PopularflightRoutesSection extends StatelessWidget {
-  const PopularflightRoutesSection({super.key});
+class PopularFlightRoutesSection extends StatelessWidget {
+  const PopularFlightRoutesSection({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Popular flight Routes',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        SectionTitle(title: 'Popular Flight Routes'),
         SizedBox(height: 10),
-        PopularflightRouteWidget(
-          route: 'Delhi to Chandigarh flightes',
-          destinations: 'North Delhi, Ambala, Karnal, Kurukshetra',
+        PopularFlightRouteWidget(
+          route: 'DEL to BOM',
+          destinations: 'New Delhi to Mumbai',
         ),
-        PopularflightRouteWidget(
-          route: 'Bangalore to Hyderabad flightes',
-          destinations: 'Bangalore, Anantapur, Kurnool, Mahbubnagar',
+        PopularFlightRouteWidget(
+          route: 'BLR to HYD',
+          destinations: 'Bangalore to Hyderabad',
         ),
-        PopularflightRouteWidget(
-          route: 'Chennai to Bangalore flightes',
-          destinations: 'Chennai, Vellore, Krishnagiri, Hosur',
+        PopularFlightRouteWidget(
+          route: 'DEL to MAA',
+          destinations: 'New Delhi to Chennai',
         ),
-        PopularflightRouteWidget(
-          route: 'Hyderabad to Goa flightes',
-          destinations: 'Hyderabad, Hubli, Ankola, Karwar',
+        PopularFlightRouteWidget(
+          route: 'CCU to DEL',
+          destinations: 'Kolkata to New Delhi',
         ),
       ],
     );
@@ -364,46 +376,35 @@ class FlightOperatorWidget extends StatelessWidget {
   final String image;
   final String name;
 
-  const FlightOperatorWidget({super.key, required this.image, required this.name});
+  const FlightOperatorWidget({
+    super.key,
+    required this.image,
+    required this.name,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 150,
-      child: Card(
-        color: Colors.transparent.withOpacity(0.3),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-              ),
-              child: Image.asset(
-                image,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Container(
+            width: 90,
+            height: 90,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(image),
                 fit: BoxFit.cover,
-                height: 90,
-                width: double.infinity,
               ),
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                name,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            name,
+            style: const TextStyle(color: Colors.white, fontSize: 12),
+          ),
+        ],
       ),
     );
   }
