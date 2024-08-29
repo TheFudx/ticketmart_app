@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+
 
 class ComedyPage extends StatelessWidget {
   const ComedyPage({super.key});
@@ -225,14 +227,11 @@ Widget _buildImageRowWithButtons(BuildContext context) {
         const SizedBox(height: 10),
         _buildFilterRow(context, [
           'Outdoor Events',
-          'Kids Allowed',
-          'Kids Activities',
-          'Must Attends',
-        ]),
-        _buildFilterRow(context, [
-          'Spiritual Tourism',
-          'Unmissable Events',
-          'Weekend Getaway',
+          'Fast Filling',
+          'Offers For You',
+          'Must Attend',
+          'Online Streaming',
+          'Unmissible Events'
         ]),
         const SizedBox(height: 20),
         const Text(
@@ -286,7 +285,9 @@ Widget _buildImageRowWithButtons(BuildContext context) {
 
     if (picked != null) {
       // Do something with the picked date range
-      print("Date range selected: ${picked.start} - ${picked.end}");
+      if (kDebugMode) {
+        print("Date range selected: ${picked.start} - ${picked.end}");
+      }
     }
   }
 }

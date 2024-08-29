@@ -333,62 +333,64 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 20),
           SizedBox(
-  height: screenHeight * 0.20, // Adjust height as needed
-  width: 422,
-  child: SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    child: Row(
-      children: [
-        _buildImageContainer(
-          context,
-          'assets/images/movie_banner.png',
-          () {
+            height: screenHeight * 0.20, // Adjust height as needed
+            width: 422,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  _buildImageContainer(
+                    context,
+                    'assets/images/movie_banner.png',
+                    () {
 //             Navigator.push(
 //               context,
-//               MaterialPageRoute(builder: (context) =>  
+//               MaterialPageRoute(builder: (context) =>
 // const MoviesListScreen(
 //                         title: "title",
 //                         movies: [],
-//                       ),              
+//                       ),
 //               ),
 //             );
-          },
-        ),
-        _buildImageContainer(
-          context,
-          'assets/images/bus_banner.png',
-          () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const BusPage()),
-            );
-          },
-        ),
-        _buildImageContainer(
-          context,
-          'assets/images/train_banner.png',
-          () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const TrainPage()),
-            );
-          },
-        ),
-        _buildImageContainer(
-          context,
-          'assets/images/flight_banner.png',
-          () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const FlightPage()),
-            );
-          },
-        ),
-      ],
-    ),
-  ),
-        
-),
+                    },
+                  ),
+                  _buildImageContainer(
+                    context,
+                    'assets/images/bus_banner.png',
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const BusPage()),
+                      );
+                    },
+                  ),
+                  _buildImageContainer(
+                    context,
+                    'assets/images/train_banner.png',
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const TrainPage()),
+                      );
+                    },
+                  ),
+                  _buildImageContainer(
+                    context,
+                    'assets/images/flight_banner.png',
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const FlightPage()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
           _isLoading
               ? const Center(child: CircularProgressIndicator())
               : Column(
@@ -591,24 +593,28 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-Widget _buildImageContainer(BuildContext context, String imagePath, VoidCallback onTap) {
-  return InkWell(
-    onTap: onTap, // Handle tap for navigation
-    child: Container(
-      width: MediaQuery.of(context).size.width * 0.97, // Adjust width as a fraction of screen width
-      height: MediaQuery.of(context).size.height * 0.2, // Adjust height as needed
-      margin: const EdgeInsets.symmetric(horizontal: 5.0), // Add margin for spacing
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(imagePath),
-          fit: BoxFit.cover,
+  Widget _buildImageContainer(
+      BuildContext context, String imagePath, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap, // Handle tap for navigation
+      child: Container(
+        width: MediaQuery.of(context).size.width *
+            0.97, // Adjust width as a fraction of screen width
+        height:
+            MediaQuery.of(context).size.height * 0.2, // Adjust height as needed
+        margin: const EdgeInsets.symmetric(
+            horizontal: 5.0), // Add margin for spacing
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+          ),
+          borderRadius:
+              BorderRadius.circular(5), // Optional: Add border radius if needed
         ),
-        borderRadius: BorderRadius.circular(5), // Optional: Add border radius if needed
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget _buildImageLiveContainer(String imagePath, Widget destinationPage) {
     return InkWell(

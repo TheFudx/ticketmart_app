@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+
 
 class KidPage extends StatelessWidget {
   const KidPage({super.key});
@@ -286,7 +288,9 @@ Widget _buildImageRowWithButtons(BuildContext context) {
 
     if (picked != null) {
       // Do something with the picked date range
-      print("Date range selected: ${picked.start} - ${picked.end}");
+      if (kDebugMode) {
+        print("Date range selected: ${picked.start} - ${picked.end}");
+      }
     }
   }
 }
