@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:ticketmart/adventure.dart';
 import 'package:ticketmart/amusement_park.dart';
+import 'package:ticketmart/art.dart';
 import 'package:ticketmart/comedy.dart';
 import 'package:ticketmart/coming_soon.dart';
 import 'package:ticketmart/kid.dart';
 import 'package:ticketmart/movies_list_screen.dart';
 import 'package:ticketmart/music.dart';
+import 'package:ticketmart/theatre.dart';
 import 'package:ticketmart/workshop.dart';
 import 'package:translator/translator.dart';
 import 'package:ticketmart/api_connection.dart';
@@ -426,12 +429,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 'assets/images/musicshows.webp', const Music()),
                             _buildImageLiveContainer(
                                 'assets/images/theater.png',
-                                const ComingSoonPage()),
+                                const Theatre()),
                             _buildImageLiveContainer(
                                 'assets/images/adventure.png',
-                                const ComingSoonPage()),
+                                const Adventure()),
                             _buildImageLiveContainer('assets/images/art.png',
-                                const ComingSoonPage()),
+                                const Art()),
                           ],
                         ),
                       ),

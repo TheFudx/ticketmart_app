@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
 
-class Music extends StatelessWidget {
-  const Music({super.key});
+class Art extends StatelessWidget {
+  const Art({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class Music extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "   Music shows in Mumbai",
+              "   Art shows in Mumbai",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 20),
@@ -44,14 +44,18 @@ class Music extends StatelessWidget {
   }
 
   Widget _buildCategoryRow(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildCategory('Concerts'),
-        _buildCategory('Music Festivals'),
-        _buildCategory('Club Gigs'),
-        _buildCategory('Open Mic'),
-      ],
+    return SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildCategory('Acoustic'),
+          _buildCategory('Bollywood'),
+          _buildCategory('Contemporary'),
+          _buildCategory('International'),
+        ],
+      ),
     );
   }
 
@@ -79,16 +83,16 @@ Widget _buildImageRowWithButtons(BuildContext context) {
     child: Row(
       children: [
         _buildImageWithButton(
-            context, 'assets/images/music1.png'),
+            context, 'assets/images/art1.png'),
         const SizedBox(width: 16), // Spacing between images
         _buildImageWithButton(
-            context, 'assets/images/music2.png'),
+            context, 'assets/images/art2.png'),
         const SizedBox(width: 16), // Spacing between images
         _buildImageWithButton(
-            context, 'assets/images/music3.png'),
+            context, 'assets/images/art3.png'),
         const SizedBox(width: 16), // Spacing between images
         _buildImageWithButton(
-            context, 'assets/images/music4.png'),
+            context, 'assets/images/art4.png'),
       ],
     ),
   );
@@ -116,14 +120,14 @@ Widget _buildImageRowWithButtons(BuildContext context) {
     scrollDirection: Axis.horizontal, // Make the row scrollable horizontally
     child: Row(
       children: [
-        _buildImageWithPrice(context, 'assets/images/music1.png'),
+        _buildImageWithPrice(context, 'assets/images/art1.png'),
         const SizedBox(width: 16), // Spacing between images
         _buildImageWithPrice(
-            context, 'assets/images/music2.png'),
+            context, 'assets/images/art2.png'),
         const SizedBox(width: 16), // Spacing between images
-        _buildImageWithPrice(context, 'assets/images/music3.png'),
+        _buildImageWithPrice(context, 'assets/images/art3.png'),
         const SizedBox(width: 16), // Spacing between images
-        _buildImageWithPrice(context, 'assets/images/music4.png'),
+        _buildImageWithPrice(context, 'assets/images/art4.png'),
       ],
     ),
   );
@@ -204,29 +208,15 @@ Widget _buildImageRowWithButtons(BuildContext context) {
         ]),
         const SizedBox(height: 20),
         const Text(
-          "Language",
+          "Genres",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
         ),
         const SizedBox(height: 10),
         _buildFilterRow(context, [
-          'Hindi',
-          'English',
-          'Telugu',
-          'Kannada',
-          'Marathi',
-          'Malayalam'
-        ]),
-        const SizedBox(height: 20),
-        const Text(
-          "Categories",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
-        ),
-        const SizedBox(height: 10),
-        _buildFilterRow(context, [
-          'Music Festival',
-          'Concerts',
-          'Open Mic',
-          'Club Gigs',
+          'Acoustic',
+          'Bollywood',
+          'Contemporary',
+          'International',
         ]),
         const SizedBox(height: 20),
         const Text(
@@ -237,11 +227,9 @@ Widget _buildImageRowWithButtons(BuildContext context) {
         _buildFilterRow(context, [
           'Outdoor Events',
           'Fast Filling',
-          'Kids Allowed',
-          'Must Attend',
-          'Religious',
-          'Spiritual',
+          
         ]),
+        
         const SizedBox(height: 20),
         const Text(
           "Price",

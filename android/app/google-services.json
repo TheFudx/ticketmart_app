@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "599650572980",
+    "project_id": "ticketmart-7feec",
+    "storage_bucket": "ticketmart-7feec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:599650572980:android:b1aed646d5397e0ba615e1",
+        "android_client_info": {
+          "package_name": "com.alphastudioz.ticketmart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCloTp7eTY3xR3RKVbprd0R3Jh1j-Pi2EM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

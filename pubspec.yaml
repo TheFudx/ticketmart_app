@@ -56,6 +56,9 @@ dependencies:
   pdf: ^3.11.1
   path_provider: ^2.1.4
   salomon_bottom_bar: ^3.3.2
+  flutter_local_notifications: ^17.2.2
+  firebase_core: ^2.24.2
+  firebase_messaging: ^14.7.10
 
 flutter_icons:
   android: true
@@ -173,6 +176,25 @@ flutter:
     - assets/images/kid2.png
     - assets/images/kid3.png
     - assets/images/kid4.png
+    - assets/images/music1.png
+    - assets/images/music2.png
+    - assets/images/music3.png
+    - assets/images/music4.png
+    - assets/images/theatre1.png
+    - assets/images/theatre2.png
+    - assets/images/theatre3.png
+    - assets/images/theatre4.png
+    - assets/images/adventure1.png
+    - assets/images/adventure2.png
+    - assets/images/adventure3.png
+    - assets/images/adventure4.png
+    - assets/images/art1.png
+    - assets/images/art2.png
+    - assets/images/art3.png
+    - assets/images/art4.png
+
+
+
    
 
 

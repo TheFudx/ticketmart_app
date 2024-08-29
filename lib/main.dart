@@ -5,11 +5,25 @@ import 'bloc/navigation_bloc.dart';
 import 'dart:io';
 import 'my_http_overrides.dart';
 import 'dart:async';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'api/firebase_api.dart';
 
-void main() {
+void main() async {
+  // WidgetsFlutterBinding.ensureInitialized();
+  
+  // // Initialize Firebase before using any Firebase services
+  // await Firebase.initializeApp();
+  
+  // // Custom initialization for Firebase notifications (if needed)
+  // await FirebaseApi().initNotifications();
+  
+  // Set up any custom HTTP overrides (e.g., for development)
   HttpOverrides.global = MyHttpOverrides();
+  
+  // Run the Flutter app
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
 
-class Music extends StatelessWidget {
-  const Music({super.key});
+class Adventure extends StatelessWidget {
+  const Adventure({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class Music extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "   Music shows in Mumbai",
+              "   Adventure shows in Mumbai",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 20),
@@ -44,14 +44,23 @@ class Music extends StatelessWidget {
   }
 
   Widget _buildCategoryRow(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildCategory('Concerts'),
-        _buildCategory('Music Festivals'),
-        _buildCategory('Club Gigs'),
-        _buildCategory('Open Mic'),
-      ],
+    return SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildCategory('Trekking'),
+          _buildCategory('Camping'),
+          _buildCategory('Safari'),
+          _buildCategory('Cycling Tour'),
+          _buildCategory('Sailing'),
+          _buildCategory('Adventure Parks'),
+          _buildCategory('Biking'),
+          _buildCategory('Kayaking'),
+          _buildCategory('Paragliding'),
+        ],
+      ),
     );
   }
 
@@ -79,21 +88,20 @@ Widget _buildImageRowWithButtons(BuildContext context) {
     child: Row(
       children: [
         _buildImageWithButton(
-            context, 'assets/images/music1.png'),
+            context, 'assets/images/adventure1.png'),
         const SizedBox(width: 16), // Spacing between images
         _buildImageWithButton(
-            context, 'assets/images/music2.png'),
+            context, 'assets/images/adventure2.png'),
         const SizedBox(width: 16), // Spacing between images
         _buildImageWithButton(
-            context, 'assets/images/music3.png'),
+            context, 'assets/images/adventure3.png'),
         const SizedBox(width: 16), // Spacing between images
         _buildImageWithButton(
-            context, 'assets/images/music4.png'),
+            context, 'assets/images/adventure4.png'),
       ],
     ),
   );
 }
-
 
   Widget _buildImageWithButton(
       BuildContext context, String imagePath) {
@@ -116,14 +124,14 @@ Widget _buildImageRowWithButtons(BuildContext context) {
     scrollDirection: Axis.horizontal, // Make the row scrollable horizontally
     child: Row(
       children: [
-        _buildImageWithPrice(context, 'assets/images/music1.png'),
+        _buildImageWithPrice(context, 'assets/images/adventure1.png'),
         const SizedBox(width: 16), // Spacing between images
         _buildImageWithPrice(
-            context, 'assets/images/music2.png'),
+            context, 'assets/images/adventure2.png'),
         const SizedBox(width: 16), // Spacing between images
-        _buildImageWithPrice(context, 'assets/images/music3.png'),
+        _buildImageWithPrice(context, 'assets/images/adventure3.png'),
         const SizedBox(width: 16), // Spacing between images
-        _buildImageWithPrice(context, 'assets/images/music4.png'),
+        _buildImageWithPrice(context, 'assets/images/adventure4.png'),
       ],
     ),
   );
@@ -204,29 +212,20 @@ Widget _buildImageRowWithButtons(BuildContext context) {
         ]),
         const SizedBox(height: 20),
         const Text(
-          "Language",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
-        ),
-        const SizedBox(height: 10),
-        _buildFilterRow(context, [
-          'Hindi',
-          'English',
-          'Telugu',
-          'Kannada',
-          'Marathi',
-          'Malayalam'
-        ]),
-        const SizedBox(height: 20),
-        const Text(
           "Categories",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
         ),
         const SizedBox(height: 10),
         _buildFilterRow(context, [
-          'Music Festival',
-          'Concerts',
-          'Open Mic',
-          'Club Gigs',
+          'Trekking',
+          'Camping',
+          'Safari',
+          'Cycling Tour',
+          'Sailing',
+          'Adventure Parks',
+          'Biking',
+          'Kayaking',
+          'Paragliding',
         ]),
         const SizedBox(height: 20),
         const Text(
@@ -236,11 +235,10 @@ Widget _buildImageRowWithButtons(BuildContext context) {
         const SizedBox(height: 10),
         _buildFilterRow(context, [
           'Outdoor Events',
-          'Fast Filling',
           'Kids Allowed',
-          'Must Attend',
-          'Religious',
-          'Spiritual',
+          'Stay Packages',
+          'Fast Filling',
+          'Weekend Getaway',
         ]),
         const SizedBox(height: 20),
         const Text(

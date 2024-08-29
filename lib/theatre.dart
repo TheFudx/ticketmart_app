@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
 
-class Music extends StatelessWidget {
-  const Music({super.key});
+class Theatre extends StatelessWidget {
+  const Theatre({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class Music extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "   Music shows in Mumbai",
+              "   Theatre shows in Mumbai",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 20),
@@ -44,14 +44,29 @@ class Music extends StatelessWidget {
   }
 
   Widget _buildCategoryRow(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildCategory('Concerts'),
-        _buildCategory('Music Festivals'),
-        _buildCategory('Club Gigs'),
-        _buildCategory('Open Mic'),
-      ],
+    return SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildCategory('Drama'),
+          _buildCategory('Comedy'),
+          _buildCategory('Musical'),
+          _buildCategory('Adaption'),
+          _buildCategory('Historical'),
+          _buildCategory('Mythological'),
+          _buildCategory('Romantic'),
+          _buildCategory('Suspense'),
+          _buildCategory('Adventure'),
+          _buildCategory('Contemporary'),
+          _buildCategory('Regional'),
+          _buildCategory('Adult'),
+          _buildCategory('Biography'),
+          _buildCategory('Classic'),
+          _buildCategory('Fantasy'),
+        ],
+      ),
     );
   }
 
@@ -79,16 +94,16 @@ Widget _buildImageRowWithButtons(BuildContext context) {
     child: Row(
       children: [
         _buildImageWithButton(
-            context, 'assets/images/music1.png'),
+            context, 'assets/images/theatre1.png'),
         const SizedBox(width: 16), // Spacing between images
         _buildImageWithButton(
-            context, 'assets/images/music2.png'),
+            context, 'assets/images/theatre2.png'),
         const SizedBox(width: 16), // Spacing between images
         _buildImageWithButton(
-            context, 'assets/images/music3.png'),
+            context, 'assets/images/theatre3.png'),
         const SizedBox(width: 16), // Spacing between images
         _buildImageWithButton(
-            context, 'assets/images/music4.png'),
+            context, 'assets/images/theatre4.png'),
       ],
     ),
   );
@@ -116,14 +131,14 @@ Widget _buildImageRowWithButtons(BuildContext context) {
     scrollDirection: Axis.horizontal, // Make the row scrollable horizontally
     child: Row(
       children: [
-        _buildImageWithPrice(context, 'assets/images/music1.png'),
+        _buildImageWithPrice(context, 'assets/images/theatre1.png'),
         const SizedBox(width: 16), // Spacing between images
         _buildImageWithPrice(
-            context, 'assets/images/music2.png'),
+            context, 'assets/images/theatre2.png'),
         const SizedBox(width: 16), // Spacing between images
-        _buildImageWithPrice(context, 'assets/images/music3.png'),
+        _buildImageWithPrice(context, 'assets/images/theatre3.png'),
         const SizedBox(width: 16), // Spacing between images
-        _buildImageWithPrice(context, 'assets/images/music4.png'),
+        _buildImageWithPrice(context, 'assets/images/theatre4.png'),
       ],
     ),
   );
@@ -203,7 +218,7 @@ Widget _buildImageRowWithButtons(BuildContext context) {
           'Date Range',
         ]),
         const SizedBox(height: 20),
-        const Text(
+          const Text(
           "Language",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
         ),
@@ -218,30 +233,26 @@ Widget _buildImageRowWithButtons(BuildContext context) {
         ]),
         const SizedBox(height: 20),
         const Text(
-          "Categories",
+          "Genres",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
         ),
         const SizedBox(height: 10),
         _buildFilterRow(context, [
-          'Music Festival',
-          'Concerts',
-          'Open Mic',
-          'Club Gigs',
+          'Drama',
+          'Comedy',
+          'Open Musical',
+          'Adaption',
+          'Mythological',
+          'Historical',
+          'Romantic',
+          'Suspense',
+          'Contemporary',
+          'Adventure',
+          'Regional',
+          'Adult',
+
         ]),
-        const SizedBox(height: 20),
-        const Text(
-          "More Filters",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
-        ),
-        const SizedBox(height: 10),
-        _buildFilterRow(context, [
-          'Outdoor Events',
-          'Fast Filling',
-          'Kids Allowed',
-          'Must Attend',
-          'Religious',
-          'Spiritual',
-        ]),
+     
         const SizedBox(height: 20),
         const Text(
           "Price",

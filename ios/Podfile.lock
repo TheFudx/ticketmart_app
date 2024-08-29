@@ -7,11 +7,18 @@ PODS:
   - Firebase/Crashlytics (10.18.0):
     - Firebase/CoreOnly
     - FirebaseCrashlytics (~> 10.18.0)
+  - Firebase/Messaging (10.18.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 10.18.0)
   - firebase_core (2.24.2):
     - Firebase/CoreOnly (= 10.18.0)
     - Flutter
   - firebase_crashlytics (3.4.9):
     - Firebase/Crashlytics (= 10.18.0)
+    - firebase_core
+    - Flutter
+  - firebase_messaging (14.7.10):
+    - Firebase/Messaging (= 10.18.0)
     - firebase_core
     - Flutter
   - FirebaseCore (10.18.0):
@@ -35,6 +42,15 @@ PODS:
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - PromisesObjC (~> 2.1)
+  - FirebaseMessaging (10.18.0):
+    - FirebaseCore (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleDataTransport (~> 9.2)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
+    - GoogleUtilities/Environment (~> 7.8)
+    - GoogleUtilities/Reachability (~> 7.8)
+    - GoogleUtilities/UserDefaults (~> 7.8)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
   - FirebaseSessions (10.29.0):
     - FirebaseCore (~> 10.5)
     - FirebaseCoreExtension (~> 10.0)
@@ -45,6 +61,8 @@ PODS:
     - nanopb (< 2.30911.0, >= 2.30908.0)
     - PromisesSwift (~> 2.1)
   - Flutter (1.0.0)
+  - flutter_local_notifications (0.0.1):
+    - Flutter
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
@@ -56,15 +74,28 @@ PODS:
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30911.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
+  - GoogleUtilities/AppDelegateSwizzler (7.13.3):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+    - GoogleUtilities/Privacy
   - GoogleUtilities/Environment (7.13.3):
     - GoogleUtilities/Privacy
     - PromisesObjC (< 3.0, >= 1.2)
   - GoogleUtilities/Logger (7.13.3):
     - GoogleUtilities/Environment
     - GoogleUtilities/Privacy
+  - GoogleUtilities/Network (7.13.3):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Privacy
+    - GoogleUtilities/Reachability
   - "GoogleUtilities/NSData+zlib (7.13.3)":
     - GoogleUtilities/Privacy
   - GoogleUtilities/Privacy (7.13.3)
+  - GoogleUtilities/Reachability (7.13.3):
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Privacy
   - GoogleUtilities/UserDefaults (7.13.3):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
@@ -91,7 +122,9 @@ DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/darwin`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_crashlytics (from `.symlinks/plugins/firebase_crashlytics/ios`)
+  - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
+  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - geocoding_ios (from `.symlinks/plugins/geocoding_ios/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
@@ -107,6 +140,7 @@ SPEC REPOS:
     - FirebaseCoreInternal
     - FirebaseCrashlytics
     - FirebaseInstallations
+    - FirebaseMessaging
     - FirebaseSessions
     - GoogleDataTransport
     - GoogleUtilities
@@ -123,8 +157,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_core/ios"
   firebase_crashlytics:
     :path: ".symlinks/plugins/firebase_crashlytics/ios"
+  firebase_messaging:
+    :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
+  flutter_local_notifications:
+    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   geocoding_ios:
@@ -143,13 +181,16 @@ SPEC CHECKSUMS:
   Firebase: 414ad272f8d02dfbf12662a9d43f4bba9bec2a06
   firebase_core: 0af4a2b24f62071f9bf283691c0ee41556dcb3f5
   firebase_crashlytics: 4b91b8ad60ee7c168fe88979f84c9573a729de7a
+  firebase_messaging: 90e8a6db84b6e1e876cebce4f30f01dc495e7014
   FirebaseCore: 2322423314d92f946219c8791674d2f3345b598f
   FirebaseCoreExtension: 705ca5b14bf71d2564a0ddc677df1fc86ffa600f
   FirebaseCoreInternal: df84dd300b561c27d5571684f389bf60b0a5c934
   FirebaseCrashlytics: 86d5bce01f42fa1db265f87ff1d591f04db610ec
   FirebaseInstallations: 913cf60d0400ebd5d6b63a28b290372ab44590dd
+  FirebaseMessaging: 9bc34a98d2e0237e1b121915120d4d48ddcf301e
   FirebaseSessions: dbd14adac65ce996228652c1fc3a3f576bdf3ecc
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
   fluttertoast: e9a18c7be5413da53898f660530c56f35edfba9c
   geocoding_ios: d7460f56e80e118d57678efe5c2cdc888739ff18
   geolocator_apple: 6cbaf322953988e009e5ecb481f07efece75c450
