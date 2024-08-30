@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gcm_defaultSenderId" translatable="false">599650572980</string>
+    <string name="google_api_key" translatable="false">AIzaSyCloTp7eTY3xR3RKVbprd0R3Jh1j-Pi2EM</string>
+    <string name="google_app_id" translatable="false">1:599650572980:android:b1aed646d5397e0ba615e1</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCloTp7eTY3xR3RKVbprd0R3Jh1j-Pi2EM</string>
+    <string name="google_storage_bucket" translatable="false">ticketmart-7feec.appspot.com</string>
+    <string name="project_id" translatable="false">ticketmart-7feec</string>
+</resources>

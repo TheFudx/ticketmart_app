@@ -1,29 +1,26 @@
+// import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'home_screen.dart';
-import 'bloc/navigation_bloc.dart';
-import 'dart:io';
+import 'package:ticketmart/bloc/navigation_bloc.dart';
+import 'package:ticketmart/home_screen.dart';
 import 'my_http_overrides.dart';
+import 'dart:io';
 import 'dart:async';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'api/firebase_api.dart';
 
-void main() async {
+Future<void> main() async {
   // WidgetsFlutterBinding.ensureInitialized();
-  
-  // // Initialize Firebase before using any Firebase services
   // await Firebase.initializeApp();
-  
-  // // Custom initialization for Firebase notifications (if needed)
-  // await FirebaseApi().initNotifications();
-  
-  // Set up any custom HTTP overrides (e.g., for development)
   HttpOverrides.global = MyHttpOverrides();
+
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   
-  // Run the Flutter app
   runApp(const MyApp());
 }
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('Handling a background message: ${message.messageId}');
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

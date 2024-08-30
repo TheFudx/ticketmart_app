@@ -1,0 +1,7 @@
+#Fri Aug 30 18:36:41 IST 2024
+base.0=/Users/best/Development/Flutter_Projects/Projects/ticketmart/android/app/build/intermediates/dex/release/mergeDexRelease/classes.dex
+base.1=/Users/best/Development/Flutter_Projects/Projects/ticketmart/android/app/build/intermediates/dex/release/mergeDexRelease/classes2.dex
+path.0=classes.dex
+path.1=classes2.dex
+renamed.0=classes.dex
+renamed.1=classes2.dex

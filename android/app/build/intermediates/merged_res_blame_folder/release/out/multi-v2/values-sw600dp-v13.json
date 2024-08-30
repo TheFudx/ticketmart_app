@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.alphastudioz.ticketmart.app-mergeReleaseResources-49:/values-sw600dp-v13/values-sw600dp-v13.xml",
+            "map": [
+                {
+                    "source": "/Users/best/.gradle/caches/transforms-3/ad3012fca736216cb45bf2c8c51a19e0/transformed/jetified-standard-core-1.6.40/res/values-sw600dp-v13/values-sw600dp-v13.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,93",
+                        "endLines": "2,13",
+                        "endColumns": "37,12",
+                        "endOffsets": "88,745"
+                    }
+                }
+            ]
+        }
+    ]
+}
