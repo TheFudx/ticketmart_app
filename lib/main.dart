@@ -1,25 +1,31 @@
-// import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketmart/bloc/navigation_bloc.dart';
 import 'package:ticketmart/home_screen.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'my_http_overrides.dart';
 import 'dart:io';
 import 'dart:async';
 
 Future<void> main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
+  WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
 
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  
-  runApp(const MyApp());
-}
+  // Initialize Awesome Notifications
+  AwesomeNotifications().initialize(
+    'resource://drawable/res_app_icon',  // Your app icon path
+    [
+      NotificationChannel(
+        channelKey: 'basic_channel',
+        channelName: 'Basic notifications',
+        channelDescription: 'Notification channel for basic tests',
+        defaultColor: const Color(0xFF9D50DD),
+        ledColor: Colors.white,
+      )
+    ],
+  );
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('Handling a background message: ${message.messageId}');
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -66,6 +72,19 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     _animationController.forward();
 
     Timer(const Duration(seconds: 3), () {
+      // Show notification when splash screen finishes
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: 10,  // Unique ID for this notification
+          channelKey: 'basic_channel',  // Channel key created in the initialization
+          title: 'Welcome to Ticket Mart!',
+          body: 'Lights, camera, entertainment!',
+          bigPicture: 'asset://assets/images/notification_image.png',  // Optional: Add a big picture
+          notificationLayout: NotificationLayout.BigPicture,  // Use BigPicture layout
+        ),
+      );
+
+      // Navigate to HomeScreen
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => BlocProvider(
@@ -74,6 +93,14 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           ),
         ),
       );
+    });
+
+    // Request notification permissions on iOS (and Android 13+ if needed)
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        // Request permission to show notifications
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
     });
   }
 

@@ -1,26 +1,26 @@
 [
     {
-        "merged": "com.alphastudioz.ticketmart.app-merged_res-51:/mipmap-xxhdpi_ic_launcher.png.flat",
-        "source": "com.alphastudioz.ticketmart.app-main-52:/mipmap-xxhdpi/ic_launcher.png"
+        "merged": "com.alphastudioz.ticketmart.app-merged_res-64:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.alphastudioz.ticketmart.app-main-65:/mipmap-mdpi/ic_launcher.png"
     },
     {
-        "merged": "com.alphastudioz.ticketmart.app-merged_res-51:/mipmap-xhdpi_ic_launcher.png.flat",
-        "source": "com.alphastudioz.ticketmart.app-main-52:/mipmap-xhdpi/ic_launcher.png"
+        "merged": "com.alphastudioz.ticketmart.app-merged_res-64:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.alphastudioz.ticketmart.app-main-65:/mipmap-hdpi/ic_launcher.png"
     },
     {
-        "merged": "com.alphastudioz.ticketmart.app-merged_res-51:/mipmap-xxxhdpi_ic_launcher.png.flat",
-        "source": "com.alphastudioz.ticketmart.app-main-52:/mipmap-xxxhdpi/ic_launcher.png"
+        "merged": "com.alphastudioz.ticketmart.app-merged_res-64:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.alphastudioz.ticketmart.app-main-65:/mipmap-xxhdpi/ic_launcher.png"
     },
     {
-        "merged": "com.alphastudioz.ticketmart.app-merged_res-51:/mipmap-hdpi_ic_launcher.png.flat",
-        "source": "com.alphastudioz.ticketmart.app-main-52:/mipmap-hdpi/ic_launcher.png"
+        "merged": "com.alphastudioz.ticketmart.app-merged_res-64:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.alphastudioz.ticketmart.app-main-65:/mipmap-xhdpi/ic_launcher.png"
     },
     {
-        "merged": "com.alphastudioz.ticketmart.app-merged_res-51:/mipmap-mdpi_ic_launcher.png.flat",
-        "source": "com.alphastudioz.ticketmart.app-main-52:/mipmap-mdpi/ic_launcher.png"
+        "merged": "com.alphastudioz.ticketmart.app-merged_res-64:/drawable-v21_launch_background.xml.flat",
+        "source": "com.alphastudioz.ticketmart.app-main-65:/drawable-v21/launch_background.xml"
     },
     {
-        "merged": "com.alphastudioz.ticketmart.app-merged_res-51:/drawable-v21_launch_background.xml.flat",
-        "source": "com.alphastudioz.ticketmart.app-main-52:/drawable-v21/launch_background.xml"
+        "merged": "com.alphastudioz.ticketmart.app-merged_res-64:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.alphastudioz.ticketmart.app-main-65:/mipmap-xxxhdpi/ic_launcher.png"
     }
 ]

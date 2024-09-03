@@ -6,7 +6,7 @@
     mergedManifest="build/intermediates/merged_manifest/release/AndroidManifest.xml"
     proguardFiles="build/intermediates/default_proguard_files/global/proguard-android.txt-7.3.0:/Users/best/Development/Flutter_Projects/flutter/packages/flutter_tools/gradle/flutter_proguard_rules.pro:proguard-rules.pro:build/intermediates/default_proguard_files/global/proguard-android-optimize.txt-7.3.0:proguard-rules.pro"
     partialResultsDir="build/intermediates/lint_vital_partial_results/release/out"
-    desugaredMethodsFiles="/Users/best/.gradle/caches/transforms-3/46e20853f0ea4c32d8984ef8f6a0e3f6/transformed/D8BackportedDesugaredMethods.txt">
+    desugaredMethodsFiles="/Users/best/.gradle/caches/transforms-3/e69fc7810676c48469a71391c7e6cbd4/transformed/D8BackportedDesugaredMethods.txt">
   <buildFeatures
       namespacing="REQUIRED"/>
   <sourceProviders>
