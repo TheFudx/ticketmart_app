@@ -628,7 +628,7 @@ Widget _buildImageSection({
   );
 }
 
-  Widget _buildCategoryIcon({
+    Widget _buildCategoryIcon({
     required IconData icon,
     required String label,
     required bool isSelected,
@@ -641,21 +641,29 @@ Widget _buildImageSection({
           Icon(
             icon,
             color: isSelected ? Colors.blueAccent : Colors.grey,
-            size: 35,
+            size: 30,
           ),
           Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? Colors.blueAccent : Colors.black,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              fontSize: 12,
+              label,
+              style: TextStyle(
+                color: isSelected ? Colors.blueAccent : Colors.black,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                fontSize: 11,
+              ),
             ),
-          ),
-        ],
-      ),
+            // Underline placed directly below the text
+            if (isSelected)
+              Container(
+                margin: const EdgeInsets.only(top: 4.0),
+                height: 4.0, // Height of the underline
+                width: 44.0, // Width of the underline
+                color: Colors.blueAccent, // Color of the underline
+              ),
+          ],
+        ),
     );
-  }
-
+}
+  
   Widget _buildMovieSection(String title, List<Map<String, dynamic>> movies) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
