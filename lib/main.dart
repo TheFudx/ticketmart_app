@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketmart/bloc/navigation_bloc.dart';
@@ -6,9 +7,21 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'my_http_overrides.dart';
 import 'dart:io';
 import 'dart:async';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+/// Handles background FCM messages.
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  if (kDebugMode) {
+    print('Handling a background message: ${message.messageId}');
+  }
+}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   HttpOverrides.global = MyHttpOverrides();
 
   // Initialize Awesome Notifications
@@ -54,10 +67,32 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
+  late FirebaseMessaging _messaging;
 
   @override
   void initState() {
     super.initState();
+
+    // Initialize Firebase Messaging
+    _messaging = FirebaseMessaging.instance;
+
+    // Request permissions for iOS
+    _messaging.requestPermission(
+      sound: true,
+      badge: true,
+      alert: true,
+      provisional: false,
+    );
+
+    // Handle foreground messages separately from local notifications
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        if (kDebugMode) {
+          print('Received a foreground message: ${message.notification}');
+        }
+        // Handle the message or display a custom notification UI if needed
+      }
+    });
 
     _animationController = AnimationController(
       vsync: this,
@@ -72,15 +107,15 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     _animationController.forward();
 
     Timer(const Duration(seconds: 3), () {
-      // Show notification when splash screen finishes
+      // Show notification when splash screen finishes using AwesomeNotifications
       AwesomeNotifications().createNotification(
         content: NotificationContent(
-          id: 10,  // Unique ID for this notification
-          channelKey: 'basic_channel',  // Channel key created in the initialization
+          id: 10,
+          channelKey: 'basic_channel',
           title: 'Welcome to Ticket Mart!',
           body: 'Lights, camera, entertainment!',
-          bigPicture: 'asset://assets/images/notification_image.png',  // Optional: Add a big picture
-          notificationLayout: NotificationLayout.BigPicture,  // Use BigPicture layout
+          bigPicture: 'asset://assets/images/notification_image.png',
+          notificationLayout: NotificationLayout.BigPicture,
         ),
       );
 

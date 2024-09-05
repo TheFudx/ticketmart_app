@@ -412,6 +412,8 @@ Widget _buildBottomNavigationBar() {
             : Column(
                 children: [
                   if (_carouselImages.isNotEmpty)
+                          const SizedBox(height: 10),
+
                     _buildMovieSection('Recommended Movies', _newReleases),
                   _buildImageSection(
                     title: 'The Best Of Live Events',
@@ -641,7 +643,7 @@ Widget _buildImageSection({
           Icon(
             icon,
             color: isSelected ? Colors.blueAccent : Colors.grey,
-            size: 30,
+            size: 35,
           ),
           Text(
               label,
@@ -668,11 +670,15 @@ Widget _buildImageSection({
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
+        
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            
             children: [
+              
               Text(
                 title,
                 style:
