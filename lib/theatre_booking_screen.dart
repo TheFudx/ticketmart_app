@@ -2,7 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:ticketmart/profile_page.dart';
+import 'package:ticketmart/views/profile/profile_page.dart';
 import 'package:ticketmart/api_connection.dart';
 import 'package:intl/intl.dart';
 
@@ -118,7 +118,7 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-                    const Divider(),
+        const Divider(),
         Text(
           'Selected Seats: ${selectedSeats.map((seat) {
             // Extract seat section and number
@@ -138,14 +138,14 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
           children: [
             Text(
               'Ticket: ₹$totalSeatPrice',
-              style:
-                  const TextStyle(fontSize: 14.0, ),
+              style: const TextStyle(
+                fontSize: 14.0,
+              ),
             ),
             const SizedBox(height: 2.0),
             Text(
               'GST: ₹$commissionPrice',
-              style:
-                  const TextStyle(fontSize: 14.0),
+              style: const TextStyle(fontSize: 14.0),
             ),
             const Divider(),
             Text(
@@ -271,6 +271,7 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    Text('Pratik'),
                     GestureDetector(
                       onTap: () {
                         Navigator.pop(context); // Navigate to the previous page
@@ -305,6 +306,7 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
                     const SizedBox(height: 10.0),
                     _buildPolygonScreen(), // Ensure this method is actually used
                     const SizedBox(height: 10.0),
+                    // Seat Layout
                     _buildDynamicSeatsDisplay(),
                     const SizedBox(height: 10.0),
                     _buildSelectedSeatsDisplay(),
@@ -314,6 +316,7 @@ class TheaterBookingScreenState extends State<TheaterBookingScreen> {
               ),
             ),
           ),
+          // Payment Button
           Padding(
             padding: const EdgeInsets.all(50.0),
             child: SizedBox(

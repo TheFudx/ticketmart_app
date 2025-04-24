@@ -1,42 +1,46 @@
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketmart/bloc/navigation_bloc.dart';
-import 'package:ticketmart/home_screen.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:ticketmart/views/home/drawer/home_screen.dart';
+// import 'package:awesome_notifications/awesome_notifications.dart';
 import 'my_http_overrides.dart';
 import 'dart:io';
 import 'dart:async';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_core/firebase_core.dart';
+
+import 'utils/app_assets.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_core/firebase_core.dart';
 
 /// Handles background FCM messages.
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  if (kDebugMode) {
-    print('Handling a background message: ${message.messageId}');
-  }
-}
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   await Firebase.initializeApp();
+//   if (kDebugMode) {
+//     print('Handling a background message: ${message.messageId}');
+//   }
+// }
+
+// The  git@github.com:TheFudx/ticketmart_app.git  current Code
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // await Firebase.initializeApp();
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   HttpOverrides.global = MyHttpOverrides();
 
   // Initialize Awesome Notifications
-  AwesomeNotifications().initialize(
-    'resource://drawable/res_app_icon',  // Your app icon path
-    [
-      NotificationChannel(
-        channelKey: 'basic_channel',
-        channelName: 'Basic notifications',
-        channelDescription: 'Notification channel for basic tests',
-        defaultColor: const Color(0xFF9D50DD),
-        ledColor: Colors.white,
-      )
-    ],
-  );
+  // AwesomeNotifications().initialize(
+  //   'resource://drawable/res_app_icon',  // Your app icon path
+  //   [
+  //     NotificationChannel(
+  //       channelKey: 'basic_channel',
+  //       channelName: 'Basic notifications',
+  //       channelDescription: 'Notification channel for basic tests',
+  //       defaultColor: const Color(0xFF9D50DD),
+  //       ledColor: Colors.white,
+  //     )
+  //   ],
+  // );
 
   runApp(const MyApp());
 }
@@ -47,6 +51,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Ticket Mart',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
@@ -64,35 +69,36 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
-  late FirebaseMessaging _messaging;
+  // late FirebaseMessaging _messaging;
 
   @override
   void initState() {
     super.initState();
 
     // Initialize Firebase Messaging
-    _messaging = FirebaseMessaging.instance;
+    // _messaging = FirebaseMessaging.instance;
 
     // Request permissions for iOS
-    _messaging.requestPermission(
-      sound: true,
-      badge: true,
-      alert: true,
-      provisional: false,
-    );
+    // _messaging.requestPermission(
+    //   sound: true,
+    //   badge: true,
+    //   alert: true,
+    //   provisional: false,
+    // );
 
     // Handle foreground messages separately from local notifications
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      if (message.notification != null) {
-        if (kDebugMode) {
-          print('Received a foreground message: ${message.notification}');
-        }
-        // Handle the message or display a custom notification UI if needed
-      }
-    });
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   if (message.notification != null) {
+    //     if (kDebugMode) {
+    //       print('Received a foreground message: ${message.notification}');
+    //     }
+    //     // Handle the message or display a custom notification UI if needed
+    //   }
+    // });
 
     _animationController = AnimationController(
       vsync: this,
@@ -108,16 +114,16 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     Timer(const Duration(seconds: 3), () {
       // Show notification when splash screen finishes using AwesomeNotifications
-      AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: 10,
-          channelKey: 'basic_channel',
-          title: 'Welcome to Ticket Mart!',
-          body: 'Lights, camera, entertainment!',
-          bigPicture: 'asset://assets/images/notification_image.png',
-          notificationLayout: NotificationLayout.BigPicture,
-        ),
-      );
+      // AwesomeNotifications().createNotification(
+      //   content: NotificationContent(
+      //     id: 10,
+      //     channelKey: 'basic_channel',
+      //     title: 'Welcome to Ticket Mart!',
+      //     body: 'Lights, camera, entertainment!',
+      //     bigPicture: 'asset://assets/images/notification_image.png',
+      //     notificationLayout: NotificationLayout.BigPicture,
+      //   ),
+      // );
 
       // Navigate to HomeScreen
       Navigator.of(context).pushReplacement(
@@ -131,12 +137,12 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     });
 
     // Request notification permissions on iOS (and Android 13+ if needed)
-    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-      if (!isAllowed) {
-        // Request permission to show notifications
-        AwesomeNotifications().requestPermissionToSendNotifications();
-      }
-    });
+    // AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+    //   if (!isAllowed) {
+    //     // Request permission to show notifications
+    //     AwesomeNotifications().requestPermissionToSendNotifications();
+    //   }
+    // });
   }
 
   @override
@@ -153,7 +159,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           opacity: _animation,
           child: ScaleTransition(
             scale: _animation,
-            child: Image.asset('assets/images/splash_image.png'),
+            child: Image.asset(AppAssets.splashScreen),
           ),
         ),
       ),

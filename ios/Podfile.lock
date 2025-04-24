@@ -1,23 +1,8 @@
 PODS:
-  - awesome_notifications (0.9.3):
-    - Flutter
-    - IosAwnCore (~> 0.9.3)
   - connectivity_plus (0.0.1):
     - Flutter
     - FlutterMacOS
-  - Firebase/CoreOnly (10.18.0):
-    - FirebaseCore (= 10.18.0)
-  - Firebase/Messaging (10.18.0):
-    - Firebase/CoreOnly
-    - FirebaseMessaging (~> 10.18.0)
-  - firebase_core (2.24.2):
-    - Firebase/CoreOnly (= 10.18.0)
-    - Flutter
-  - firebase_messaging (14.7.10):
-    - Firebase/Messaging (= 10.18.0)
-    - firebase_core
-    - Flutter
-  - FirebaseCore (10.18.0):
+  - FirebaseCore (10.25.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.12)
     - GoogleUtilities/Logger (~> 7.12)
@@ -28,19 +13,18 @@ PODS:
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - PromisesObjC (~> 2.1)
-  - FirebaseMessaging (10.18.0):
+  - FirebaseMessaging (10.25.0):
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
-    - GoogleDataTransport (~> 9.2)
+    - GoogleDataTransport (~> 9.3)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/Reachability (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
-    - nanopb (< 2.30910.0, >= 2.30908.0)
+    - nanopb (< 2.30911.0, >= 2.30908.0)
   - Flutter (1.0.0)
   - fluttertoast (0.0.2):
     - Flutter
-    - Toast
   - geocoding_ios (1.0.5):
     - Flutter
   - geolocator_apple (1.2.0):
@@ -74,12 +58,11 @@ PODS:
   - GoogleUtilities/UserDefaults (7.13.3):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
-  - IosAwnCore (0.9.3)
-  - nanopb (2.30909.1):
-    - nanopb/decode (= 2.30909.1)
-    - nanopb/encode (= 2.30909.1)
-  - nanopb/decode (2.30909.1)
-  - nanopb/encode (2.30909.1)
+  - nanopb (2.30910.0):
+    - nanopb/decode (= 2.30910.0)
+    - nanopb/encode (= 2.30910.0)
+  - nanopb/decode (2.30910.0)
+  - nanopb/encode (2.30910.0)
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -88,47 +71,35 @@ PODS:
   - razorpay_flutter (1.1.10):
     - Flutter
     - razorpay-pod
-  - share (0.0.1):
+  - share_plus (0.0.1):
     - Flutter
-  - Toast (4.1.1)
 
 DEPENDENCIES:
-  - awesome_notifications (from `.symlinks/plugins/awesome_notifications/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/darwin`)
-  - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
-  - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
+  - FirebaseMessaging
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - geocoding_ios (from `.symlinks/plugins/geocoding_ios/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - razorpay_flutter (from `.symlinks/plugins/razorpay_flutter/ios`)
-  - share (from `.symlinks/plugins/share/ios`)
+  - share_plus (from `.symlinks/plugins/share_plus/ios`)
 
 SPEC REPOS:
   trunk:
-    - Firebase
     - FirebaseCore
     - FirebaseCoreInternal
     - FirebaseInstallations
     - FirebaseMessaging
     - GoogleDataTransport
     - GoogleUtilities
-    - IosAwnCore
     - nanopb
     - PromisesObjC
     - razorpay-pod
-    - Toast
 
 EXTERNAL SOURCES:
-  awesome_notifications:
-    :path: ".symlinks/plugins/awesome_notifications/ios"
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/darwin"
-  firebase_core:
-    :path: ".symlinks/plugins/firebase_core/ios"
-  firebase_messaging:
-    :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
   fluttertoast:
@@ -141,34 +112,28 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   razorpay_flutter:
     :path: ".symlinks/plugins/razorpay_flutter/ios"
-  share:
-    :path: ".symlinks/plugins/share/ios"
+  share_plus:
+    :path: ".symlinks/plugins/share_plus/ios"
 
 SPEC CHECKSUMS:
-  awesome_notifications: 66d28ab7174ca2823b04d275cb043e0a4a3eb9cf
-  connectivity_plus: ddd7f30999e1faaef5967c23d5b6d503d10434db
-  Firebase: 414ad272f8d02dfbf12662a9d43f4bba9bec2a06
-  firebase_core: 0af4a2b24f62071f9bf283691c0ee41556dcb3f5
-  firebase_messaging: 90e8a6db84b6e1e876cebce4f30f01dc495e7014
-  FirebaseCore: 2322423314d92f946219c8791674d2f3345b598f
+  connectivity_plus: 3f6c9057f4cd64198dc826edfb0542892f825343
+  FirebaseCore: 7ec4d0484817f12c3373955bc87762d96842d483
   FirebaseCoreInternal: df84dd300b561c27d5571684f389bf60b0a5c934
   FirebaseInstallations: 913cf60d0400ebd5d6b63a28b290372ab44590dd
-  FirebaseMessaging: 9bc34a98d2e0237e1b121915120d4d48ddcf301e
+  FirebaseMessaging: 88950ba9485052891ebe26f6c43a52bb62248952
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  fluttertoast: e9a18c7be5413da53898f660530c56f35edfba9c
-  geocoding_ios: d7460f56e80e118d57678efe5c2cdc888739ff18
-  geolocator_apple: 6cbaf322953988e009e5ecb481f07efece75c450
+  fluttertoast: 2c67e14dce98bbdb200df9e1acf610d7a6264ea1
+  geocoding_ios: bcbdaa6bddd7d3129c9bcb8acddc5d8778689768
+  geolocator_apple: d981750b9f47dbdb02427e1476d9a04397beb8d9
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
-  IosAwnCore: b8601fbb37f7b3560f31b84ebf55a72f65812e05
-  nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
+  nanopb: 438bc412db1928dac798aa6fd75726007be04262
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   razorpay-pod: d1a41e72bf4c918b6d1f4a63767a20260abdc939
-  razorpay_flutter: 84b3bfd206ae9c9c2a9ba585524a1b3d8102b6c1
-  share: 0b2c3e82132f5888bccca3351c504d0003b3b410
-  Toast: 1f5ea13423a1e6674c4abdac5be53587ae481c4e
+  razorpay_flutter: 0e98e4fcaae27ad50e011d85f66d85e0a008754a
+  share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
 
-PODFILE CHECKSUM: 7be2f5f74864d463a8ad433546ed1de7e0f29aef
+PODFILE CHECKSUM: 0897ebb42b57c42041a0cd8feb1df8e084d39770
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

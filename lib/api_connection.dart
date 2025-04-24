@@ -1,11 +1,16 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class ApiConnection {
-  static const String baseUrl = "https://ticketmart.co/public/flutter-app"; // Replace with your server address
-  static const String userEndpoint = "/user";
-    static const String bookingEndpoint = "/booking"; // Add this line for the booking endpoint
+import 'model/home/movies_model.dart';
 
+class ApiConnection {
+  static const String baseUrl =
+      'https://alphastudioz.in/ticketmart-test/public/flutter-app'; // Testing Server
+
+  //    "https://ticketmart.co/public/flutter-app"; // Replace with your server address
+  static const String userEndpoint = "/user";
+  static const String bookingEndpoint =
+      "/booking"; // Add this line for the booking endpoint
 
   static String get movies => "$baseUrl$userEndpoint/movies.php";
   static String get theatres => "$baseUrl$userEndpoint/theatres.php";
@@ -13,12 +18,11 @@ class ApiConnection {
   static String get seatCount => "$baseUrl$userEndpoint/seat_count.php";
   static String get screens => "$baseUrl$userEndpoint/screen.php";
   static String get users => "$baseUrl$userEndpoint/users.php";
-  static String get bookings => "$baseUrl$bookingEndpoint/create_booking.php"; // Add this line for the bookings endpoint
-  static String get seats => "$baseUrl$userEndpoint/fetch_seats.php"; // Add this line for the bookings endpoint
+  static String get bookings =>
+      "$baseUrl$bookingEndpoint/create_booking.php"; // Add this line for the bookings endpoint
+  static String get seats =>
+      "$baseUrl$userEndpoint/fetch_seats.php"; // Add this line for the bookings endpoint
   static String get theatresList => "$baseUrl$userEndpoint/theatres_list.php";
-
-
-
 
   static Future<List<Map<String, dynamic>>> fetchCarouselImages() async {
     final response = await http.get(Uri.parse(movies));
@@ -32,6 +36,17 @@ class ApiConnection {
 
       // Ensure each item in the list is a map
       return movieList.map((item) => item as Map<String, dynamic>).toList();
+    } else {
+      throw Exception('Failed to load movies');
+    }
+  }
+
+  // Copy
+  static Future<MovieModel> movieResponse() async {
+    final response = await http.get(Uri.parse(movies));
+
+    if (response.statusCode == 200) {
+      return MovieModel.fromJson(json.decode(response.body));
     } else {
       throw Exception('Failed to load movies');
     }
@@ -85,7 +100,8 @@ class ApiConnection {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> fetchSeatCount(String screenId) async {
+  static Future<List<Map<String, dynamic>>> fetchSeatCount(
+      String screenId) async {
     final response = await http.get(Uri.parse(screens));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -99,7 +115,8 @@ class ApiConnection {
     }
   }
 
-  static Future<Map<String, dynamic>> loginOrRegisterUser(String email, String mobileNo) async {
+  static Future<Map<String, dynamic>> loginOrRegisterUser(
+      String email, String mobileNo) async {
     final response = await http.post(
       Uri.parse(users),
       headers: <String, String>{
@@ -114,7 +131,10 @@ class ApiConnection {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       if (data['status'] == 'success') {
-        return {'status': 'success', 'userId': data['user_id']}; // Use 'user_id'
+        return {
+          'status': 'success',
+          'userId': data['user_id']
+        }; // Use 'user_id'
       } else {
         throw Exception('Failed to log in or register: ${data['message']}');
       }

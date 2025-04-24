@@ -38,7 +38,6 @@ dependencies:
   flutter_bloc: ^8.1.6
   carousel_slider: ^4.2.1
   http: ^1.2.1
-  share: ^2.0.4
   geolocator: ^11.1.0
   geocoding: ^3.0.0
   intl: ^0.19.0
@@ -48,17 +47,20 @@ dependencies:
   translator: ^1.0.0
   flutter_translate: ^4.1.0
   barcode_widget: ^2.0.4
-  razorpay_flutter: ^1.3.7
+  razorpay_flutter: ^1.4.0
   connectivity_plus: ^6.0.4
   qr_flutter: ^4.1.0
   dotted_border: ^2.1.0
   pdf: ^3.11.1
   path_provider: ^2.1.4
   salomon_bottom_bar: ^3.3.2
-  awesome_notifications: ^0.9.3+1
-  firebase_messaging: ^14.7.10
-  firebase_core: ^2.24.2
-
+  fluttertoast: ^8.2.12
+  share_plus: ^10.1.4
+  book_my_seat: ^1.0.1
+  # awesome_notifications: ^0.9.3+1
+  # firebase_messaging: ^14.7.10
+  # firebase_core: ^2.32.0
+# 
 flutter_launcher_icons:
   android: true
   ios: true
@@ -82,125 +84,9 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/images/splash_image.png
-    - assets/images/barcode.png
-    - assets/images/logo.png
-    - assets/images/appicon.png
-    - assets/images/seats_one.png
-    - assets/images/seats_2.png
-    - assets/images/seats_3.png
-    - assets/images/seats_4.png
-    - assets/images/seats_5.png
-    - assets/images/seats_6.png
-    - assets/images/seats_7.png
-    - assets/images/seats_8.png
-    - assets/images/seats_9.png
-    - assets/images/Untitled design (59).png
-    - assets/images/popcorn.png
-    - assets/images/no_internet.png
-    - assets/images/bus_background.png
-    - assets/images/bus.jpeg
-    - assets/images/whitebus.jpeg
-    - assets/images/whitetrain.jpeg
-    - assets/images/whiteflight.jpeg
-    - assets/images/seater.png
-    - assets/images/sleeper.png
-    - assets/images/movie_banner.png
-    - assets/images/bus_banner.png
-    - assets/images/train_banner.png
-    - assets/images/flight_banner.png
-    - assets/images/musicshows.webp
-    - assets/images/comedyshows.webp
-    - assets/images/kidszone.webp
-    - assets/images/workshops.webp
-    - assets/images/amusement.webp
-    - assets/images/art.png
-    - assets/images/adventure.png
-    - assets/images/theater.png
-    - assets/images/online.jpg
-    - assets/images/streaming.jpg
-    - assets/images/img1.avif
-    - assets/images/2.avif
-    - assets/images/3.avif
-    - assets/images/4.avif
-    - assets/images/5.avif
-    - assets/images/6.avif
-    - assets/images/7.avif
-    - assets/images/8.avif
-    - assets/images/9.avif
-    - assets/images/10.avif
-    - assets/images/11.avif
-    - assets/images/12.avif
-    - assets/images/13.avif
-    - assets/images/14.avif
-    - assets/images/15.avif
-    - assets/images/16.avif
-    - assets/images/17.avif
-    - assets/images/18.avif
-    - assets/images/19.avif
-    - assets/images/20.avif
-    - assets/images/21.avif
-    - assets/images/22.avif
-    - assets/images/23.avif
-    - assets/images/24.avif
-    - assets/images/25.avif
-    - assets/images/26.avif
-    - assets/images/27.avif
-    - assets/images/28.avif
-    - assets/images/29.avif
-    - assets/images/30.avif
-    - assets/images/31.avif
-    - assets/images/31.avif
-    - assets/images/32.avif
-    - assets/images/33.avif
-    - assets/images/34.avif
-    - assets/images/35.avif
-    - assets/images/36.avif
-    - assets/images/37.avif
-    - assets/images/38.avif
-    - assets/images/39.avif
-    - assets/images/40.avif
-    - assets/images/ticketmartbanner.webp
-    - assets/images/imagica.png
-    - assets/images/waterkingdom.png
-    - assets/images/wetnjoy.png
-    - assets/images/comedy1.png
-    - assets/images/comedy2.png
-    - assets/images/comedy3.png
-    - assets/images/comedy4.png
-    - assets/images/workshop1.png
-    - assets/images/workshop2.png
-    - assets/images/workshop3.png
-    - assets/images/workshop4.png
-    - assets/images/kid1.png
-    - assets/images/kid2.png
-    - assets/images/kid3.png
-    - assets/images/kid4.png
-    - assets/images/music1.png
-    - assets/images/music2.png
-    - assets/images/music3.png
-    - assets/images/music4.png
-    - assets/images/theatre1.png
-    - assets/images/theatre2.png
-    - assets/images/theatre3.png
-    - assets/images/theatre4.png
-    - assets/images/adventure1.png
-    - assets/images/adventure2.png
-    - assets/images/adventure3.png
-    - assets/images/adventure4.png
-    - assets/images/art1.png
-    - assets/images/art2.png
-    - assets/images/art3.png
-    - assets/images/art4.png
-
-
-
-   
-
-
-
-  
-
+    - assets/
+    - assets/images/
+    - assets/comingsoon/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ticketmart/booked_tickets.dart';
-import 'about_page.dart';
-import 'contact_page.dart';
-import 'settings_page.dart';
-import 'privacy_page.dart';
+import 'package:ticketmart/views/home/drawer/booked_tickets.dart';
+import 'views/home/drawer/about_page.dart';
+import 'views/home/drawer/contact_page.dart';
+import 'views/home/drawer/settings_page.dart';
+import 'views/home/drawer/privacy_page.dart';
 
 
 class SideDrawer extends StatelessWidget {
