@@ -1,46 +1,56 @@
-class UserResponse {
+class UserProfileResp {
   final String status;
   final String message;
-  final User user;
+  final User? user;
 
-  UserResponse({
+  UserProfileResp({
     required this.status,
     required this.message,
-    required this.user,
+    this.user,
   });
 
-  factory UserResponse.fromJson(Map<String, dynamic> json) {
-    return UserResponse(
-      status: json['status'],
-      message: json['message'],
-      user: User.fromJson(json['user']),
+  factory UserProfileResp.fromJson(Map<String, dynamic> json) {
+    return UserProfileResp(
+      status: json['status'] ?? '',
+      message: json['message'] ?? '',
+      user: json['user'] != null && json['user'] is Map<String, dynamic>
+          ? User.fromJson(json['user'])
+          : null,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status,
+      'message': message,
+      'user': user?.toJson(),
+    };
   }
 }
 
 class User {
-  final String id;
+  final String? id;
   final String? name;
-  final String email;
-  final String mobileNo;
+  final String? email;
+  final String? mobileNo;
   final String? emailVerifiedAt;
-  final String role;
+  final String? role;
   final String? password;
   final String? rememberToken;
-  final String createdAt;
-  final String updatedAt;
+  final String? createdAt;
+  final String? updatedAt;
 
   User({
-    required this.id,
+    this.id,
     this.name,
-    required this.email,
-    required this.mobileNo,
+    this.email,
+    this.mobileNo,
     this.emailVerifiedAt,
-    required this.role,
+    this.role,
     this.password,
     this.rememberToken,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -57,4 +67,16 @@ class User {
       updatedAt: json['updated_at'],
     );
   }
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'email': email,
+        'mobile_no': mobileNo,
+        'email_verified_at': emailVerifiedAt,
+        'role': role,
+        'password': password,
+        'remember_token': rememberToken,
+        'created_at': createdAt,
+        'updated_at': updatedAt,
+      };
 }

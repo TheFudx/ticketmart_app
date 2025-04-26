@@ -21,20 +21,19 @@ class MovieDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        automaticallyImplyLeading: true,
         title: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
-            Text(
-              movies!.title!,
-              style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  overflow: TextOverflow.fade),
+            Flexible(
+              child: Text(
+                movies!.title!,
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    overflow: TextOverflow.ellipsis),
+                maxLines: 1,
+              ),
             ),
           ],
         ),
