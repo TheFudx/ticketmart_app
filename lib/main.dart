@@ -21,7 +21,7 @@ import 'utils/app_assets.dart';
 // }
 
 // The  git@github.com:TheFudx/ticketmart_app.git  current Code
-
+// Date 22-Dec-2025
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp();

@@ -21,7 +21,6 @@ class _UserProfileState extends State<UserProfile> {
   @override
   void initState() {
     super.initState();
-    log('checking');
     _fetchProfile();
   }
 
@@ -59,16 +58,22 @@ class _UserProfileState extends State<UserProfile> {
         if (userProfile.value != null && userProfile.value!.user != null) {
           // Display user profile data
           final user = userProfile.value!.user!;
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
+          return const Padding(
+            padding: EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('ID: ${user.id}'),
-                Text('Email: ${user.email}'),
-                Text('Mobile: ${user.mobileNo}'),
-                Text('Role: ${user.role ?? 'N/A'}'),
-                Text('Created At: ${user.createdAt}'),
+                Text('ID: 01'),
+                Text('Email: demo@demo.com'),
+                Text('Mobile: 0123456789'),
+                Text('Role: N/A'),
+                Text('Created At: DD-MM-YYYY'),
+
+                // Text('ID: ${user.id}'),
+                // Text('Email: ${user.email}'),
+                // Text('Mobile: ${user.mobileNo}'),
+                // Text('Role: ${user.role ?? 'N/A'}'),
+                // Text('Created At: ${user.createdAt}'),
               ],
             ),
           );

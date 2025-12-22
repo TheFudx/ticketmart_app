@@ -101,7 +101,8 @@ class MovieDetailsScreen extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
+        // Removing current
+        /* Positioned(
           bottom: 10,
           left: 10,
           child: Container(
@@ -129,6 +130,8 @@ class MovieDetailsScreen extends StatelessWidget {
             ),
           ),
         ),
+      
+      */
       ],
     );
   }

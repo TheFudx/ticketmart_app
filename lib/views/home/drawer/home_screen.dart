@@ -1,5 +1,4 @@
 // Flutter SDK
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
@@ -13,16 +12,7 @@ import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 // Custom Packages
 import 'package:ticketmart/api_connection.dart';
-import 'package:ticketmart/adventure.dart';
-import 'package:ticketmart/amusement_park.dart';
-import 'package:ticketmart/art.dart';
-import 'package:ticketmart/comedy.dart';
-import 'package:ticketmart/views/search/coming_soon.dart';
-import 'package:ticketmart/kid.dart';
 import 'package:ticketmart/views/home/movies/movies_list_screen.dart';
-import 'package:ticketmart/music.dart';
-import 'package:ticketmart/theatre.dart';
-import 'package:ticketmart/workshop.dart';
 import 'package:ticketmart/notification.dart';
 import 'package:ticketmart/views/offers/offers.dart';
 import 'package:ticketmart/views/profile/profile_page.dart';
@@ -31,8 +21,17 @@ import 'package:ticketmart/side_drawer.dart';
 import 'package:ticketmart/views/home/movies/movie_detail_screen.dart';
 
 // Specific Pages
+import '../../../adventure.dart';
+import '../../../amusement_park.dart';
+import '../../../art.dart';
+import '../../../comedy.dart';
+import '../../../kid.dart';
 import '../../../model/home/movies_model.dart';
+import '../../../music.dart';
+import '../../../theatre.dart';
+import '../../../workshop.dart';
 import '../../profile/user_profile.dart';
+import '../../search/coming_soon.dart';
 import '../train_page.dart';
 import '../flight_page.dart';
 import '../bus_page.dart';
@@ -100,30 +99,31 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _determinePosition() async {
     setState(() => _isLocationLoading = true);
-
     try {
       if (!await Geolocator.isLocationServiceEnabled()) return;
-
       LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-      }
-
       if (permission == LocationPermission.denied ||
           permission == LocationPermission.deniedForever) {
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever ||
+          (permission != LocationPermission.whileInUse &&
+              permission != LocationPermission.always)) {
         return;
       }
-
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
-      await _getAddressFromLatLng(position);
+      await getAddressFromLatLng(position);
+    } catch (e) {
+      print('Error determining position: $e');
     } finally {
       setState(() => _isLocationLoading = false);
     }
   }
 
-  Future<void> _getAddressFromLatLng(Position position) async {
+  Future<void> getAddressFromLatLng(Position position) async {
     try {
       final placeMarks =
           await placemarkFromCoordinates(position.latitude, position.longitude);
@@ -431,7 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     const SizedBox(height: 10),
                     _buildMovieSection('Recommended Movies', newReleases!),
-                    /*
+                    // /*
                     _buildImageSection(
                       title: 'The Best Of Live Events',
                       images: [
@@ -546,7 +546,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           List.generate(10, (_) => const ComingSoonPage()),
                       imageWidth: MediaQuery.of(context).size.width * 0.32,
                       imageHeight: 240,
-                    ), */
+                    ),
+                    //  */
                   ],
                 ),
         ],

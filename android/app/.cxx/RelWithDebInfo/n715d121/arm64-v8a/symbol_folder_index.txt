@@ -1,0 +1,1 @@
+/Users/alpha/Documents/anup/ticketmart/build/app/intermediates/cxx/RelWithDebInfo/n715d121/obj/arm64-v8a

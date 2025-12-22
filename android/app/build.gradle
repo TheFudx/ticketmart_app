@@ -21,8 +21,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.alphastudioz.ticketmart"
-    compileSdk  35 //34
-    ndkVersion "25.1.8937393"
+    compileSdk  35 
+    ndkVersion "27.0.12077973"
 
     compileOptions {
        sourceCompatibility JavaVersion.VERSION_17
@@ -41,7 +41,7 @@ android {
         applicationId "com.alphastudioz.ticketmart"
         multiDexEnabled true
         minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        targetSdkVersion 35
         
         // Use the properties from local.properties
         versionCode localProperties.getProperty('flutter.versionCode', '1').toInteger()

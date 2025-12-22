@@ -22,7 +22,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Set<SeatNumber> selectedSeats = Set();
+  Set<SeatNumber> selectedSeats = {};
 
   @override
   Widget build(BuildContext context) {
@@ -966,8 +966,7 @@ class SeatNumber {
 
   @override
   bool operator ==(Object other) {
-    return rowI == (other as SeatNumber).rowI &&
-        colI == (other as SeatNumber).colI;
+    return rowI == (other as SeatNumber).rowI && colI == (other).colI;
   }
 
   @override
