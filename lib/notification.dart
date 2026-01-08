@@ -15,7 +15,8 @@ class NotificationScreen extends StatelessWidget {
               // Navigate to notification settings screen
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const NotificationSettingsScreen()),
+                MaterialPageRoute(
+                    builder: (context) => const NotificationSettingsScreen()),
               );
             },
           ),
@@ -36,8 +37,14 @@ class NotificationList extends StatefulWidget {
 
 class _NotificationListState extends State<NotificationList> {
   List<NotificationItem> notifications = [
-    NotificationItem(title: 'New Message', body: 'You have received a new message.', isRead: false),
-    NotificationItem(title: 'Update Available', body: 'A new update is available for download.', isRead: true),
+    NotificationItem(
+        title: 'New Message',
+        body: 'You have received a new message.',
+        isRead: false),
+    NotificationItem(
+        title: 'Update Available',
+        body: 'A new update is available for download.',
+        isRead: true),
     // Add more notifications here
   ];
 
@@ -56,7 +63,9 @@ class _NotificationListState extends State<NotificationList> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: Icon(notification.isRead ? Icons.mark_email_read : Icons.mark_email_unread),
+                  icon: Icon(notification.isRead
+                      ? Icons.mark_email_read
+                      : Icons.mark_email_unread),
                   onPressed: () {
                     setState(() {
                       notification.isRead = !notification.isRead;
@@ -78,7 +87,8 @@ class _NotificationListState extends State<NotificationList> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => NotificationDetailsScreen(notification: notification),
+                  builder: (context) =>
+                      NotificationDetailsScreen(notification: notification),
                 ),
               );
             },
@@ -102,7 +112,8 @@ class NotificationItem {
   final String body;
   bool isRead;
 
-  NotificationItem({required this.title, required this.body, this.isRead = false});
+  NotificationItem(
+      {required this.title, required this.body, this.isRead = false});
 }
 
 class NotificationDetailsScreen extends StatelessWidget {

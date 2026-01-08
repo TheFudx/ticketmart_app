@@ -1,0 +1,15 @@
+Login Test
+{
+    "status": true,
+    "message": "Login successful",
+    "data": {
+        "user": {
+            "id": 229,
+            "name": "Guest",
+            "email": "anupkolhe233@gmail.com",
+            "mobile": "1234567890",
+            "role": null
+        },
+        "token": "13|Hxohzrt7dQnLdCPX68lJZGFdoU5y8uTGyL4TRNOq39a6ceda"
+    }
+}

@@ -84,7 +84,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 icon: const Icon(Icons.filter_list),
                 onPressed: () {
                   // Handle filter icon press
-                }, 
+                },
               ),
             ),
           ],
@@ -182,7 +182,7 @@ class _SearchScreenState extends State<SearchScreen> {
         if (title == 'Movies') {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            MaterialPageRoute(builder: (context) => const HomeScreen(0)),
           );
         } else if (title == 'Offers') {
           Navigator.push(

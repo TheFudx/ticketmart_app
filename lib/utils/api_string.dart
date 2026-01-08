@@ -1,4 +1,5 @@
 class ApiString {
+  ApiString._();
   static const String baseUrl =
       'https://alphastudioz.in/ticketmart-test/public/flutter-app'; // Testing Server
 
@@ -19,5 +20,7 @@ class ApiString {
       "$baseUrl$userEndpoint/fetch_seats.php"; // Add this line for the bookings endpoint
   static String get theatresList => "$baseUrl$userEndpoint/theatres_list.php";
 
-  static String get userProfile => "$baseUrl$userEndpoint/get_users.php";
+  static const String baseUrl2 = "https://ticketmart.co/UAT/public/api";
+  static const String loginUrl = "$baseUrl2/login";
+  static const String logoutUrl = "$baseUrl/logout";
 }
