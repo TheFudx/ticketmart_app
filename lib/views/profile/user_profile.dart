@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class UserProfile extends StatefulWidget {
+import '../../providers/user_provider.dart';
+
+class UserProfile extends StatelessWidget {
   const UserProfile({super.key});
 
   @override
-  State<UserProfile> createState() => _UserProfileState();
-}
-
-class _UserProfileState extends State<UserProfile> {
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile Screen'),
-      ),
-      body: Container(
-        color: Colors.white,
-        child: const Center(
-          child: Text(' User Login'),
-        ),
-      ),
+    final user = context.watch<UserProvider>().user;
+
+    if (user == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return Column(
+      children: [
+        Text(user.name),
+        Text(user.email),
+        Text(user.mobile),
+      ],
     );
   }
 }

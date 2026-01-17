@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../model/login/login_response.dart';
 import 'shared_pref_keys.dart';
 
 class SharedPrefHelper {
@@ -51,6 +53,23 @@ class SharedPrefHelper {
 
   static Future<void> logOut() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    await prefs.clear();
+  }
+
+  static Future<void> saveUser(User user) async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = jsonEncode(user.toJson());
+    await prefs.setString(SharedPrefKeys.userKey, userJson);
+  }
+
+  static Future<User?> getUser() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final userString = prefs.getString(SharedPrefKeys.userKey);
+
+    if (userString == null) return null;
+
+    final Map<String, dynamic> userMap = jsonDecode(userString);
+    return User.fromJson(userMap);
   }
 }

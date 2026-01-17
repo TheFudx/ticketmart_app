@@ -1,5 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../../../../utils/app_assets.dart';
+
+AppBar appBar() {
+  return AppBar(
+    leading: Image.asset(
+      AppAssets.logo,
+      width: 60,
+      height: 60,
+    ),
+  );
+}
+
 Widget buildImageContainer(
   String imagePath, {
   required double width,

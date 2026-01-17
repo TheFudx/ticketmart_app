@@ -1,6 +1,6 @@
 class ApiString {
   ApiString._();
-  static const String baseUrl =
+  static const String alphaBaseUrl =
       'https://alphastudioz.in/ticketmart-test/public/flutter-app'; // Testing Server
 
   //    "https://ticketmart.co/public/flutter-app"; // Replace with your server address
@@ -8,19 +8,21 @@ class ApiString {
   static const String bookingEndpoint =
       "/booking"; // Add this line for the booking endpoint
 
-  static String get movies => "$baseUrl$userEndpoint/movies.php";
-  static String get theatres => "$baseUrl$userEndpoint/theatres.php";
-  static String get dataUrl => "$baseUrl$userEndpoint/profile_modal.php";
-  static String get seatCount => "$baseUrl$userEndpoint/seat_count.php";
-  static String get screens => "$baseUrl$userEndpoint/screen.php";
-  static String get users => "$baseUrl$userEndpoint/users.php";
-  static String get bookings =>
-      "$baseUrl$bookingEndpoint/create_booking.php"; // Add this line for the bookings endpoint
-  static String get seats =>
-      "$baseUrl$userEndpoint/fetch_seats.php"; // Add this line for the bookings endpoint
-  static String get theatresList => "$baseUrl$userEndpoint/theatres_list.php";
+  static String get movies => "$alphaBaseUrl$userEndpoint/movies.php";
+  static String get theatres => "$alphaBaseUrl$userEndpoint/theatres.php";
+  static String get dataUrl => "$alphaBaseUrl$userEndpoint/profile_modal.php";
+  static String get seatCount => "$alphaBaseUrl$userEndpoint/seat_count.php";
+  static String get screens => "$alphaBaseUrl$userEndpoint/screen.php";
 
-  static const String baseUrl2 = "https://ticketmart.co/UAT/public/api";
-  static const String loginUrl = "$baseUrl2/login";
+  static String get seats =>
+      "$alphaBaseUrl$userEndpoint/fetch_seats.php"; // Add this line for the bookings endpoint
+
+  static const String baseUrl = "https://ticketmart.co/UAT/public/api";
+  static const String loginUrl = "$baseUrl/login";
   static const String logoutUrl = "$baseUrl/logout";
+  static const String homePageUrl = "$baseUrl/home-page"; // Method Get
+  static const String showtimeUrl =
+      "$baseUrl/comedy-shows/show-times"; // Method Post
+  static const String seatLayout =
+      "$baseUrl/comedy-shows/seat-layout"; // Method Post
 }

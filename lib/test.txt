@@ -1,15 +1,418 @@
-Login Test
+---- Seat Layout Request -----
+Date{
+    "id":3,
+    "showtime_id":7,
+    "stage_id":2
+}
+---- Seat Layout Request -----
+---- Seat Layout Response -----
 {
     "status": true,
-    "message": "Login successful",
+    "message": "Seat layout fetched successfully",
     "data": {
-        "user": {
-            "id": 229,
-            "name": "Guest",
-            "email": "anupkolhe233@gmail.com",
-            "mobile": "1234567890",
-            "role": null
+        "isDone": true,
+        "show": {
+            "id": 3,
+            "title": "Alpha Comedy Unplugged Season 2",
+            "description": "<p>Welcome to Alpha Comedy Unplugged &mdash; where laughter takes center stage and comedy knows no bounds! We are a brand-new stand-up comedy show designed to deliver unfiltered, unapologetic, and unforgettable humor. From witty one-liners to outrageous storytelling, our stage is a haven for comedic talent and a playground for laughter lovers.</p>",
+            "genre": "Comedy",
+            "duration": 120,
+            "image_path": "https://ticketmart.co/storage/ComedyShows/ALPHA COMEDY10Jan.jpg",
+            "banner_image_path": "https://ticketmart.co/storage/ComedyShows/alpha_comedy_2.png",
+            "language": "Hindi",
+            "rating": "9.5",
+            "price": 1000,
+            "status": 1,
+            "created_at": "2026-01-05T08:29:16.000000Z",
+            "updated_at": "2026-01-05T08:29:16.000000Z",
+            "showtimes": [
+                {
+                    "id": 7,
+                    "show_id": 3,
+                    "date": "2026-01-10",
+                    "start_time": "17:00:00",
+                    "stage_id": 2
+                }
+            ]
         },
-        "token": "13|Hxohzrt7dQnLdCPX68lJZGFdoU5y8uTGyL4TRNOq39a6ceda"
+        "stage": {
+            "id": 2,
+            "location_id": 1,
+            "stage_number": 2,
+            "total_seats": 30,
+            "created_at": null,
+            "updated_at": null,
+            "slocation": {
+                "id": 1,
+                "name": "Alphaneon Studioz",
+                "location": "Prabhadevi",
+                "total_stage": 1,
+                "created_at": "2025-01-09T09:34:13.000000Z",
+                "updated_at": "2025-01-09T09:34:13.000000Z"
+            },
+            "cseats": [
+                {
+                    "id": 32,
+                    "stage_id": 2,
+                    "seat_number": "1",
+                    "seat_type": "Gold",
+                    "section": "G",
+                    "price": "500",
+                    "commission_price": "75",
+                    "created_at": "2026-01-05T08:45:39.000000Z",
+                    "updated_at": "2026-01-05T08:45:39.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 33,
+                    "stage_id": 2,
+                    "seat_number": "2",
+                    "seat_type": "Gold",
+                    "section": "G",
+                    "price": "500",
+                    "commission_price": "75",
+                    "created_at": "2026-01-05T08:46:15.000000Z",
+                    "updated_at": "2026-01-05T08:46:15.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 34,
+                    "stage_id": 2,
+                    "seat_number": "3",
+                    "seat_type": "Gold",
+                    "section": "G",
+                    "price": "500",
+                    "commission_price": "75",
+                    "created_at": "2026-01-05T08:46:15.000000Z",
+                    "updated_at": "2026-01-05T08:46:15.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 35,
+                    "stage_id": 2,
+                    "seat_number": "4",
+                    "seat_type": "Gold",
+                    "section": "G",
+                    "price": "500",
+                    "commission_price": "75",
+                    "created_at": "2026-01-05T08:46:15.000000Z",
+                    "updated_at": "2026-01-05T08:46:15.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 36,
+                    "stage_id": 2,
+                    "seat_number": "5",
+                    "seat_type": "Gold",
+                    "section": "G",
+                    "price": "500",
+                    "commission_price": "75",
+                    "created_at": "2026-01-05T08:46:15.000000Z",
+                    "updated_at": "2026-01-05T08:46:15.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 37,
+                    "stage_id": 2,
+                    "seat_number": "6",
+                    "seat_type": "Gold",
+                    "section": "G",
+                    "price": "500",
+                    "commission_price": "75",
+                    "created_at": "2026-01-05T08:46:15.000000Z",
+                    "updated_at": "2026-01-05T08:46:15.000000Z",
+                    "booked": true
+                },
+                {
+                    "id": 38,
+                    "stage_id": 2,
+                    "seat_number": "1",
+                    "seat_type": "Silver",
+                    "section": "S",
+                    "price": "250",
+                    "commission_price": "38",
+                    "created_at": "2026-01-05T08:49:37.000000Z",
+                    "updated_at": "2026-01-05T08:49:37.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 39,
+                    "stage_id": 2,
+                    "seat_number": "2",
+                    "seat_type": "Silver",
+                    "section": "S",
+                    "price": "250",
+                    "commission_price": "38",
+                    "created_at": "2026-01-05T08:49:37.000000Z",
+                    "updated_at": "2026-01-05T08:49:37.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 40,
+                    "stage_id": 2,
+                    "seat_number": "3",
+                    "seat_type": "Silver",
+                    "section": "S",
+                    "price": "250",
+                    "commission_price": "38",
+                    "created_at": "2026-01-05T08:49:37.000000Z",
+                    "updated_at": "2026-01-05T08:49:37.000000Z",
+                    "booked": true
+                },
+                {
+                    "id": 41,
+                    "stage_id": 2,
+                    "seat_number": "4",
+                    "seat_type": "Silver",
+                    "section": "S",
+                    "price": "250",
+                    "commission_price": "38",
+                    "created_at": "2026-01-05T08:49:37.000000Z",
+                    "updated_at": "2026-01-05T08:49:37.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 42,
+                    "stage_id": 2,
+                    "seat_number": "5",
+                    "seat_type": "Silver",
+                    "section": "S",
+                    "price": "250",
+                    "commission_price": "38",
+                    "created_at": "2026-01-05T08:49:37.000000Z",
+                    "updated_at": "2026-01-05T08:49:37.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 43,
+                    "stage_id": 2,
+                    "seat_number": "6",
+                    "seat_type": "Silver",
+                    "section": "S",
+                    "price": "250",
+                    "commission_price": "38",
+                    "created_at": "2026-01-05T08:49:37.000000Z",
+                    "updated_at": "2026-01-05T08:49:37.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 44,
+                    "stage_id": 2,
+                    "seat_number": "1",
+                    "seat_type": "Bronze",
+                    "section": "B",
+                    "price": "250",
+                    "commission_price": "38",
+                    "created_at": "2026-01-05T08:50:37.000000Z",
+                    "updated_at": "2026-01-05T08:50:37.000000Z",
+                    "booked": true
+                },
+                {
+                    "id": 45,
+                    "stage_id": 2,
+                    "seat_number": "2",
+                    "seat_type": "Bronze",
+                    "section": "B",
+                    "price": "250",
+                    "commission_price": "38",
+                    "created_at": "2026-01-05T08:50:37.000000Z",
+                    "updated_at": "2026-01-05T08:50:37.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 46,
+                    "stage_id": 2,
+                    "seat_number": "3",
+                    "seat_type": "Bronze",
+                    "section": "B",
+                    "price": "250",
+                    "commission_price": "38",
+                    "created_at": "2026-01-05T08:50:37.000000Z",
+                    "updated_at": "2026-01-05T08:50:37.000000Z",
+                    "booked": true
+                },
+                {
+                    "id": 47,
+                    "stage_id": 2,
+                    "seat_number": "4",
+                    "seat_type": "Bronze",
+                    "section": "B",
+                    "price": "250",
+                    "commission_price": "38",
+                    "created_at": "2026-01-05T08:50:37.000000Z",
+                    "updated_at": "2026-01-05T08:50:37.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 48,
+                    "stage_id": 2,
+                    "seat_number": "5",
+                    "seat_type": "Bronze",
+                    "section": "B",
+                    "price": "250",
+                    "commission_price": "38",
+                    "created_at": "2026-01-05T08:50:37.000000Z",
+                    "updated_at": "2026-01-05T08:50:37.000000Z",
+                    "booked": true
+                },
+                {
+                    "id": 49,
+                    "stage_id": 2,
+                    "seat_number": "6",
+                    "seat_type": "Bronze",
+                    "section": "B",
+                    "price": "250",
+                    "commission_price": "38",
+                    "created_at": "2026-01-05T08:50:37.000000Z",
+                    "updated_at": "2026-01-05T08:50:37.000000Z",
+                    "booked": true
+                },
+                {
+                    "id": 50,
+                    "stage_id": 2,
+                    "seat_number": "1",
+                    "seat_type": "Platinum",
+                    "section": "P",
+                    "price": "200",
+                    "commission_price": "30",
+                    "created_at": "2026-01-05T08:51:34.000000Z",
+                    "updated_at": "2026-01-05T08:51:34.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 51,
+                    "stage_id": 2,
+                    "seat_number": "2",
+                    "seat_type": "Platinum",
+                    "section": "P",
+                    "price": "200",
+                    "commission_price": "30",
+                    "created_at": "2026-01-05T08:51:34.000000Z",
+                    "updated_at": "2026-01-05T08:51:34.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 52,
+                    "stage_id": 2,
+                    "seat_number": "3",
+                    "seat_type": "Platinum",
+                    "section": "P",
+                    "price": "200",
+                    "commission_price": "30",
+                    "created_at": "2026-01-05T08:51:34.000000Z",
+                    "updated_at": "2026-01-05T08:51:34.000000Z",
+                    "booked": true
+                },
+                {
+                    "id": 53,
+                    "stage_id": 2,
+                    "seat_number": "4",
+                    "seat_type": "Platinum",
+                    "section": "P",
+                    "price": "200",
+                    "commission_price": "30",
+                    "created_at": "2026-01-05T08:51:34.000000Z",
+                    "updated_at": "2026-01-05T08:51:34.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 54,
+                    "stage_id": 2,
+                    "seat_number": "5",
+                    "seat_type": "Platinum",
+                    "section": "P",
+                    "price": "200",
+                    "commission_price": "30",
+                    "created_at": "2026-01-05T08:51:34.000000Z",
+                    "updated_at": "2026-01-05T08:51:34.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 55,
+                    "stage_id": 2,
+                    "seat_number": "6",
+                    "seat_type": "Platinum",
+                    "section": "P",
+                    "price": "200",
+                    "commission_price": "30",
+                    "created_at": "2026-01-05T08:51:34.000000Z",
+                    "updated_at": "2026-01-05T08:51:34.000000Z",
+                    "booked": true
+                },
+                {
+                    "id": 56,
+                    "stage_id": 2,
+                    "seat_number": "1",
+                    "seat_type": "Diamond (Recliner)",
+                    "section": "D",
+                    "price": "1000",
+                    "commission_price": "150",
+                    "created_at": "2026-01-05T08:52:43.000000Z",
+                    "updated_at": "2026-01-05T08:52:43.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 57,
+                    "stage_id": 2,
+                    "seat_number": "2",
+                    "seat_type": "Diamond (Recliner)",
+                    "section": "D",
+                    "price": "1000",
+                    "commission_price": "150",
+                    "created_at": "2026-01-05T08:52:43.000000Z",
+                    "updated_at": "2026-01-05T08:52:43.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 58,
+                    "stage_id": 2,
+                    "seat_number": "3",
+                    "seat_type": "Diamond (Recliner)",
+                    "section": "D",
+                    "price": "1000",
+                    "commission_price": "150",
+                    "created_at": "2026-01-05T08:52:43.000000Z",
+                    "updated_at": "2026-01-05T08:52:43.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 59,
+                    "stage_id": 2,
+                    "seat_number": "4",
+                    "seat_type": "Diamond (Recliner)",
+                    "section": "D",
+                    "price": "1000",
+                    "commission_price": "150",
+                    "created_at": "2026-01-05T08:52:43.000000Z",
+                    "updated_at": "2026-01-05T08:52:43.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 60,
+                    "stage_id": 2,
+                    "seat_number": "5",
+                    "seat_type": "Diamond (Recliner)",
+                    "section": "D",
+                    "price": "1000",
+                    "commission_price": "150",
+                    "created_at": "2026-01-05T08:52:43.000000Z",
+                    "updated_at": "2026-01-05T08:52:43.000000Z",
+                    "booked": false
+                },
+                {
+                    "id": 61,
+                    "stage_id": 2,
+                    "seat_number": "6",
+                    "seat_type": "Diamond (Recliner)",
+                    "section": "D",
+                    "price": "1000",
+                    "commission_price": "150",
+                    "created_at": "2026-01-05T08:52:43.000000Z",
+                    "updated_at": "2026-01-05T08:52:43.000000Z",
+                    "booked": true
+                }
+            ]
+        }
     }
 }
+---- Seat Layout Response -----

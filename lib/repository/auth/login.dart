@@ -4,6 +4,7 @@ import 'package:ticketmart/model/login/login_request.dart';
 import 'package:http/http.dart' as http;
 
 import '../../model/login/login_response.dart';
+import '../../storage/shared_pref_helper.dart';
 import '../../utils/api_string.dart';
 
 class LoginRespository {
@@ -19,6 +20,21 @@ class LoginRespository {
       return LoginResponse.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('API error: ${response.statusCode}');
+    }
+  }
+
+  static Future<void> logOut() async {
+    String? token = await SharedPrefHelper.getUserToken();
+    if (token == null) return;
+    final response = await http.post(
+      Uri.parse(ApiString.logoutUrl),
+      headers: {"Authorization": "Bearer $token"},
+    );
+
+    if (response.statusCode == 200) {
+      print('Status Code 200: ${response.body}');
+    } else {
+      print('Error while testing: ${response.body}');
     }
   }
 }

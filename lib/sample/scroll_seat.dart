@@ -62,6 +62,7 @@ class _SeatBookingScreenState extends State<SeatBookingScreen> {
       setState(() {
         seat.isSelected = !seat.isSelected;
       });
+      print(seat.isSelected);
     }
   }
 

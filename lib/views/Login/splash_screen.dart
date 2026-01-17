@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:ticketmart/views/home/drawer/home_screen.dart';
 
+import '../../providers/user_provider.dart';
 import '../../storage/shared_pref_helper.dart';
 import '../../utils/app_assets.dart';
 import 'login_screen.dart';
@@ -41,17 +43,14 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> initial() async {
-    final [userId, userEmail, userMobile, userToken] = await Future.wait([
-      SharedPrefHelper.getUserId(),
-      SharedPrefHelper.getUserEmail(),
-      SharedPrefHelper.getUserMobile(),
-      SharedPrefHelper.getUserToken(),
-    ]);
+    final user = await SharedPrefHelper.getUser();
 
-    if (userToken != null) {
-      Get.off(() => HomeScreen(userId as int));
-    } else {
+    if (user == null) {
       Get.off(() => const LoginScreen());
+    } else {
+      if (!mounted) return;
+      context.read<UserProvider>().setUser(user);
+      Get.off(() => const HomeScreen());
     }
   }
 

@@ -59,4 +59,14 @@ class User {
       role: json['role'],
     );
   }
+  // Method to convert User to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'mobile': mobile,
+      'role': role,
+    };
+    }
 }
