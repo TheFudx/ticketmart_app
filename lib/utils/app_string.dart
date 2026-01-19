@@ -19,7 +19,7 @@ class AppString {
 
   static const Map<String, String> header = {
     'Content-Type': 'application/json'
-  };
+  };  
 
   static const String availableTxt = "Available";
   static const String selectedTxt = "Selected";
