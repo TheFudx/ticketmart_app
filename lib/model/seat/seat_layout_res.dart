@@ -62,6 +62,7 @@ class Show {
   final String rating;
   final int price;
   final int status;
+  final List<Showtimes> showtime;
 
   Show({
     required this.id,
@@ -75,6 +76,7 @@ class Show {
     required this.rating,
     required this.price,
     required this.status,
+    required this.showtime,
   });
 
   factory Show.fromJson(Map<String, dynamic> json) {
@@ -90,6 +92,9 @@ class Show {
       rating: json['rating'] ?? '',
       price: json['price'] ?? 0,
       status: json['status'] ?? 0,
+      showtime: (json["showtimes"] as List<dynamic>? ?? [])
+          .map((e) => Showtimes.fromJson(e))
+          .toList(),
     );
   }
 
@@ -106,6 +111,32 @@ class Show {
         'price': price,
         'status': status,
       };
+}
+
+class Showtimes {
+  final int? id;
+  final int? showId;
+  final String? date;
+  final String? startTime;
+  final int? stageId;
+
+  Showtimes({
+    required this.id,
+    required this.showId,
+    required this.date,
+    required this.startTime,
+    required this.stageId,
+  });
+
+  factory Showtimes.fromJson(Map<String, dynamic> json) {
+    return Showtimes(
+      id: json["id"] ?? 0,
+      showId: json["show_id"] ?? "",
+      date: json["date"] ?? "",
+      startTime: json["start_time"],
+      stageId: json["stage_id"],
+    );
+  }
 }
 
 class Stage {

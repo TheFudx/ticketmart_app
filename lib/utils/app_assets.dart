@@ -12,4 +12,15 @@ class AppAssets {
 
   static const String sofa1B = "assets/sofa1B.png";
   static const String sofa2G = "assets/sofa2G.png";
+
+  static const String goldSeat = "assets/images/stage/gold.png";
+  static const String bronzeSeat = "assets/images/stage/bronze.png";
+  static const String silverSeat = "assets/images/stage/silver.png";
+  static const String platinumSeat = "assets/images/stage/silver.png";
+  static const String selectedSeated = "assets/images/stage/selectSeat.png";
+  static const String bookedSeated = "assets/images/stage/booked_seat.png";
+  static const String comedyBannerImg = "assets/images/stage/comedyBanner.png";
+  static const String sofa1 = "assets/images/stage/sofa_1.png";
+  static const String sofa2 = "assets/images/stage/sofa_2.png";
+  static const String sofa3 = "assets/images/stage/sofa_3.png";
 }

@@ -12,6 +12,25 @@ String getFormattedDate(String? date) {
   return formatter.format(parsedDate);
 }
 
+String convert12Format(String? time24) {
+  if (time24 == null) {
+    return '';
+  }
+  final DateFormat inputFormat = DateFormat("HH:mm:ss");
+  final DateFormat outputFormat = DateFormat("hh:mm a");
+  final DateTime dateTime = inputFormat.parse(time24);
+  return outputFormat.format(dateTime);
+}
+
+String getFormatDayDate(String? date) {
+  if (date == null) {
+    return '';
+  }
+  DateTime parsedDate = DateTime.parse(date);
+  DateFormat formatter = DateFormat('EEE, dd MMM yyyy');
+  return formatter.format(parsedDate);
+}
+
 String getFormattedHours(String times) {
   DateFormat inputFormat = DateFormat("HH:mm:ss");
   DateTime parsedDate = inputFormat.parse(times);

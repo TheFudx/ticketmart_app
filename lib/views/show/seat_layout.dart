@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:ticketmart/views/show/booked_seat_detail.dart';
 
 import '../../model/seat/seat_layout_res.dart';
 import '../../providers/seat_layout_provider.dart';
@@ -21,6 +23,7 @@ class SeatLayout extends StatefulWidget {
 class _SeatLayoutState extends State<SeatLayout> {
   SeatData? data;
   final List<Cseat> selectedSeats = [];
+  Map<String, String> priGroup = {};
 
   @override
   void initState() {
@@ -37,17 +40,8 @@ class _SeatLayoutState extends State<SeatLayout> {
     final res = await SeatLayoutProvider.seatLayout(id, showtimeId, stageId);
     setState(() {
       data = res;
+      priGroup = priceGroup(data!.stage!.cseats);
     });
-  }
-
-  Map<String, List<Cseat>> groupSeatsByType(List<Cseat> seats) {
-    final Map<String, List<Cseat>> grouped = {};
-
-    for (var seat in seats) {
-      grouped.putIfAbsent(seat.seatType, () => []);
-      grouped[seat.seatType]!.add(seat);
-    }
-    return grouped;
   }
 
   void onSeatTap(Cseat seat) {
@@ -64,68 +58,53 @@ class _SeatLayoutState extends State<SeatLayout> {
 
   // Seat UI
   Widget seatWidget(Cseat seat) {
-    final bool isSelected = selectedSeats.contains(seat);
+    bool seatSelected = containId(selectedSeats, seat.id);
+    String seatImg = getSeatAssests(seat.seatType, seat.booked, seatSelected);
 
-    Color bgColor;
-    if (seat.booked == true) {
-      bgColor = AppColors.bookedSeated;
-    } else if (isSelected) {
-      bgColor = AppColors.selectedSeated;
-    } else {
-      bgColor = AppColors.availableSeated;
-    }
+    double height =
+        AppString.diamondTxt == seat.seatType.toLowerCase() ? 30 : 40;
+    double width =
+        AppString.diamondTxt == seat.seatType.toLowerCase() ? 30 : 20;
 
-    return GestureDetector(
-      onTap: seat.booked == true ? null : () => onSeatTap(seat),
-      child: Container(
-        width: 42,
-        height: 42,
-        margin: const EdgeInsets.all(4),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(6),
-            border: BoxBorder.all(
-              color: seat.booked
-                  ? AppColors.bookedSeated
-                  : AppColors.selectedSeated,
-            )),
-        child: Text(
+    return Column(
+      children: [
+        const SizedBox(height: 10),
+        Text(
           '${seat.section}${seat.seatNumber}',
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: GestureDetector(
+            onTap: seat.booked == true ? null : () => onSeatTap(seat),
+            child: Image.asset(
+              seatImg,
+              width: width,
+              height: height,
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 
   Widget seatTypeRow(String type, List<Cseat> seats) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Row(
-          children: [
-            Text(
-              type,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
+        Center(
+          child: Text(
+            type,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: getColorForType(type),
             ),
-            const SizedBox(width: 5),
-            Text(
-              "${seats[0].price}₹",
-              style: const TextStyle(fontSize: 9),
-            ),
-          ],
+          ),
         ),
-        const Divider(),
         Wrap(
           children: seats.map(seatWidget).toList(),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 10),
       ],
     );
   }
@@ -146,37 +125,6 @@ class _SeatLayoutState extends State<SeatLayout> {
     );
   }
 
-  Widget selectedSeatSummary() {
-    final totalAmount = selectedSeats.fold(
-      0,
-      (sum, seat) => sum + int.parse(seat.price),
-    );
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.only(top: 10),
-      decoration: BoxDecoration(
-        color: Colors.black12,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '${AppString.selectedSeatsTxt}: ${selectedSeats.map((e) => '${e.section}${e.seatNumber}').join(', ')}',
-          ),
-          const SizedBox(height: 4),
-          Text('${AppString.totalSeatsTxt}: ${selectedSeats.length}'),
-          const SizedBox(height: 4),
-          Text(
-            '${AppString.totalAmountTxt}: ₹$totalAmount',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -190,26 +138,70 @@ class _SeatLayoutState extends State<SeatLayout> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Center(
-                      child: Image.asset(AppAssets.stage, height: 100),
+                    Row(
+                      children: priGroup.entries.map(
+                        (entry) {
+                          return Container(
+                            margin: const EdgeInsets.all(4),
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: AppColors.bgBorderColor),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  entry.key,
+                                  style: TextStyle(
+                                      fontSize: 12.0,
+                                      color: getColorForType(entry.key)),
+                                ),
+                                Text(
+                                  "Rs.${entry.value}",
+                                  style: const TextStyle(fontSize: 9.0),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ).toList(),
                     ),
                     const SizedBox(height: 10),
-
-                    const SizedBox(height: 10),
-                    buildLegend(),
-                    const SizedBox(height: 10),
-
-                    /// Seat Layout
-                    buildSeatLayout(),
-
-                    /// Selected summary
-                    selectedSeatSummary(),
-
-                    const SizedBox(height: 20),
-
                     Center(
+                      child: Image.asset(AppAssets.stage, height: 130),
+                    ),
+                    const SizedBox(height: 10),
+                    buildSeatLayout(),
+                    const SizedBox(height: 10),
+                    rowDetails(),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
                       child: ElevatedButton(
-                          onPressed: () {}, child: const Text('Book Now')),
+                        onPressed: selectedSeats.isEmpty
+                            ? () {}
+                            : () {
+                                Get.to(
+                                  () => BookedSeatDetail(
+                                      seatDeatil: selectedSeats,
+                                      showTime: data!.show!.showtime[0]),
+                                );
+                              },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF08538A),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: const BorderSide(
+                              color: Color(0xFF08538A),
+                            ),
+                          ),
+                        ),
+                        child: const Text(
+                          AppString.bookNowTxt,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
                     )
                   ],
                 ),

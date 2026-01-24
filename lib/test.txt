@@ -1,418 +1,243 @@
----- Seat Layout Request -----
-Date{
-    "id":3,
-    "showtime_id":7,
-    "stage_id":2
+lib>views>show>seat_layout.dart
+
+import 'package:flutter/material.dart';
+
+import '../../model/seat/seat_layout_res.dart';
+import '../../providers/seat_layout_provider.dart';
+import '../../utils/app_assets.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/app_string.dart';
+import 'widget/show_widget.dart';
+
+class SeatLayout extends StatefulWidget {
+  final int id;
+  final int showtimeId;
+  final int stageId;
+
+  const SeatLayout(this.id, this.showtimeId, this.stageId, {super.key});
+
+  @override
+  State<SeatLayout> createState() => _SeatLayoutState();
 }
----- Seat Layout Request -----
----- Seat Layout Response -----
-{
-    "status": true,
-    "message": "Seat layout fetched successfully",
-    "data": {
-        "isDone": true,
-        "show": {
-            "id": 3,
-            "title": "Alpha Comedy Unplugged Season 2",
-            "description": "<p>Welcome to Alpha Comedy Unplugged &mdash; where laughter takes center stage and comedy knows no bounds! We are a brand-new stand-up comedy show designed to deliver unfiltered, unapologetic, and unforgettable humor. From witty one-liners to outrageous storytelling, our stage is a haven for comedic talent and a playground for laughter lovers.</p>",
-            "genre": "Comedy",
-            "duration": 120,
-            "image_path": "https://ticketmart.co/storage/ComedyShows/ALPHA COMEDY10Jan.jpg",
-            "banner_image_path": "https://ticketmart.co/storage/ComedyShows/alpha_comedy_2.png",
-            "language": "Hindi",
-            "rating": "9.5",
-            "price": 1000,
-            "status": 1,
-            "created_at": "2026-01-05T08:29:16.000000Z",
-            "updated_at": "2026-01-05T08:29:16.000000Z",
-            "showtimes": [
-                {
-                    "id": 7,
-                    "show_id": 3,
-                    "date": "2026-01-10",
-                    "start_time": "17:00:00",
-                    "stage_id": 2
-                }
-            ]
-        },
-        "stage": {
-            "id": 2,
-            "location_id": 1,
-            "stage_number": 2,
-            "total_seats": 30,
-            "created_at": null,
-            "updated_at": null,
-            "slocation": {
-                "id": 1,
-                "name": "Alphaneon Studioz",
-                "location": "Prabhadevi",
-                "total_stage": 1,
-                "created_at": "2025-01-09T09:34:13.000000Z",
-                "updated_at": "2025-01-09T09:34:13.000000Z"
-            },
-            "cseats": [
-                {
-                    "id": 32,
-                    "stage_id": 2,
-                    "seat_number": "1",
-                    "seat_type": "Gold",
-                    "section": "G",
-                    "price": "500",
-                    "commission_price": "75",
-                    "created_at": "2026-01-05T08:45:39.000000Z",
-                    "updated_at": "2026-01-05T08:45:39.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 33,
-                    "stage_id": 2,
-                    "seat_number": "2",
-                    "seat_type": "Gold",
-                    "section": "G",
-                    "price": "500",
-                    "commission_price": "75",
-                    "created_at": "2026-01-05T08:46:15.000000Z",
-                    "updated_at": "2026-01-05T08:46:15.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 34,
-                    "stage_id": 2,
-                    "seat_number": "3",
-                    "seat_type": "Gold",
-                    "section": "G",
-                    "price": "500",
-                    "commission_price": "75",
-                    "created_at": "2026-01-05T08:46:15.000000Z",
-                    "updated_at": "2026-01-05T08:46:15.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 35,
-                    "stage_id": 2,
-                    "seat_number": "4",
-                    "seat_type": "Gold",
-                    "section": "G",
-                    "price": "500",
-                    "commission_price": "75",
-                    "created_at": "2026-01-05T08:46:15.000000Z",
-                    "updated_at": "2026-01-05T08:46:15.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 36,
-                    "stage_id": 2,
-                    "seat_number": "5",
-                    "seat_type": "Gold",
-                    "section": "G",
-                    "price": "500",
-                    "commission_price": "75",
-                    "created_at": "2026-01-05T08:46:15.000000Z",
-                    "updated_at": "2026-01-05T08:46:15.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 37,
-                    "stage_id": 2,
-                    "seat_number": "6",
-                    "seat_type": "Gold",
-                    "section": "G",
-                    "price": "500",
-                    "commission_price": "75",
-                    "created_at": "2026-01-05T08:46:15.000000Z",
-                    "updated_at": "2026-01-05T08:46:15.000000Z",
-                    "booked": true
-                },
-                {
-                    "id": 38,
-                    "stage_id": 2,
-                    "seat_number": "1",
-                    "seat_type": "Silver",
-                    "section": "S",
-                    "price": "250",
-                    "commission_price": "38",
-                    "created_at": "2026-01-05T08:49:37.000000Z",
-                    "updated_at": "2026-01-05T08:49:37.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 39,
-                    "stage_id": 2,
-                    "seat_number": "2",
-                    "seat_type": "Silver",
-                    "section": "S",
-                    "price": "250",
-                    "commission_price": "38",
-                    "created_at": "2026-01-05T08:49:37.000000Z",
-                    "updated_at": "2026-01-05T08:49:37.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 40,
-                    "stage_id": 2,
-                    "seat_number": "3",
-                    "seat_type": "Silver",
-                    "section": "S",
-                    "price": "250",
-                    "commission_price": "38",
-                    "created_at": "2026-01-05T08:49:37.000000Z",
-                    "updated_at": "2026-01-05T08:49:37.000000Z",
-                    "booked": true
-                },
-                {
-                    "id": 41,
-                    "stage_id": 2,
-                    "seat_number": "4",
-                    "seat_type": "Silver",
-                    "section": "S",
-                    "price": "250",
-                    "commission_price": "38",
-                    "created_at": "2026-01-05T08:49:37.000000Z",
-                    "updated_at": "2026-01-05T08:49:37.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 42,
-                    "stage_id": 2,
-                    "seat_number": "5",
-                    "seat_type": "Silver",
-                    "section": "S",
-                    "price": "250",
-                    "commission_price": "38",
-                    "created_at": "2026-01-05T08:49:37.000000Z",
-                    "updated_at": "2026-01-05T08:49:37.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 43,
-                    "stage_id": 2,
-                    "seat_number": "6",
-                    "seat_type": "Silver",
-                    "section": "S",
-                    "price": "250",
-                    "commission_price": "38",
-                    "created_at": "2026-01-05T08:49:37.000000Z",
-                    "updated_at": "2026-01-05T08:49:37.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 44,
-                    "stage_id": 2,
-                    "seat_number": "1",
-                    "seat_type": "Bronze",
-                    "section": "B",
-                    "price": "250",
-                    "commission_price": "38",
-                    "created_at": "2026-01-05T08:50:37.000000Z",
-                    "updated_at": "2026-01-05T08:50:37.000000Z",
-                    "booked": true
-                },
-                {
-                    "id": 45,
-                    "stage_id": 2,
-                    "seat_number": "2",
-                    "seat_type": "Bronze",
-                    "section": "B",
-                    "price": "250",
-                    "commission_price": "38",
-                    "created_at": "2026-01-05T08:50:37.000000Z",
-                    "updated_at": "2026-01-05T08:50:37.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 46,
-                    "stage_id": 2,
-                    "seat_number": "3",
-                    "seat_type": "Bronze",
-                    "section": "B",
-                    "price": "250",
-                    "commission_price": "38",
-                    "created_at": "2026-01-05T08:50:37.000000Z",
-                    "updated_at": "2026-01-05T08:50:37.000000Z",
-                    "booked": true
-                },
-                {
-                    "id": 47,
-                    "stage_id": 2,
-                    "seat_number": "4",
-                    "seat_type": "Bronze",
-                    "section": "B",
-                    "price": "250",
-                    "commission_price": "38",
-                    "created_at": "2026-01-05T08:50:37.000000Z",
-                    "updated_at": "2026-01-05T08:50:37.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 48,
-                    "stage_id": 2,
-                    "seat_number": "5",
-                    "seat_type": "Bronze",
-                    "section": "B",
-                    "price": "250",
-                    "commission_price": "38",
-                    "created_at": "2026-01-05T08:50:37.000000Z",
-                    "updated_at": "2026-01-05T08:50:37.000000Z",
-                    "booked": true
-                },
-                {
-                    "id": 49,
-                    "stage_id": 2,
-                    "seat_number": "6",
-                    "seat_type": "Bronze",
-                    "section": "B",
-                    "price": "250",
-                    "commission_price": "38",
-                    "created_at": "2026-01-05T08:50:37.000000Z",
-                    "updated_at": "2026-01-05T08:50:37.000000Z",
-                    "booked": true
-                },
-                {
-                    "id": 50,
-                    "stage_id": 2,
-                    "seat_number": "1",
-                    "seat_type": "Platinum",
-                    "section": "P",
-                    "price": "200",
-                    "commission_price": "30",
-                    "created_at": "2026-01-05T08:51:34.000000Z",
-                    "updated_at": "2026-01-05T08:51:34.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 51,
-                    "stage_id": 2,
-                    "seat_number": "2",
-                    "seat_type": "Platinum",
-                    "section": "P",
-                    "price": "200",
-                    "commission_price": "30",
-                    "created_at": "2026-01-05T08:51:34.000000Z",
-                    "updated_at": "2026-01-05T08:51:34.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 52,
-                    "stage_id": 2,
-                    "seat_number": "3",
-                    "seat_type": "Platinum",
-                    "section": "P",
-                    "price": "200",
-                    "commission_price": "30",
-                    "created_at": "2026-01-05T08:51:34.000000Z",
-                    "updated_at": "2026-01-05T08:51:34.000000Z",
-                    "booked": true
-                },
-                {
-                    "id": 53,
-                    "stage_id": 2,
-                    "seat_number": "4",
-                    "seat_type": "Platinum",
-                    "section": "P",
-                    "price": "200",
-                    "commission_price": "30",
-                    "created_at": "2026-01-05T08:51:34.000000Z",
-                    "updated_at": "2026-01-05T08:51:34.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 54,
-                    "stage_id": 2,
-                    "seat_number": "5",
-                    "seat_type": "Platinum",
-                    "section": "P",
-                    "price": "200",
-                    "commission_price": "30",
-                    "created_at": "2026-01-05T08:51:34.000000Z",
-                    "updated_at": "2026-01-05T08:51:34.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 55,
-                    "stage_id": 2,
-                    "seat_number": "6",
-                    "seat_type": "Platinum",
-                    "section": "P",
-                    "price": "200",
-                    "commission_price": "30",
-                    "created_at": "2026-01-05T08:51:34.000000Z",
-                    "updated_at": "2026-01-05T08:51:34.000000Z",
-                    "booked": true
-                },
-                {
-                    "id": 56,
-                    "stage_id": 2,
-                    "seat_number": "1",
-                    "seat_type": "Diamond (Recliner)",
-                    "section": "D",
-                    "price": "1000",
-                    "commission_price": "150",
-                    "created_at": "2026-01-05T08:52:43.000000Z",
-                    "updated_at": "2026-01-05T08:52:43.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 57,
-                    "stage_id": 2,
-                    "seat_number": "2",
-                    "seat_type": "Diamond (Recliner)",
-                    "section": "D",
-                    "price": "1000",
-                    "commission_price": "150",
-                    "created_at": "2026-01-05T08:52:43.000000Z",
-                    "updated_at": "2026-01-05T08:52:43.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 58,
-                    "stage_id": 2,
-                    "seat_number": "3",
-                    "seat_type": "Diamond (Recliner)",
-                    "section": "D",
-                    "price": "1000",
-                    "commission_price": "150",
-                    "created_at": "2026-01-05T08:52:43.000000Z",
-                    "updated_at": "2026-01-05T08:52:43.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 59,
-                    "stage_id": 2,
-                    "seat_number": "4",
-                    "seat_type": "Diamond (Recliner)",
-                    "section": "D",
-                    "price": "1000",
-                    "commission_price": "150",
-                    "created_at": "2026-01-05T08:52:43.000000Z",
-                    "updated_at": "2026-01-05T08:52:43.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 60,
-                    "stage_id": 2,
-                    "seat_number": "5",
-                    "seat_type": "Diamond (Recliner)",
-                    "section": "D",
-                    "price": "1000",
-                    "commission_price": "150",
-                    "created_at": "2026-01-05T08:52:43.000000Z",
-                    "updated_at": "2026-01-05T08:52:43.000000Z",
-                    "booked": false
-                },
-                {
-                    "id": 61,
-                    "stage_id": 2,
-                    "seat_number": "6",
-                    "seat_type": "Diamond (Recliner)",
-                    "section": "D",
-                    "price": "1000",
-                    "commission_price": "150",
-                    "created_at": "2026-01-05T08:52:43.000000Z",
-                    "updated_at": "2026-01-05T08:52:43.000000Z",
-                    "booked": true
-                }
-            ]
-        }
+
+class _SeatLayoutState extends State<SeatLayout> {
+  SeatData? data;
+  final List<Cseat> selectedSeats = [];
+  Map<String, String> priGroup = {};
+
+  @override
+  void initState() {
+    super.initState();
+    apiCall(widget.id, widget.showtimeId, widget.stageId);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  Future<void> apiCall(int id, int showtimeId, int stageId) async {
+    final res = await SeatLayoutProvider.seatLayout(id, showtimeId, stageId);
+    setState(() {
+      data = res;
+      priGroup = priceGroup(data!.stage!.cseats);
+    });
+  }
+
+  void onSeatTap(Cseat seat) {
+    if (seat.booked == true) return;
+
+    setState(() {
+      if (selectedSeats.contains(seat)) {
+        selectedSeats.remove(seat);
+      } else {
+        selectedSeats.add(seat);
+      }
+    });
+  }
+
+  // Seat UI
+  Widget seatWidget(Cseat seat) {
+    final bool isSelected = selectedSeats.contains(seat);
+
+    Color bgColor;
+    if (seat.booked == true) {
+      bgColor = AppColors.bookedSeated;
+    } else if (isSelected) {
+      bgColor = AppColors.selectedSeated;
+    } else {
+      bgColor = AppColors.availableSeated;
     }
+
+    return GestureDetector(
+      onTap: seat.booked == true ? null : () => onSeatTap(seat),
+      child: Column(
+        children: [
+          Text(
+            '${seat.section}${seat.seatNumber}',
+          ),
+          Container(
+            width: 42,
+            height: 42,
+            margin: const EdgeInsets.all(4),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+                color: bgColor,
+                borderRadius: BorderRadius.circular(6),
+                border: BoxBorder.all(
+                  color: seat.booked
+                      ? AppColors.bookedSeated
+                      : AppColors.selectedSeated,
+                )),
+            child: Text(
+              '${seat.section}${seat.seatNumber}',
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget seatTypeRow(String type, List<Cseat> seats) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Center(
+          child: Text(
+            type,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: getColorForType(type),
+            ),
+          ),
+        ),
+        Wrap(
+          children: seats.map(seatWidget).toList(),
+        ),
+        const SizedBox(height: 14),
+      ],
+    );
+  }
+
+  Widget buildSeatLayout() {
+    final seats = data!.stage!.cseats;
+
+    if (data == null || data!.stage == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final groupedSeats = groupSeatsByType(seats);
+
+    return Column(
+      children: groupedSeats.entries
+          .map((entry) => seatTypeRow(entry.key, entry.value))
+          .toList(),
+    );
+  }
+
+  /*
+  Widget selectedSeatSummary() {
+    final totalAmount = selectedSeats.fold(
+      0,
+      (sum, seat) => sum + int.parse(seat.price),
+    );
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(top: 10),
+      decoration: BoxDecoration(
+        color: Colors.black12,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${AppString.selectedSeatsTxt}: ${selectedSeats.map((e) => '${e.section}${e.seatNumber}').join(', ')}',
+          ),
+          const SizedBox(height: 4),
+          Text('${AppString.totalSeatsTxt}: ${selectedSeats.length}'),
+          const SizedBox(height: 4),
+          Text(
+            '${AppString.totalAmountTxt}: ₹$totalAmount',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+  */
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: seatAppBar(data?.show?.title ?? ''),
+      body: data == null
+          ? const Center(child: CircularProgressIndicator())
+          : SafeArea(
+              child: SingleChildScrollView(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: priGroup.entries.map(
+                        (entry) {
+                          return Container(
+                            margin: const EdgeInsets.all(4),
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: AppColors.bgBorderColor),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  entry.key,
+                                  style: TextStyle(
+                                      fontSize: 12.0,
+                                      color: getColorForType(entry.key)),
+                                ),
+                                Text(
+                                  "Rs.${entry.value}",
+                                  style: const TextStyle(fontSize: 9.0),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ).toList(),
+                    ),
+                    const SizedBox(height: 10),
+                    Center(
+                      child: Image.asset(AppAssets.stage, height: 130),
+                    ),
+                    const SizedBox(height: 10),
+
+                    /// Seat Layout
+                    buildSeatLayout(),
+
+                    /*
+                    /// Selected summary
+                    // selectedSeatSummary(),
+                    */
+
+                    const SizedBox(height: 10),
+                    buildLegend(),
+                    Center(
+                      child: ElevatedButton(
+                          onPressed: () {}, child: const Text('Book Now')),
+                    )
+                  ],
+                ),
+              ),
+            ),
+    );
+  }
 }
----- Seat Layout Response -----
