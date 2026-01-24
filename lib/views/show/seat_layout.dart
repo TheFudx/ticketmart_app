@@ -184,7 +184,7 @@ class _SeatLayoutState extends State<SeatLayout> {
                             : () {
                                 Get.to(
                                   () => BookedSeatDetail(
-                                      seatDeatil: selectedSeats,
+                                      selectedSeats: selectedSeats,
                                       showTime: data!.show!.showtime[0]),
                                 );
                               },

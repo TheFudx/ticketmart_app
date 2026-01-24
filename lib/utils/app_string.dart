@@ -57,4 +57,6 @@ class AppString {
   static const String bronzeTxt = "bronze";
   static const String platinumTxt = "platinum";
   static const String diamondTxt = "diamond (recliner)";
+
+  static const String seatBook = "Seats wish to Book";
 }

@@ -23,7 +23,9 @@ class AppColors {
   static const Color diamondSeatColor = Color(0xFF3A87DA);
   static const Color rowDetailsColor = Color(0xFFFBFBFB);
   static const Color rowDetailsBroderColor = Color(0xFFE7E7E7);
-  
+
+  static const Color dividerColor = Color(0xFFF3F3F3);
+  static const Color paymentTxtColor = Color(0xFF686868);
 }
 
 class SizeBanner {

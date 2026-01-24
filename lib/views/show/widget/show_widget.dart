@@ -201,6 +201,14 @@ Map<String, String> priceGroup(List<Cseat> seats) {
   return grouped;
 }
 
+Map<String, List<Cseat>> groupSeatsPrice(List<Cseat> seats) {
+  final Map<String, List<Cseat>> grouped = {};
+  for (var seat in seats) {
+    grouped.putIfAbsent(seat.seatType, () => []).add(seat);
+  }
+  return grouped;
+}
+
 Widget rowDetails() {
   return Container(
     height: 40,
@@ -246,3 +254,75 @@ String formatMinuToHour(int totalMinutes) {
   }
 }
 
+/// Reusable Price Row
+Widget priceRow(String title, double amount,
+    {bool isBold = false,
+    Color color = AppColors.paymentTxtColor,
+    int amountFixed = 0}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+            color: color,
+          ),
+        ),
+        Text(
+          "₹${amount.toStringAsFixed(amountFixed)}",
+          style: TextStyle(
+            fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+            color: color,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget returnValue(String category) {
+  switch (category.toLowerCase()) {
+    case "gold":
+      return const Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("🥪 Samosa "),
+            Spacer(),
+            Text("🍿 Popcorn "),
+            Spacer(),
+            Text("🥤 Cold Drink")
+          ]);
+
+    case "silver":
+      return const Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [Text("🍿 Popcorn "), Spacer(), Text("🥤 Cold Drink")]);
+
+    case "bronze":
+      return const Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [Text("🍿 Popcorn "), Spacer(), Text("🥤 Cold Drink")]);
+
+    case "diamond (recliner)":
+      return const Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Text("🍕 Pizza "),
+        Text("🥪 Samosa "),
+        Text("🍿 Popcorn "),
+        Text("🥤 Cold Drink")
+      ]);
+
+    case "platinum":
+    default:
+      return const Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [Text("🍿 Popcorn")]);
+  }
+}
+
+double calculateSeatTypeTotal(List<Cseat> seats) {
+  return seats.fold(0, (sum, item) => sum + int.parse(item.price));
+}
