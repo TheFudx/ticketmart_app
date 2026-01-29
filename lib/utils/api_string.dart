@@ -1,21 +1,5 @@
 class ApiString {
   ApiString._();
-  static const String alphaBaseUrl =
-      'https://alphastudioz.in/ticketmart-test/public/flutter-app'; // Testing Server
-
-  //    "https://ticketmart.co/public/flutter-app"; // Replace with your server address
-  static const String userEndpoint = "/user";
-  static const String bookingEndpoint =
-      "/booking"; // Add this line for the booking endpoint
-
-  static String get movies => "$alphaBaseUrl$userEndpoint/movies.php";
-  static String get theatres => "$alphaBaseUrl$userEndpoint/theatres.php";
-  static String get dataUrl => "$alphaBaseUrl$userEndpoint/profile_modal.php";
-  static String get seatCount => "$alphaBaseUrl$userEndpoint/seat_count.php";
-  static String get screens => "$alphaBaseUrl$userEndpoint/screen.php";
-
-  static String get seats =>
-      "$alphaBaseUrl$userEndpoint/fetch_seats.php"; // Add this line for the bookings endpoint
 
   static const String baseUrl = "https://ticketmart.co/UAT/public/api";
   static const String loginUrl = "$baseUrl/login";
@@ -25,4 +9,13 @@ class ApiString {
       "$baseUrl/comedy-shows/show-times"; // Method Post
   static const String seatLayout =
       "$baseUrl/comedy-shows/seat-layout"; // Method Post
+  static const String paymentSucces = "$baseUrl/payment-success";
+  static const String paymentFail = "$baseUrl/payment-fail";
+  static const String profile = "$baseUrl/user-profile";
+  static const String appVersionChecker = "$baseUrl/latest_version";
+  static const String appAndroid =
+      "https://play.google.com/store/apps/details?id=com.alphastudioz.ticketmart";
+
+  static const String appIos =
+      "https://play.google.com/store/apps/details?id=com.alphastudioz.ticketmart";
 }

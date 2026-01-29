@@ -11,6 +11,7 @@ import 'package:ticketmart/views/offers/offers.dart';
 import 'package:ticketmart/views/Login/widget/side_drawer.dart';
 
 import '../../../providers/home_provider.dart';
+import '../../../repository/home_respository.dart';
 import '../../../utils/app_assets.dart';
 import '../../../utils/app_string.dart';
 import '../../profile/user_profile.dart';
@@ -32,6 +33,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    HomeRespository.appVersionChecker(context);
     Future.microtask(
         // ignore: use_build_context_synchronously
         () => Provider.of<HomeProvider>(context, listen: false).fetchData());

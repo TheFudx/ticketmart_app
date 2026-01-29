@@ -11,7 +11,7 @@ import 'providers/home_provider.dart';
 import 'utils/app_string.dart';
 
 // The  git@github.com:TheFudx/ticketmart_app.git  current Code
-// updated 24th/Jan/2025 v2
+// updated 28th/Jan/2025 v2
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();

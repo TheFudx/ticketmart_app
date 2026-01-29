@@ -59,4 +59,9 @@ class AppString {
   static const String diamondTxt = "diamond (recliner)";
 
   static const String seatBook = "Seats wish to Book";
+  static const String updateRequired = "Update Required";
+  static const String newVersionText =
+      "A new version of the app is available. Please update to continue.";
+  static const String update = "Update";
+  static const String exit = "Exit";
 }

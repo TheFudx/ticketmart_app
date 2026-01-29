@@ -1,10 +1,17 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+
+import '../model/app_version.dart';
 import '../model/home/home_model.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/home/show_model.dart';
 import '../utils/api_string.dart';
+import '../views/home/drawer/widget/home_widget.dart';
 
 class HomeRespository {
   static Future<List<ComedyShow?>> homeProvider() async {
@@ -38,6 +45,28 @@ class HomeRespository {
       }
     } catch (e) {
       throw Exception('API error: $e');
+    }
+  }
+
+  static Future<void> appVersionChecker(BuildContext context) async {
+    AppVersion? latestVersion;
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    String? currentVersion = packageInfo.version;
+    String? platform =
+        Platform.isAndroid ? ApiString.appAndroid : ApiString.appIos;
+
+    try {
+      final response = await http.get(Uri.parse(ApiString.appVersionChecker));
+      if (response.statusCode != 200) return;
+
+      final Map<String, dynamic> data = json.decode(response.body);
+      latestVersion = AppVersion.fromJson(data[platform]);
+
+      if (latestVersion.versionName != currentVersion && latestVersion.released)
+        showUpdateDialogBox(context);
+    } catch (e) {
+      log(e.toString());
     }
   }
 }

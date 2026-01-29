@@ -19,6 +19,11 @@ class SideDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           const SizedBox(height: 100),
+          const Icon(
+            Icons.person,
+            size: 60,
+          ),
+          const Divider(),
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text('Home'),

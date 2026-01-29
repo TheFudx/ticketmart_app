@@ -1,243 +1,51 @@
-lib>views>show>seat_layout.dart
-
-import 'package:flutter/material.dart';
-
-import '../../model/seat/seat_layout_res.dart';
-import '../../providers/seat_layout_provider.dart';
-import '../../utils/app_assets.dart';
-import '../../utils/app_colors.dart';
-import '../../utils/app_string.dart';
-import 'widget/show_widget.dart';
-
-class SeatLayout extends StatefulWidget {
-  final int id;
-  final int showtimeId;
-  final int stageId;
-
-  const SeatLayout(this.id, this.showtimeId, this.stageId, {super.key});
-
-  @override
-  State<SeatLayout> createState() => _SeatLayoutState();
-}
-
-class _SeatLayoutState extends State<SeatLayout> {
-  SeatData? data;
-  final List<Cseat> selectedSeats = [];
-  Map<String, String> priGroup = {};
-
-  @override
-  void initState() {
-    super.initState();
-    apiCall(widget.id, widget.showtimeId, widget.stageId);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  Future<void> apiCall(int id, int showtimeId, int stageId) async {
-    final res = await SeatLayoutProvider.seatLayout(id, showtimeId, stageId);
-    setState(() {
-      data = res;
-      priGroup = priceGroup(data!.stage!.cseats);
-    });
-  }
-
-  void onSeatTap(Cseat seat) {
-    if (seat.booked == true) return;
-
-    setState(() {
-      if (selectedSeats.contains(seat)) {
-        selectedSeats.remove(seat);
-      } else {
-        selectedSeats.add(seat);
-      }
-    });
-  }
-
-  // Seat UI
-  Widget seatWidget(Cseat seat) {
-    final bool isSelected = selectedSeats.contains(seat);
-
-    Color bgColor;
-    if (seat.booked == true) {
-      bgColor = AppColors.bookedSeated;
-    } else if (isSelected) {
-      bgColor = AppColors.selectedSeated;
-    } else {
-      bgColor = AppColors.availableSeated;
+{ 
+    "request":{
+        "email":"anjali@alphastudioz.in",
+        "mobile":7048238958,
+        "showtime_id":8,
+        "seats":"36,37",
+        "amount":2,
+        "razorpay_payment_id":"test",
+        "razorpay_order_id":"test",
+        "razorpay_signature":"test"
+    },
+    "response": {
+        "status": true,
+        "message": "Comedy show booked successfully",
+        "data": {
+            "booking_id": 68,
+            "user_id": 211,
+            "total_amount": 2,
+            "total_seats": 2,
+            "qr_code_url": "https://ticketmart.co/UAT/public/storage/tickets/qrcodes/comedy-qr-68.png",
+            "ticket_pdf_url": "https://ticketmart.co/UAT/public/storage/tickets/comedy-ticket-68.pdf"
+        }
     }
 
-    return GestureDetector(
-      onTap: seat.booked == true ? null : () => onSeatTap(seat),
-      child: Column(
-        children: [
-          Text(
-            '${seat.section}${seat.seatNumber}',
-          ),
-          Container(
-            width: 42,
-            height: 42,
-            margin: const EdgeInsets.all(4),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-                color: bgColor,
-                borderRadius: BorderRadius.circular(6),
-                border: BoxBorder.all(
-                  color: seat.booked
-                      ? AppColors.bookedSeated
-                      : AppColors.selectedSeated,
-                )),
-            child: Text(
-              '${seat.section}${seat.seatNumber}',
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+    -- 2--
 
-  Widget seatTypeRow(String type, List<Cseat> seats) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Center(
-          child: Text(
-            type,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: getColorForType(type),
-            ),
-          ),
-        ),
-        Wrap(
-          children: seats.map(seatWidget).toList(),
-        ),
-        const SizedBox(height: 14),
-      ],
-    );
-  }
-
-  Widget buildSeatLayout() {
-    final seats = data!.stage!.cseats;
-
-    if (data == null || data!.stage == null) {
-      return const Center(child: CircularProgressIndicator());
+    {
+    "email":"anupkolhe233@gmail.com",
+    "mobile":"1234567890",
+    "showtime_id":9,
+    "seats":"33",
+    "amount":590.0,
+    "razorpay_payment_id":"pay_S8s01fqEjTunmo",
+    "razorpay_order_id":"test",
+    "razorpay_signature":"test"
     }
-
-    final groupedSeats = groupSeatsByType(seats);
-
-    return Column(
-      children: groupedSeats.entries
-          .map((entry) => seatTypeRow(entry.key, entry.value))
-          .toList(),
-    );
-  }
-
-  /*
-  Widget selectedSeatSummary() {
-    final totalAmount = selectedSeats.fold(
-      0,
-      (sum, seat) => sum + int.parse(seat.price),
-    );
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.only(top: 10),
-      decoration: BoxDecoration(
-        color: Colors.black12,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '${AppString.selectedSeatsTxt}: ${selectedSeats.map((e) => '${e.section}${e.seatNumber}').join(', ')}',
-          ),
-          const SizedBox(height: 4),
-          Text('${AppString.totalSeatsTxt}: ${selectedSeats.length}'),
-          const SizedBox(height: 4),
-          Text(
-            '${AppString.totalAmountTxt}: ₹$totalAmount',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    );
-  }
-  */
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: seatAppBar(data?.show?.title ?? ''),
-      body: data == null
-          ? const Center(child: CircularProgressIndicator())
-          : SafeArea(
-              child: SingleChildScrollView(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: priGroup.entries.map(
-                        (entry) {
-                          return Container(
-                            margin: const EdgeInsets.all(4),
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              border:
-                                  Border.all(color: AppColors.bgBorderColor),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  entry.key,
-                                  style: TextStyle(
-                                      fontSize: 12.0,
-                                      color: getColorForType(entry.key)),
-                                ),
-                                Text(
-                                  "Rs.${entry.value}",
-                                  style: const TextStyle(fontSize: 9.0),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ).toList(),
-                    ),
-                    const SizedBox(height: 10),
-                    Center(
-                      child: Image.asset(AppAssets.stage, height: 130),
-                    ),
-                    const SizedBox(height: 10),
-
-                    /// Seat Layout
-                    buildSeatLayout(),
-
-                    /*
-                    /// Selected summary
-                    // selectedSeatSummary(),
-                    */
-
-                    const SizedBox(height: 10),
-                    buildLegend(),
-                    Center(
-                      child: ElevatedButton(
-                          onPressed: () {}, child: const Text('Book Now')),
-                    )
-                  ],
-                ),
-              ),
-            ),
-    );
-  }
+    {
+    "status": true,
+    "message": "Comedy show booked successfully",
+    "data": {
+        "booking_id": 70,
+        "user_id": 218,
+        "total_amount": 590,
+        "total_seats": 1,
+        "qr_code_url": "https://ticketmart.co/UAT/public/storage/tickets/qrcodes/comedy-qr-70.png",
+        "ticket_pdf_url": "https://ticketmart.co/UAT/public/storage/tickets/comedy-ticket-70.pdf"
+    }
 }
+}
+
+

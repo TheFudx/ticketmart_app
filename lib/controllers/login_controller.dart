@@ -25,7 +25,7 @@ class LoginController {
         response.data.user.id,
         response.data.user.email,
         response.data.user.mobile,
-        response.data.token,
+        response.data.user.token!,
         response.data.user,
       );
 

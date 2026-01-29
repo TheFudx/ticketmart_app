@@ -20,17 +20,14 @@ class LoginResponse {
 
 class LoginData {
   final User user;
-  final String token;
 
   LoginData({
     required this.user,
-    required this.token,
   });
 
   factory LoginData.fromJson(Map<String, dynamic> json) {
     return LoginData(
       user: User.fromJson(json['user']),
-      token: json['token'],
     );
   }
 }
@@ -41,6 +38,7 @@ class User {
   final String email;
   final String mobile;
   final String? role;
+  final String? token;
 
   User({
     required this.id,
@@ -48,6 +46,7 @@ class User {
     required this.email,
     required this.mobile,
     this.role,
+    this.token,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -57,6 +56,7 @@ class User {
       email: json['email'],
       mobile: json['mobile'],
       role: json['role'],
+      token: json['token'],
     );
   }
   // Method to convert User to JSON
@@ -67,6 +67,7 @@ class User {
       'email': email,
       'mobile': mobile,
       'role': role,
+      'token': token,
     };
-    }
+  }
 }
