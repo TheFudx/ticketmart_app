@@ -76,44 +76,53 @@ Widget intrinHeight({
   String duration = '',
   String language = '',
 }) {
-  return IntrinsicHeight(
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Column(
-            children: [
-              showTimeDuration(
-                icon: Icons.category,
-                t1: AppString.categoryTxt,
-                t2: genre,
-              ),
-              showTimeDuration(
-                icon: Icons.timer,
-                t1: AppString.durationTxt,
-                t2: duration,
-              ),
-            ],
+  return Container(
+    padding: const EdgeInsets.all(7.0),
+    margin: const EdgeInsets.all(00.0),
+    decoration: BoxDecoration(
+      color: AppColors.rowDetailsColor,
+      borderRadius: BorderRadius.circular(5),
+      border: Border.all(color: AppColors.bgBorderColor),
+    ),
+    child: IntrinsicHeight(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                showTimeDuration(
+                  icon: Icons.category,
+                  t1: AppString.categoryTxt,
+                  t2: genre,
+                ),
+                showTimeDuration(
+                  icon: Icons.timer,
+                  t1: AppString.durationTxt,
+                  t2: duration,
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 60, child: VerticalDivider(thickness: 2)),
-        Expanded(
-          child: Column(
-            children: [
-              showTimeDuration(
-                icon: Icons.language,
-                t1: AppString.langTxt,
-                t2: language,
-              ),
-              showTimeDuration(
-                icon: Icons.people_alt,
-                t1: AppString.ageLimitTxt,
-                t2: AppString.age18addTxt,
-              ),
-            ],
+          const SizedBox(height: 50, child: VerticalDivider(thickness: 2)),
+          Expanded(
+            child: Column(
+              children: [
+                showTimeDuration(
+                  icon: Icons.language,
+                  t1: AppString.langTxt,
+                  t2: language,
+                ),
+                showTimeDuration(
+                  icon: Icons.people_alt,
+                  t1: AppString.ageLimitTxt,
+                  t2: AppString.age18addTxt,
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 }
@@ -212,12 +221,14 @@ Map<String, List<Cseat>> groupSeatsPrice(List<Cseat> seats) {
 Widget rowDetails() {
   return Container(
     height: 40,
+    margin: const EdgeInsets.symmetric(horizontal: 20),
     decoration: BoxDecoration(
-        border: Border.all(
-          color: AppColors.rowDetailsBroderColor,
-        ),
-        color: AppColors.rowDetailsColor,
-        borderRadius: BorderRadius.circular(12)),
+      border: Border.all(
+        color: AppColors.rowDetailsBroderColor,
+      ),
+      color: AppColors.rowDetailsColor,
+      borderRadius: BorderRadius.circular(5),
+    ),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

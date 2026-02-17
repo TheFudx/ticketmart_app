@@ -4,6 +4,7 @@ class AppColors {
   AppColors._();
   static const Color colorWhite = Color(0xFFFFFFFF);
   static const Color colorBlack = Color(0xFF000000);
+  static const Color colorRed = Color(0xFFF44336);
   static const Color iconColor = Color(0xFF08538A);
   static const Color bookedSeated = Color(0xFF9E9E9E);
   static const Color selectedSeated = Color(0xFF4CAF50);
@@ -26,6 +27,7 @@ class AppColors {
 
   static const Color dividerColor = Color(0xFFF3F3F3);
   static const Color paymentTxtColor = Color(0xFF686868);
+  static const Color upcomingTxtColor = Color(0xFF00E676);
 }
 
 class SizeBanner {

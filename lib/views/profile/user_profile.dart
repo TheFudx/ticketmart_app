@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:ticketmart/views/show/widget/show_widget.dart';
 
-import '../../model/login/login_response.dart';
 import '../../model/profile/profile_res_model.dart';
-import '../../providers/user_provider.dart';
 import '../../repository/profile/user_profile.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/app_string.dart';
 import '../../utils/date_utils.dart';
 
 class UserProfile extends StatefulWidget {
@@ -16,7 +15,6 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  User? user;
   List<ComedyShowBooking> shows = [];
   bool isLoading = true;
 
@@ -27,32 +25,21 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future<void> loadProfile() async {
-    try {
-      final data = await UserProfileRespository.fetchProfile();
-      setState(() {
-        shows = data.data.comedyShowsBooking;
-        isLoading = false;
-      });
-    } catch (e) {
+    final data = await UserProfileRespository.fetchProfile();
+
+    setState(() {
+      shows = data.data.comedyShowsBooking;
       isLoading = false;
-    }
+    });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    user = context.watch<UserProvider>().user;
   }
 
   @override
   Widget build(BuildContext context) {
-    final allSeats = shows
-        .expand((shows) => shows.bookings as List)
-        .expand((booking) => booking.seats as List)
-        .expand((seatGroup) => seatGroup.seats as List)
-        .cast<String>()
-        .toList();
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -60,46 +47,71 @@ class _UserProfileState extends State<UserProfile> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Email: ${user!.email}"),
-              gap5,
-              Text("Mobile Number: ${user!.mobile}"),
-              gap10,
               const Center(
                 child: Text(
                   "Booking History",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
               ),
-              gap10,
-              ...shows.map((show) => SizedBox(
-                    width: double.infinity,
-                    child: Card(
-                      elevation: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            gap5,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              gap5,
+              ...shows.map((show) {
+                final eventStatus = isTodayOrFuture(show.showDate);
+                final allSeats = show.bookings
+                    .expand((booking) => booking.seats as List)
+                    .expand((seatGroup) => seatGroup.seats as List)
+                    .cast<String>()
+                    .toList();
+
+                return eventStatus
+                    ? SizedBox(
+                        width: double.infinity,
+                        child: Card(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 5.0, vertical: 7.5),
+                          elevation: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                gap5,
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                        "Date: ${getFormattedDate(show.showDate.toString())}"),
+                                    Text("Time: ${show.startTime}"),
+                                  ],
+                                ),
+                                gap10,
+                                Text('Show Name: ${show.showTitle}'),
+                                gap10,
                                 Text(
-                                    "Date: ${getFormattedDate(show.showDate.toString())}"),
-                                Text("Time: ${show.startTime}"),
+                                  "Seats: ${allSeats.join(", ")}",
+                                ),
+                                gap10,
+                                Center(
+                                  child: Text(
+                                    eventStatus
+                                        ? AppString.upcomingTxt
+                                        : AppString.completedTxt,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: eventStatus
+                                          ? AppColors.upcomingTxtColor
+                                          : AppColors.colorRed,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
-                            gap10,
-                            Text('Show Name: ${show.showTitle}'),
-                            gap10,
-                            Text(
-                              "Seats: ${allSeats.join(", ")}",
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                  ))
+                      )
+                    : const SizedBox();
+              })
             ],
           ),
         ),

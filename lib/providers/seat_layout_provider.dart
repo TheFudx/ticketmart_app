@@ -5,7 +5,6 @@ import 'package:ticketmart/model/seat/seat_layout_req.dart';
 
 import '../model/seat/seat_layout_res.dart';
 import '../utils/api_string.dart';
-import '../utils/app_string.dart';
 
 class SeatLayoutProvider {
   static Future<SeatData?> seatLayout(
@@ -17,7 +16,7 @@ class SeatLayoutProvider {
         SeatLayoutRequest(id: iD, showtimeId: showTimeId, stageId: stageID);
     try {
       final response = await http.post(Uri.parse(ApiString.seatLayout),
-          headers: AppString.header,
+          headers: ApiString.header,
           body: jsonEncode(seatLayoutRequest.toJson()));
 
       if (response.statusCode != 200) {

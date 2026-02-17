@@ -53,3 +53,13 @@ Future<void> storageData(
     SharedPrefHelper.saveUser(user),
   ]);
 }
+
+bool isTodayOrFuture(String date) {
+  DateTime eventDate = DateTime.parse(date);
+  DateTime today = DateTime.now();
+  DateTime todayFormat = DateTime(today.year, today.month, today.day);
+
+  return (eventDate.isAtSameMomentAs(todayFormat) ||
+      eventDate.isAfter(todayFormat));
+}
+

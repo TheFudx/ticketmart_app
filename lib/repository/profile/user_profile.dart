@@ -10,15 +10,19 @@ class UserProfileRespository {
   static Future<ProfileResponse> fetchProfile() async {
     final token = await SharedPrefHelper.getUserToken();
 
-    final response = await http.post(
-      Uri.parse(ApiString.profile),
-      headers: {"Authorization": "Bearer $token"},
-    );
+    try {
+      final response = await http.post(
+        Uri.parse(ApiString.profile),
+        headers: {"Authorization": "Bearer $token"},
+      );
 
-    if (response.statusCode != 200) {
-      throw Exception('API error: ${response.statusCode}');
+      if (response.statusCode != 200) {
+        throw Exception('API error: ${response.statusCode}');
+      }
+
+      return ProfileResponse.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      throw Exception('API error: $e');
     }
-
-    return ProfileResponse.fromJson(jsonDecode(response.body));
   }
 }

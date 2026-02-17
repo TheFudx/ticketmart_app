@@ -56,13 +56,16 @@ class BookedSeatDetail extends StatelessWidget {
 
       final resp = await http.post(
         Uri.parse(ApiString.paymentSucces),
+        headers: ApiString.header,
         body: jsonEncode(request.toJson()),
       );
+
+      razorpay.clear();
       if (resp.statusCode != 200) {
         showErrorDialog(context, "Ticket Booking", "Unable book ticket");
         return;
       }
-      TicketResponse ticketResponse = jsonDecode(resp.body);
+      final ticketResponse = TicketResponse.fromJson(jsonDecode(resp.body));
       if (!ticketResponse.status) {
         showErrorDialog(
             context, "Ticket Booking", "Unable to fetch ticket from server");
@@ -75,8 +78,6 @@ class BookedSeatDetail extends StatelessWidget {
         downloadTicket(ticketResponse.data.ticketPdfUrl);
         Get.offAll(() => const HomeScreen());
       });
-
-      razorpay.clear();
     });
 
     razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,

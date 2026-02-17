@@ -1,116 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:ticketmart/views/Login/login_screen.dart';
-import 'package:ticketmart/views/home/drawer/booked_tickets.dart';
+import 'package:ticketmart/views/show/widget/show_widget.dart';
+import '../../../providers/user_provider.dart';
 import '../../../repository/auth/login.dart';
 import '../../../storage/shared_pref_helper.dart';
 import '../../home/drawer/about_page.dart';
 import '../../home/drawer/contact_page.dart';
-import '../../home/drawer/settings_page.dart';
 import '../../home/drawer/privacy_page.dart';
 
 class SideDrawer extends StatelessWidget {
-  const SideDrawer({super.key});
+  final String verNumber;
+  const SideDrawer({super.key, required this.verNumber});
 
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<UserProvider>().user;
+    final userMobile = user?.mobile == null ? "" : "+91 ${user!.mobile}";
+    final userEmail = user?.email == null ? "" : "Email: ${user?.email}";
+
     return Drawer(
+      width: MediaQuery.of(context).size.width * 0.7,
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const SizedBox(height: 100),
-          const Icon(
-            Icons.person,
-            size: 60,
+          UserAccountsDrawerHeader(
+            accountName: Text(userMobile),
+            accountEmail: Text(userEmail),
+            currentAccountPicture: const CircleAvatar(
+              child: Icon(Icons.person, size: 40),
+            ),
           ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.home),
-            title: const Text('Home'),
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.movie_creation_outlined),
-            title: const Text('Booked Tickets'),
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const BookedTicketsScreen(
-                    bookedTickets: [],
-                  ),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.info),
-            title: const Text('About'),
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AboutPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.contact_page_outlined),
-            title: const Text('Contact'),
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ContactPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SettingsPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.privacy_tip),
-            title: const Text('Privacy Policy'),
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PrivacyPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Log Out'),
-            onTap: logOut,
-          ),
+          drawerItem(Icons.home, "Home", () => Get.back()),
+          drawerItem(
+              Icons.info, "About", () => Get.to(() => const AboutPage())),
+          drawerItem(Icons.contact_page_outlined, "Contact",
+              () => Get.to(() => const ContactPage())),
+          drawerItem(Icons.privacy_tip, "Privacy Policy",
+              () => Get.to(() => const PrivacyPage())),
+          drawerItem(Icons.logout, "Log Out", logOut),
+          gap10,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text('v$verNumber'),
+              const SizedBox(width: 10),
+            ],
+          )
         ],
       ),
+    );
+  }
+
+  Widget drawerItem(IconData icon, String title, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      onTap: onTap,
     );
   }
 
   Future<void> logOut() async {
     await LoginRespository.logOut();
     await SharedPrefHelper.logOut();
-    Get.off(() => const LoginScreen());
+    Get.offAll(() => const LoginScreen()); // Clears navigation stack
   }
 }

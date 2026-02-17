@@ -4,11 +4,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:ticketmart/views/offers/offers.dart';
 import 'package:ticketmart/views/Login/widget/side_drawer.dart';
+import 'package:ticketmart/views/show/widget/show_widget.dart';
 
 import '../../../providers/home_provider.dart';
 import '../../../repository/home_respository.dart';
@@ -27,6 +29,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  String versionNumber = '';
 
   final PageController _pageController = PageController();
 
@@ -37,6 +40,12 @@ class HomeScreenState extends State<HomeScreen> {
     Future.microtask(
         // ignore: use_build_context_synchronously
         () => Provider.of<HomeProvider>(context, listen: false).fetchData());
+    versionNumb();
+  }
+
+  void versionNumb() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    versionNumber = packageInfo.version;
   }
 
   @override
@@ -53,7 +62,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: appBar(),
-      endDrawer: const SideDrawer(),
+      endDrawer: SideDrawer(verNumber: versionNumber),
       body: _buildPageView(screenHeight, screenWidth),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
@@ -110,12 +119,13 @@ class HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          gap10,
           buildImageContainer(
             AppAssets.movieBanner,
             width: MediaQuery.of(context).size.width * 0.98,
             height: screenHeight * 0.20,
           ),
-          const SizedBox(height: 10),
+          gap10,
           Text("Comedy Show".padLeft(15),
               style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 2),
@@ -145,7 +155,7 @@ class HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(8),
                           child: CachedNetworkImage(
                             imageUrl: data!.imagePath,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fill,
                             width: screenWidth * 0.3,
                             height: screenHeight * 0.21,
                             placeholder: (context, url) => const Center(

@@ -145,10 +145,10 @@ class _SeatLayoutState extends State<SeatLayout> {
                             margin: const EdgeInsets.all(4),
                             padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
-                              border:
-                                  Border.all(color: AppColors.bgBorderColor),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                                border:
+                                    Border.all(color: AppColors.bgBorderColor),
+                                borderRadius: BorderRadius.circular(5),
+                                color: AppColors.rowDetailsColor),
                             child: Column(
                               children: [
                                 Text(
@@ -176,7 +176,8 @@ class _SeatLayoutState extends State<SeatLayout> {
                     const SizedBox(height: 10),
                     rowDetails(),
                     const SizedBox(height: 10),
-                    SizedBox(
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: selectedSeats.isEmpty
@@ -191,7 +192,7 @@ class _SeatLayoutState extends State<SeatLayout> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF08538A),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(5),
                             side: const BorderSide(
                               color: Color(0xFF08538A),
                             ),

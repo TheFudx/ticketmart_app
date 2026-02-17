@@ -26,15 +26,9 @@ class LoginRespository {
   static Future<void> logOut() async {
     String? token = await SharedPrefHelper.getUserToken();
     if (token == null) return;
-    final response = await http.post(
+    await http.post(
       Uri.parse(ApiString.logoutUrl),
       headers: {"Authorization": "Bearer $token"},
     );
-
-    if (response.statusCode == 200) {
-      print('Status Code 200: ${response.body}');
-    } else {
-      print('Error while testing: ${response.body}');
-    }
   }
 }

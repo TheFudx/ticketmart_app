@@ -61,38 +61,46 @@ class _ShowDetailState extends State<ShowDetail> {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: 40,
+                          height: 50,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             itemCount: showtimes.length,
                             itemBuilder: (context, index) {
                               final show = showtimes[index];
-                              final isSelected = selectedShow?.id == show!.id;
+                              final present = isTodayOrFuture(show!.date);
+                              final isSelected = selectedShow?.id == show.id;
                               final date = getFormattedDate(show.date);
 
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: ChoiceChip(
-                                  label: Text(date),
-                                  selectedColor: AppColors.unSelBGTxt,
-                                  showCheckmark: false,
-                                  disabledColor: AppColors.colorWhite,
-                                  labelStyle: TextStyle(
-                                    color: isSelected
-                                        ? AppColors.selDatTxt
-                                        : AppColors.unSelDatTxt,
-                                  ),
-                                  selected: isSelected,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  onSelected: (_) {
-                                    setState(() {
-                                      selectedShow = show;
-                                    });
-                                  },
-                                ),
+                              return Column(
+                                children: [
+                                  if (present)
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0,
+                                      ),
+                                      child: ChoiceChip(
+                                        label: Text(date),
+                                        selectedColor: AppColors.unSelBGTxt,
+                                        showCheckmark: false,
+                                        disabledColor: AppColors.colorWhite,
+                                        labelStyle: TextStyle(
+                                          color: isSelected
+                                              ? AppColors.selDatTxt
+                                              : AppColors.unSelDatTxt,
+                                        ),
+                                        selected: isSelected,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        onSelected: (_) {
+                                          setState(() {
+                                            selectedShow = show;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                ],
                               );
                             },
                           ),
@@ -100,7 +108,7 @@ class _ShowDetailState extends State<ShowDetail> {
                         if (selectedShow != null && !selectedShow!.isDone)
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 10),
+                                horizontal: 16.0, vertical: 0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -161,7 +169,7 @@ class _ShowDetailState extends State<ShowDetail> {
                                       backgroundColor: AppColors.confirmBtn,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(
-                                          10,
+                                          5,
                                         ),
                                       ),
                                     ),
@@ -194,7 +202,54 @@ class _ShowDetailState extends State<ShowDetail> {
                             ),
                           )
                         else
-                          const Center(child: Text(AppString.bookingOverTxt)),
+                          Card(
+                            shadowColor: AppColors.unSelBGTxt,
+                            elevation: 3,
+                            color: Colors.grey.shade200,
+                            margin: const EdgeInsets.symmetric(
+                              vertical: 20,
+                              horizontal: 10,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadiusGeometry.circular(12),
+                            ),
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.check_circle,
+                                color: Colors.green.shade600,
+                                size: 32,
+                              ),
+                              title: Text(
+                                comedyShowModel.title,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey.shade700,
+                                ),
+                              ),
+                              subtitle: Text(
+                                "All Event at Completed, Check Other date",
+                                style: TextStyle(
+                                  color: Colors.grey.shade600,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                              trailing: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: Colors.green.shade100,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  "Completed",
+                                  style: TextStyle(
+                                    color: Colors.green.shade800,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   );

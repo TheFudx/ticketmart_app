@@ -10,11 +10,13 @@ import '../../../../utils/app_string.dart';
 
 AppBar appBar() {
   return AppBar(
+    elevation: 1,
     leading: Image.asset(
       AppAssets.logo,
       width: 60,
       height: 60,
     ),
+    title: const Text('Ticketmart'),
   );
 }
 
@@ -58,8 +60,9 @@ void showUpdateDialogBox(BuildContext context) {
         TextButton(
           child: const Text(AppString.update),
           onPressed: () {
-            final url =
-                Platform.isAndroid ? ApiString.appAndroid : ApiString.appIos;
+            final url = Platform.isAndroid
+                ? ApiString.androidStoreUrl
+                : ApiString.iosStoreUrl;
             launchURLRed(url);
           },
         ),
@@ -83,4 +86,41 @@ void launchURLRed(String url) async {
 
 TextStyle txtStyle({color = Colors.white, fontWeight = FontWeight.normal}) {
   return TextStyle(color: color, fontWeight: fontWeight);
+}
+
+// About Page
+const sectionTitleStyle = TextStyle(
+  fontSize: 14.0,
+  fontWeight: FontWeight.bold,
+  color: Colors.blueAccent,
+);
+
+const bodyTextStyle = TextStyle(fontSize: 12.0);
+
+Widget buildSection(String title, String content) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 20.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: sectionTitleStyle),
+        const SizedBox(height: 8.0),
+        Text(content, style: bodyTextStyle),
+      ],
+    ),
+  );
+}
+
+Widget buildSubSection(String subtitle, String content) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 12.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(subtitle, style: sectionTitleStyle),
+        const SizedBox(height: 4.0),
+        Text(content, style: bodyTextStyle),
+      ],
+    ),
+  );
 }
