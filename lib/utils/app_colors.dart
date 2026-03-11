@@ -2,6 +2,14 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   AppColors._();
+
+  // ── Core Brand ──────────────────────────────────────────
+  static const Color primaryColor     = Color(0xFF08538A); // Main brand blue (navbar, icons, CTAs)
+  static const Color secondaryColor   = Color(0xFFCC2229); // Logo red accent
+  static const Color accentOrange     = Color(0xFFF5921E); // Hero subtitle / highlight text
+  static const Color ctaBlue          = Color(0xFF1565C0);
+
+  
   static const Color colorWhite = Color(0xFFFFFFFF);
   static const Color colorBlack = Color(0xFF000000);
   static const Color colorRed = Color(0xFFF44336);
