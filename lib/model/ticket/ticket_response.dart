@@ -21,7 +21,7 @@ class TicketResponse {
 class TicketData {
   final int bookingId;
   final int userId;
-  final int totalAmount;
+  final double totalAmount;
   final int totalSeats;
   final String qrCodeUrl;
   final String ticketPdfUrl;

@@ -15,8 +15,9 @@ import 'package:ticketmart/views/show/widget/show_widget.dart';
 import '../../../providers/home_provider.dart';
 import '../../../repository/home_respository.dart';
 import '../../../utils/app_assets.dart';
+import '../../../utils/app_colors.dart';
 import '../../../utils/app_string.dart';
-import '../../profile/user_profile.dart';
+import '../../profile/user_profile_screan.dart';
 import '../../show/show_detail.dart';
 import 'widget/home_widget.dart';
 
@@ -61,7 +62,13 @@ class HomeScreenState extends State<HomeScreen> {
     double screenWidth = mediaQuery.width;
 
     return Scaffold(
-      appBar: appBar(),
+      appBar: appBar( context: context,
+        onSearch: (query) {
+          // query se filter karo apni list
+          // setState(() => _filteredShows = _allShows
+          //     .where((s) => s.title.toLowerCase().contains(query.toLowerCase()))
+          //     .toList());
+        },),
       endDrawer: SideDrawer(verNumber: versionNumber),
       body: _buildPageView(screenHeight, screenWidth),
       bottomNavigationBar: _buildBottomNavigationBar(),
@@ -89,25 +96,30 @@ class HomeScreenState extends State<HomeScreen> {
       currentIndex: _selectedIndex,
       onTap: (index) {
         _pageController.jumpToPage(index);
-        _selectedIndex = index;
+        setState(() {
+          _selectedIndex = index;
+        });
       },
-      backgroundColor: Colors.grey[350],
+      backgroundColor: Colors.grey.shade50,
       curve: Curves.easeInOut,
       items: [
         SalomonBottomBarItem(
           icon: const Icon(Icons.home),
           title: const Text(AppString.homeTxt),
-          selectedColor: Colors.purple,
+          selectedColor: AppColors.primaryColor,      // #08538A brand blue
+          unselectedColor: AppColors.bookedSeated,    // #9E9E9E grey
         ),
         SalomonBottomBarItem(
           icon: const Icon(Icons.local_offer),
           title: const Text(AppString.offersTxt),
-          selectedColor: Colors.green,
+          selectedColor: AppColors.secondaryColor,    // #CC2229 brand red
+          unselectedColor: AppColors.bookedSeated,
         ),
         SalomonBottomBarItem(
           icon: const Icon(Icons.person),
           title: const Text(AppString.profileTxt),
-          selectedColor: Colors.teal,
+          selectedColor: AppColors.primaryColor,      // #08538A brand blue
+          unselectedColor: AppColors.bookedSeated,
         ),
       ],
     );
@@ -173,7 +185,7 @@ class HomeScreenState extends State<HomeScreen> {
                         data.title,
                         softWrap: true,
                         overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
+                        maxLines: 1,
                         style: const TextStyle(
                           fontSize: 9,
                         ),

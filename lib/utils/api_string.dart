@@ -1,8 +1,8 @@
 class ApiString {
   ApiString._();
 
-  // static const String baseUrl = "https://ticketmart.co/UAT/public/api"; // UAT
-  static const String baseUrl = "https://ticketmart.co/api";
+   static const String baseUrl = "https://ticketmart.co/UAT/public/api"; // UAT
+  //static const String baseUrl = "https://ticketmart.co/api";
   static const String loginUrl = "$baseUrl/login";
   static const String logoutUrl = "$baseUrl/logout";
   static const String homePageUrl = "$baseUrl/home-page"; // Method Get
