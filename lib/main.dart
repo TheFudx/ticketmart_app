@@ -12,7 +12,6 @@ import 'dart:async';
 import 'providers/home_provider.dart';
 import 'utils/app_string.dart';
 
-// The  git@github.com:TheFudx/ticketmart_app.git  current Code
 // updated 17th/Feb/2026 v2 // Live
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,30 +31,31 @@ class MyApp extends StatelessWidget {
       ],
       child: ScreenUtilInit(
           designSize: const Size(390, 844),
-          minTextAdapt: true,       // Text bhi screen ke saath scale ho
-          splitScreenMode: true,    // Tablet split-screen support
+          minTextAdapt: true, // Text bhi screen ke saath scale ho
+          splitScreenMode: true, // Tablet split-screen support
           useInheritedMediaQuery: true,
-          builder: (context, child) {  return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: AppString.ticketmart,
-           theme: ThemeData(
-          scaffoldBackgroundColor: Colors.white,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: AppColors.primaryColor,        // #08538A brand blue
-            primary: AppColors.primaryColor,
-            secondary: AppColors.secondaryColor,      // #CC2229 brand red
-            tertiary: AppColors.accentOrange,         // #F5921E accent
-            background: Colors.white,
-            surface: Colors.white,
-            onPrimary: Colors.white,
-            onSecondary: Colors.white,
-          ),
-          primaryColor: AppColors.primaryColor,
-          useMaterial3: true,
-        ),
-          home: const SplashScreen(),
-        );}
-      ),
+          builder: (context, child) {
+            return GetMaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: AppString.ticketmart,
+              theme: ThemeData(
+                scaffoldBackgroundColor: Colors.white,
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: AppColors.primaryColor, // #08538A brand blue
+                  primary: AppColors.primaryColor,
+                  secondary: AppColors.secondaryColor, // #CC2229 brand red
+                  tertiary: AppColors.accentOrange, // #F5921E accent
+                  background: Colors.white,
+                  surface: Colors.white,
+                  onPrimary: Colors.white,
+                  onSecondary: Colors.white,
+                ),
+                primaryColor: AppColors.primaryColor,
+                useMaterial3: true,
+              ),
+              home: const SplashScreen(),
+            );
+          }),
     );
   }
 }
