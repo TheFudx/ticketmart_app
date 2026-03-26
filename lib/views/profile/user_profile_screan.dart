@@ -21,8 +21,6 @@ class _UserProfileState extends State<UserProfile> {
   bool _isLoading = true;
   int _selectedCategory = 0;
 
-
-
   @override
   void initState() {
     super.initState();
@@ -47,52 +45,52 @@ class _UserProfileState extends State<UserProfile> {
       body: SafeArea(
         child: _isLoading
             ? const Center(
-          child: CircularProgressIndicator(color: AppColors.primaryColor),
-        )
+                child: CircularProgressIndicator(color: AppColors.primaryColor),
+              )
             : RefreshIndicator(
-          color: AppColors.primaryColor,
-          onRefresh: _loadProfile,
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ── Header ───────────────────────────
-                ProfileHeaderWidget(
-                  name: userEmail,
-                  phone: userMobile,
-                  onEditTap: () {
-                    // TODO: Navigate to edit profile
-                  },
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                color: AppColors.primaryColor,
+                onRefresh: _loadProfile,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 14),
-
-                      // ── Category Tabs ────────────────
-                      BookingCategoryTabsWidget(
-                        selectedIndex: _selectedCategory,
-                        onTabChanged: (index) =>
-                            setState(() => _selectedCategory = index),
+                      // ── Header ───────────────────────────
+                      ProfileHeaderWidget(
+                        name: userEmail,
+                        phone: userMobile,
+                        onEditTap: () {
+                          // TODO: Navigate to edit profile
+                        },
                       ),
 
-                      const SizedBox(height: 24),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 14),
 
-                      // ── Booking History ──────────────
-                      BookingHistoryWidget(shows: _shows),
+                            // ── Category Tabs ────────────────
+                            BookingCategoryTabsWidget(
+                              selectedIndex: _selectedCategory,
+                              onTabChanged: (index) =>
+                                  setState(() => _selectedCategory = index),
+                            ),
 
-                      const SizedBox(height: 30),
+                            const SizedBox(height: 24),
+
+                            // ── Booking History ──────────────
+                            BookingHistoryWidget(shows: _shows),
+
+                            const SizedBox(height: 30),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-        ),
+              ),
       ),
     );
   }

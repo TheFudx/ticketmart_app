@@ -12,7 +12,7 @@ class RazorpayService {
     required String email,
   }) {
     var options = {
-      'key': 'rzp_test_RZcEDm0imBpQ2y',
+      'key': 'rzp_live_RZc1dScMas4j6x',
       'amount': (amount * 100).toInt(),
       'name': name,
       'prefill': {'contact': contact, 'email': email},
