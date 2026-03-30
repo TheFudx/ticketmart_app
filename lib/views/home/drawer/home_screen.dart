@@ -37,7 +37,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    HomeRespository.appVersionChecker(context);
+    // HomeRespository.appVersionChecker(context);
     Future.microtask(
         // ignore: use_build_context_synchronously
         () => Provider.of<HomeProvider>(context, listen: false).fetchData());
@@ -62,13 +62,15 @@ class HomeScreenState extends State<HomeScreen> {
     double screenWidth = mediaQuery.width;
 
     return Scaffold(
-      appBar: appBar( context: context,
+      appBar: appBar(
+        context: context,
         onSearch: (query) {
           // query se filter karo apni list
           // setState(() => _filteredShows = _allShows
           //     .where((s) => s.title.toLowerCase().contains(query.toLowerCase()))
           //     .toList());
-        },),
+        },
+      ),
       endDrawer: SideDrawer(verNumber: versionNumber),
       body: _buildPageView(screenHeight, screenWidth),
       bottomNavigationBar: _buildBottomNavigationBar(),
@@ -106,19 +108,19 @@ class HomeScreenState extends State<HomeScreen> {
         SalomonBottomBarItem(
           icon: const Icon(Icons.home),
           title: const Text(AppString.homeTxt),
-          selectedColor: AppColors.primaryColor,      // #08538A brand blue
-          unselectedColor: AppColors.bookedSeated,    // #9E9E9E grey
+          selectedColor: AppColors.primaryColor, // #08538A brand blue
+          unselectedColor: AppColors.bookedSeated, // #9E9E9E grey
         ),
         SalomonBottomBarItem(
           icon: const Icon(Icons.local_offer),
           title: const Text(AppString.offersTxt),
-          selectedColor: AppColors.secondaryColor,    // #CC2229 brand red
+          selectedColor: AppColors.secondaryColor, // #CC2229 brand red
           unselectedColor: AppColors.bookedSeated,
         ),
         SalomonBottomBarItem(
           icon: const Icon(Icons.person),
           title: const Text(AppString.profileTxt),
-          selectedColor: AppColors.primaryColor,      // #08538A brand blue
+          selectedColor: AppColors.primaryColor, // #08538A brand blue
           unselectedColor: AppColors.bookedSeated,
         ),
       ],
