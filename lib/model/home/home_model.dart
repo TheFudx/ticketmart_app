@@ -1,3 +1,5 @@
+import '../invitation/invitation_model.dart';
+
 class HomeModel {
   final bool status;
   final String message;
@@ -13,21 +15,33 @@ class HomeModel {
     return HomeModel(
       status: json['status'] ?? false,
       message: json['message'] ?? '',
-      data: Data.fromJson(json['data']),
+      data: Data.fromJson(json['data'] ?? {}),
     );
   }
 }
 
 class Data {
   final List<ComedyShow> comedyShows;
+  final InvitationBannerModel? invitationBanner;
 
-  Data({required this.comedyShows});
+  Data({
+    required this.comedyShows,
+    this.invitationBanner,
+  });
 
   factory Data.fromJson(Map<String, dynamic> json) {
     var list = json['comedy_shows'] as List? ?? [];
     List<ComedyShow> shows =
         list.map((item) => ComedyShow.fromJson(item)).toList();
-    return Data(comedyShows: shows);
+    InvitationBannerModel? banner;
+    if (json['invitation_banner'] != null &&
+        json['invitation_banner'] is Map<String, dynamic>) {
+      banner = InvitationBannerModel.fromJson(json['invitation_banner']);
+    }
+    return Data(
+      comedyShows: shows,
+      invitationBanner: banner,
+    );
   }
 }
 

@@ -6,6 +6,9 @@ class AppAssets {
   static const String logo = 'assets/login/logo.png';
 
   static const String movieBanner = 'assets/images/movie_banner.png';
+  static const String alphaneonBanner = 'assets/images/alphaneon_banner.png';
+  static const String alphaneonPoster = 'assets/images/alphaneon_vertical_poster.jpg';
+  static const String alphaneonTicket = 'assets/images/alphaneon_ticket.png';
 
   static const String stage = "assets/images/stage/stage_image.webp";
 

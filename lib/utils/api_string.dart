@@ -15,8 +15,26 @@ class ApiString {
   static const String profile = "$baseUrl/user-profile";
   static const String appVersionChecker = "$baseUrl/latest_version";
 
+  // VIP Invitation System URLs (v1)
+  static const String invitationBannerUrl = "$baseUrl/v1/invitations/banner";
+  static String invitationEventDetailsUrl(String slug) =>
+      "$baseUrl/v1/invitations/events/$slug";
+  static String invitationSendOtpUrl(String slug) =>
+      "$baseUrl/v1/invitations/events/$slug/send-otp";
+  static String invitationVerifyOtpUrl(String slug) =>
+      "$baseUrl/v1/invitations/events/$slug/verify-otp";
+  static String invitationVerifyUrl(String slug) =>
+      "$baseUrl/v1/invitations/events/$slug/verify";
+  static String invitationMyCardUrl(String slug) =>
+      "$baseUrl/v1/invitations/events/$slug/my-card";
+  static String invitationCardDownloadUrl(String slug, String token) =>
+      "$baseUrl/v1/invitations/events/$slug/card/download?token=$token";
+  static String invitationQrUrl(String token) =>
+      "$baseUrl/v1/invitations/qr/$token";
+
   static const Map<String, String> header = {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
   };
 
   static const String androidStoreUrl =

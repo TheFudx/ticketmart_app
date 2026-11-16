@@ -32,6 +32,8 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+/ios/build/
+**/ios/build/
 
 # Symbolication related
 app.*.symbols
@@ -43,3 +45,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android Keystore and Signing Keys
+*.jks
+*.keystore
+**/key.properties
+key.properties
+

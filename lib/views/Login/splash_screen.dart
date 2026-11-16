@@ -8,7 +8,7 @@ import 'package:ticketmart/views/home/drawer/home_screen.dart';
 import '../../providers/user_provider.dart';
 import '../../storage/shared_pref_helper.dart';
 import '../../utils/app_assets.dart';
-import 'login_screen.dart';
+import 'login_screen.dart'; // ignore: unused_import
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -43,6 +43,10 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> initial() async {
+    // =========================================================================
+    // Authentication Process (Commented out as requested - currently disabled):
+    // =========================================================================
+    /*
     final user = await SharedPrefHelper.getUser();
 
     if (user == null) {
@@ -52,6 +56,14 @@ class _SplashScreenState extends State<SplashScreen>
       context.read<UserProvider>().setUser(user);
       Get.off(() => const HomeScreen());
     }
+    */
+
+    // App opens directly to HomeScreen without requiring authentication:
+    final user = await SharedPrefHelper.getUser();
+    if (user != null && mounted) {
+      context.read<UserProvider>().setUser(user);
+    }
+    Get.off(() => const HomeScreen());
   }
 
   @override

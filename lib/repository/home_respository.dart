@@ -15,16 +15,24 @@ import '../utils/app_string.dart';
 import '../views/home/drawer/widget/home_widget.dart';
 
 class HomeRespository {
-  static Future<List<ComedyShow?>> homeProvider() async {
+  static Future<HomeModel> fetchHomeData() async {
     try {
       final response = await http.get(Uri.parse(ApiString.homePageUrl));
 
       if (response.statusCode == 200) {
-        final decode = HomeModel.fromJson(jsonDecode(response.body));
-        return decode.data.comedyShows;
+        return HomeModel.fromJson(jsonDecode(response.body));
       } else {
         throw Exception('Server Error Code ${response.statusCode} ');
       }
+    } catch (e) {
+      throw Exception('API error: $e');
+    }
+  }
+
+  static Future<List<ComedyShow?>> homeProvider() async {
+    try {
+      final data = await fetchHomeData();
+      return data.data.comedyShows;
     } catch (e) {
       throw Exception('API error: $e');
     }

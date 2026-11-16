@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:ticketmart/views/Login/login_screen.dart';
+import '../../home/drawer/home_screen.dart';
 import 'package:ticketmart/views/show/widget/show_widget.dart';
 import '../../../providers/user_provider.dart';
 import '../../../repository/auth/login.dart';
@@ -39,7 +39,7 @@ class SideDrawer extends StatelessWidget {
               () => Get.to(() => const ContactPage())),
           drawerItem(Icons.privacy_tip, "Privacy Policy",
               () => Get.to(() => const PrivacyPage())),
-          drawerItem(Icons.logout, "Log Out", logOut),
+          drawerItem(Icons.logout, "Log Out", () => logOut(context)),
           gap10,
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -61,9 +61,14 @@ class SideDrawer extends StatelessWidget {
     );
   }
 
-  Future<void> logOut() async {
-    await LoginRespository.logOut();
+  Future<void> logOut(BuildContext context) async {
+    try {
+      await LoginRespository.logOut();
+    } catch (_) {}
     await SharedPrefHelper.logOut();
-    Get.offAll(() => const LoginScreen()); // Clears navigation stack
+    if (context.mounted) {
+      context.read<UserProvider>().clearUser();
+    }
+    Get.offAll(() => const HomeScreen()); // Clears navigation stack
   }
 }

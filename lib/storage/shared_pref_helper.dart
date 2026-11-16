@@ -72,4 +72,25 @@ class SharedPrefHelper {
     final Map<String, dynamic> userMap = jsonDecode(userString);
     return User.fromJson(userMap);
   }
+
+  // VIP Invitation Token & Event Slug
+  static Future<void> setInvitationToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(SharedPrefKeys.invitationToken, token);
+  }
+
+  static Future<String?> getInvitationToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(SharedPrefKeys.invitationToken);
+  }
+
+  static Future<void> saveEventSlug(String slug) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(SharedPrefKeys.invitationEventSlug, slug);
+  }
+
+  static Future<String?> getEventSlug() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(SharedPrefKeys.invitationEventSlug);
+  }
 }

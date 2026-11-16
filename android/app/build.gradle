@@ -41,7 +41,7 @@ android {
         applicationId "com.alphastudioz.ticketmart"
         multiDexEnabled true
         minSdkVersion flutter.minSdkVersion
-        targetSdkVersion 35
+        targetSdkVersion 36
         
         // Use the properties from local.properties
         versionCode localProperties.getProperty('flutter.versionCode', '1').toInteger()

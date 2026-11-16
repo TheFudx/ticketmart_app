@@ -25,12 +25,22 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future<void> loadProfile() async {
-    final data = await UserProfileRespository.fetchProfile();
-
-    setState(() {
-      shows = data.data.comedyShowsBooking;
-      isLoading = false;
-    });
+    try {
+      final data = await UserProfileRespository.fetchProfile();
+      if (mounted) {
+        setState(() {
+          shows = data.data.comedyShowsBooking;
+          isLoading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          shows = [];
+          isLoading = false;
+        });
+      }
+    }
   }
 
   @override

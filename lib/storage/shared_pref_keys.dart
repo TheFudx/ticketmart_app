@@ -7,4 +7,6 @@ class SharedPrefKeys {
   static const String mobile = "mobile";
   static const String token = "token";
   static const String userKey = "logged_in_user";
+  static const String invitationToken = "invitation_token";
+  static const String invitationEventSlug = "invitation_slug";
 }
